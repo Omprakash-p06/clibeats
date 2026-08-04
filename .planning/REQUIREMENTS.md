@@ -27,10 +27,24 @@
 - **REQ-SET-01**: Multi-provider plugin architecture (`MusicProvider` abstraction interface).
 - **REQ-SET-02**: Settings panel for theme customizations, provider configuration, cache limits, and audio preferences.
 
-## Non-Functional Requirements
+## Non-Functional & Engineering Requirements
+
+### Quality & Automation Gates
+- **REQ-ENG-01**: Automated CI Pipeline via GitHub Actions (`.github/workflows/ci.yml`) running compile, lint, detekt, ktlint, unit tests, compose UI tests, and security scans on every PR/push.
+- **REQ-ENG-02**: Static Analysis with **Detekt** (0 critical issues allowed) and **Android Lint** (0 error-level issues allowed).
+- **REQ-ENG-03**: Automated Code Formatting with **ktlint** enforced at commit and CI levels.
+- **REQ-ENG-04**: Architecture Rule Validation enforcing strict Clean Architecture boundaries (`Presentation` -> `Domain` -> `Data`; no direct `Presentation` -> `Data` imports).
+- **REQ-ENG-05**: Architecture Decision Records (**ADRs**) documented in `docs/adr/` for all major architectural choices.
+- **REQ-ENG-06**: Definition of Done (**DoD**) enforcement: Every phase and feature must satisfy Compile + Lint + Detekt + ktlint + Unit Tests + UI Tests + Coverage Gates + Docs before merging.
+- **REQ-ENG-07**: Code Coverage Gate requiring >=85% unit and integration test coverage across domain and data layers.
+- **REQ-ENG-08**: Performance Budgets enforced via automated metrics (Cold start <2s, 60 FPS list scrolling, memory footprint cap).
+- **REQ-ENG-09**: Security Hardening: Secret scanning, dependency vulnerability audits, encrypted storage (`EncryptedSharedPreferences`), and least-privilege permissions.
+- **REQ-ENG-10**: Observability & Crash Telemetry: Structured logging, crash reporting abstraction, and performance metrics tracking.
+
+### Reliability & Standards
 - **REQ-NFR-01**: Cold start time under 2 seconds.
 - **REQ-NFR-02**: 60 FPS smooth scrolling in song lists and tables.
-- **REQ-NFR-03**: Material accessibility compliance (screen reader labels, high contrast text).
+- **REQ-NFR-03**: Material accessibility compliance (screen reader labels, high contrast text, 100% accessible touch targets).
 - **REQ-NFR-04**: Architecture following MVVM + Clean Architecture principles (`Presentation` -> `Domain` -> `Data`).
 - **REQ-NFR-05**: Atomic git commit as soon as any debug session or phase is completed, verified, and test cases pass.
 

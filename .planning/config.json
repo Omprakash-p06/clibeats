@@ -1,6 +1,8 @@
 {
-  "workflow": "gsd",
+  "workflow": {
+    "_auto_chain_active": false
+  },
   "mode": "standard",
   "auto_commit": true,
-  "depth": "standard"
+  "granularity": "standard"
 }
