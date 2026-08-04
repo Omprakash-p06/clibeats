@@ -1,0 +1,6 @@
+{
+  "workflow": "gsd",
+  "mode": "standard",
+  "auto_commit": true,
+  "depth": "standard"
+}
