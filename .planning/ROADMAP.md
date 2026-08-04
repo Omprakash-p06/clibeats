@@ -4,7 +4,7 @@
 
 ### Phase 1: Architecture Core & Provider API Abstraction
 **Goal**: Establish clean architecture project structure, dependency injection, and core domain models.
-- Requirements: `REQ-NFR-04`, `REQ-SET-01`
+- Requirements: `REQ-NFR-04`, `REQ-NFR-05`, `REQ-SET-01`
 - Deliverables:
   - Base Kotlin Android application setup with Clean Architecture packages (`presentation`, `domain`, `data`).
   - Hilt / Dagger DI configuration.

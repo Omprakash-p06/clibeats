@@ -18,4 +18,5 @@ Establish clean architecture project structure, dependency injection, and core d
 
 ## Requirements Addressed
 - REQ-NFR-04: MVVM + Clean Architecture (presentation → domain → data)
+- REQ-NFR-05: Atomic git commit as soon as any debug session or phase is completed and verified
 - REQ-SET-01: MusicProvider abstraction interface (foundation for multi-provider)

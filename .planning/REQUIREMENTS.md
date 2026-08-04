@@ -32,6 +32,7 @@
 - **REQ-NFR-02**: 60 FPS smooth scrolling in song lists and tables.
 - **REQ-NFR-03**: Material accessibility compliance (screen reader labels, high contrast text).
 - **REQ-NFR-04**: Architecture following MVVM + Clean Architecture principles (`Presentation` -> `Domain` -> `Data`).
+- **REQ-NFR-05**: Atomic git commit as soon as any debug session or phase is completed, verified, and test cases pass.
 
 ## UI & Design Specifications
 - **REQ-UI-01**: Dark monochrome theme (`#0D0D0D` bg, `#151515` surface, `#1DB954` accent, `#FFFFFF` text).

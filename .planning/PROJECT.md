@@ -9,6 +9,7 @@ Build a free Android music client inspired by terminal interfaces (TUI) using a 
 - **Fast & Predictable Navigation**: Quick navigation, persistent player controls, compact song tables, and keyboard/touch efficiency.
 - **Provider-Agnostic Architecture**: Decoupled `MusicProvider` interface supporting official and custom media sources.
 - **Reliable Offline Playback**: Encrypted local storage, offline audio caching, queue persistence across restarts.
+- **Atomic Verified Commits**: Always commit changes immediately upon completing and verifying any debug session or roadmap phase once all test cases pass.
 
 ## Tech Stack & Architecture
 - **Platform**: Android (Kotlin)
