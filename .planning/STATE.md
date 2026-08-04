@@ -7,7 +7,7 @@
 - **Last Action**: Initialized project with `/gsd-new-project` based on design docs in `docs/`.
 
 ## Phase Matrix
-- [ ] **Phase 1**: Architecture Core & Provider API Abstraction
+- [/] **Phase 1**: Architecture Core & Provider API Abstraction ← PLANNED (2 plans ready)
 - [ ] **Phase 2**: TUI Design System & Navigation Layout
 - [ ] **Phase 3**: Database & Local Persistence Layer
 - [ ] **Phase 4**: Playback Engine & Background Media Service
