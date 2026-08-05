@@ -2,9 +2,9 @@ name: CLIBeats CI Pipeline
 
 on:
   push:
-    branches: [ master, develop ]
+    branches: [ main, master, develop ]
   pull_request:
-    branches: [ master, develop ]
+    branches: [ main, master, develop ]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
