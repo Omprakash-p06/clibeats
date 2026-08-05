@@ -1,5 +1,6 @@
 package com.clibeats.data.preferences
 
+import android.content.SharedPreferences
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -7,6 +8,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -18,12 +21,18 @@ class AppPreferences
     @Inject
     constructor(
         private val dataStore: DataStore<Preferences>,
+        // Injected via StorageModule as EncryptedSharedPreferences (Android Keystore MasterKey, AES256_GCM).
+        // Keystore-backed encryption for sensitive credentials only; non-sensitive settings stay in DataStore.
+        private val securePrefs: SharedPreferences,
     ) {
         private object Keys {
             val ACTIVE_PROVIDER_ID = stringPreferencesKey("active_provider_id")
             val CACHE_MAX_MB = intPreferencesKey("cache_max_mb")
             val HIGH_QUALITY_STREAMING = booleanPreferencesKey("high_quality_streaming")
-            val AUTH_TOKEN = stringPreferencesKey("auth_token")
+        }
+
+        private object SecureKeys {
+            const val AUTH_TOKEN = "auth_token"
         }
 
         val activeProviderId: Flow<String?> =
@@ -41,10 +50,20 @@ class AppPreferences
                 prefs[Keys.HIGH_QUALITY_STREAMING] ?: true
             }
 
-        val authToken: Flow<String?> =
-            dataStore.data.map { prefs ->
-                prefs[Keys.AUTH_TOKEN]
+        private val _authToken = MutableStateFlow(securePrefs.getString(SecureKeys.AUTH_TOKEN, null))
+
+        val authToken: Flow<String?> = _authToken.asStateFlow()
+
+        private val prefsListener =
+            SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+                if (key == SecureKeys.AUTH_TOKEN) {
+                    _authToken.value = securePrefs.getString(SecureKeys.AUTH_TOKEN, null)
+                }
             }
+
+        init {
+            securePrefs.registerOnSharedPreferenceChangeListener(prefsListener)
+        }
 
         suspend fun setActiveProviderId(providerId: String) {
             dataStore.edit { it[Keys.ACTIVE_PROVIDER_ID] = providerId }
@@ -59,10 +78,12 @@ class AppPreferences
         }
 
         suspend fun setAuthToken(token: String) {
-            dataStore.edit { it[Keys.AUTH_TOKEN] = token }
+            securePrefs.edit().putString(SecureKeys.AUTH_TOKEN, token).apply()
+            _authToken.value = token
         }
 
         suspend fun clearAuthToken() {
-            dataStore.edit { it.remove(Keys.AUTH_TOKEN) }
+            securePrefs.edit().remove(SecureKeys.AUTH_TOKEN).apply()
+            _authToken.value = null
         }
     }
