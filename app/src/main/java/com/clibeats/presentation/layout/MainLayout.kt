@@ -27,6 +27,7 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.clibeats.presentation.component.PlayerBar
 import com.clibeats.presentation.theme.CliBeatsDivider
 import com.clibeats.presentation.theme.CliBeatsSurface
 import com.clibeats.presentation.theme.CliBeatsTextSecondary
@@ -80,8 +81,8 @@ fun MainLayout(
                 content()
             }
 
-            // ── Persistent Player Bar slot ────────────────────────────────
-            // PlayerBar composable injected here in Plan 02-03
+            // ── Persistent Player Bar ─────────────────────────────────────
+            PlayerBar()
         }
     }
 }
