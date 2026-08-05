@@ -25,9 +25,13 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaul
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.clibeats.presentation.component.PlayerBar
+import com.clibeats.presentation.player.PlayerViewModel
 import com.clibeats.presentation.theme.CliBeatsDivider
 import com.clibeats.presentation.theme.CliBeatsSurface
 import com.clibeats.presentation.theme.CliBeatsTextSecondary
@@ -39,17 +43,27 @@ import com.clibeats.presentation.theme.CliBeatsTextSecondary
  * - Adaptive navigation (Rail on compact/medium, Drawer on expanded)
  * - TopAppBar (48dp, flat, no elevation)
  * - Content area slot for screen content
- * - Bottom slot for persistent PlayerBar (added in Plan 02-03)
+ * - Bottom slot for persistent PlayerBar
  *
  * Per UI-SPEC: Active nav item = CliBeatsAccent. No pill/bubble indicator.
  */
-@Suppress("FunctionNaming")
+@Suppress("FunctionNaming", "LongMethod")
 @Composable
 fun MainLayout(
     selectedDestination: NavDestination = NavDestination.Home,
     onDestinationSelected: (NavDestination) -> Unit = {},
+    playerViewModel: PlayerViewModel = hiltViewModel(),
     content: @Composable () -> Unit = {},
 ) {
+    val playbackState by playerViewModel.playbackState.collectAsState()
+    val trackDuration = playbackState.currentTrack?.durationMs ?: 0L
+    val progress =
+        if (trackDuration > 0L) {
+            (playbackState.positionMs.toFloat() / trackDuration.toFloat()).coerceIn(0f, 1f)
+        } else {
+            0f
+        }
+
     NavigationSuiteScaffold(
         navigationSuiteItems = {
             buildNavItems(
@@ -82,7 +96,15 @@ fun MainLayout(
             }
 
             // ── Persistent Player Bar ─────────────────────────────────────
-            PlayerBar()
+            PlayerBar(
+                trackTitle = playbackState.currentTrack?.title ?: "Not playing",
+                artist = playbackState.currentTrack?.artist ?: "",
+                isPlaying = playbackState.isPlaying,
+                progress = progress,
+                onPlayPauseClick = playerViewModel::onPlayPauseClick,
+                onSkipNextClick = playerViewModel::onSkipNextClick,
+                onSkipPreviousClick = playerViewModel::onSkipPreviousClick,
+            )
         }
     }
 }

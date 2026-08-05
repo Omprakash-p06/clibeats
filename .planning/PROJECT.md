@@ -64,6 +64,7 @@ Every PR, feature, and roadmap phase MUST satisfy the following quality criteria
 - `[x]` **Phase 1**: Architecture Core & Provider API Abstraction (Completed)
 - `[x]` **Phase 2**: TUI Design System & Navigation Layout (Completed 2026-08-05)
 - `[x]` **Phase 3**: Database & Local Persistence Layer (Completed 2026-08-05) — Room schemas, DAOs, repositories, DataStore + Keystore-backed EncryptedSharedPreferences (MasterKey AES256_GCM), DAO/repo tests, ADR-003. Gap closure (03-05) verified; 7/7 must-haves.
+- `[x]` **Phase 4**: Playback Engine & Background Media Service (Completed 2026-08-05) — AndroidX Media3 (1.4.1), PlaybackService (MediaSessionService), PlayerAdapter (ExoPlayer), PlaybackRepository, PlayerViewModel, MainLayout PlayerBar state binding, ADR-004. 7/7 must-haves verified.
 
 ## Documentation Context
 - Original specs: `docs/01_Design_Brief.docx` through `docs/06_User_Research_Report_Template.docx`

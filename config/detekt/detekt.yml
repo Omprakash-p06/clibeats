@@ -6,6 +6,11 @@ config:
   validation: true
   warningsAsErrors: false
 
+formatting:
+  active: true
+  Indentation:
+    active: false
+
 complexity:
   active: true
   TooManyFunctions:
