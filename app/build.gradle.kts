@@ -55,6 +55,10 @@ kotlin {
     }
 }
 
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 detekt {
     buildUponDefaultConfig = true
     allRules = false
@@ -84,10 +88,18 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+    implementation(libs.datastore.preferences)
     detektPlugins(libs.detekt.formatting)
     debugImplementation(libs.compose.ui.tooling)
     testImplementation(libs.junit)
+    testImplementation(libs.room.testing)
+    testImplementation(libs.coroutines.test)
     testImplementation(libs.compose.ui.test.junit4)
     debugImplementation(libs.compose.ui.test.manifest)
     androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.room.testing)
+    androidTestImplementation(libs.coroutines.test)
 }
