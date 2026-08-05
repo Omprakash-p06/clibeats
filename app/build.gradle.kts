@@ -13,12 +13,12 @@ plugins {
 
 android {
     namespace = "com.clibeats"
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.clibeats"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 34
         versionCode = 1
         versionName = "0.1.0"
     }
@@ -59,6 +59,17 @@ detekt {
     buildUponDefaultConfig = true
     allRules = false
     config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
+}
+
+tasks.withType<Test>().configureEach {
+    val androidHome =
+        System.getenv("ANDROID_HOME")
+            ?: System.getenv("ANDROID_SDK_ROOT")
+            ?: "C:\\Android\\Sdk"
+    environment("ANDROID_HOME", androidHome)
+    environment("ANDROID_SDK_ROOT", androidHome)
+    systemProperty("ANDROID_HOME", androidHome)
+    systemProperty("ANDROID_SDK_ROOT", androidHome)
 }
 
 dependencies {
