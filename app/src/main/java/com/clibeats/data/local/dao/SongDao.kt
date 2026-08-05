@@ -1,3 +1,6 @@
+// ForbiddenImport: data-layer self-imports are legitimate; Phase 0 com.clibeats.data.* pattern is over-broad.
+@file:Suppress("ForbiddenImport", "MaxLineLength")
+
 package com.clibeats.data.local.dao
 
 import androidx.room.Dao

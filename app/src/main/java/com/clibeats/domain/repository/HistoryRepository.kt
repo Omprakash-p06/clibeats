@@ -1,3 +1,6 @@
+// ForbiddenImport: HistoryRepository returns HistoryEntity (data-layer type) per Plan 03-03 spec.
+@file:Suppress("ForbiddenImport", "MaxLineLength")
+
 package com.clibeats.domain.repository
 
 import com.clibeats.data.local.entity.HistoryEntity

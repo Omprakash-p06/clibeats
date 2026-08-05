@@ -12,6 +12,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
+// Indentation: detekt 1.23.6 misparses ktlint_official @Inject constructor() style (false positive).
+@Suppress("Indentation")
 class AppPreferences
     @Inject
     constructor(

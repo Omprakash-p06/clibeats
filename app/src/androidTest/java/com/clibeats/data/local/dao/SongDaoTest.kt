@@ -17,68 +17,83 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class SongDaoTest {
-
     private lateinit var db: CliBeatsDatabase
     private lateinit var dao: SongDao
 
     @Before
     fun setup() {
-        db = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(),
-            CliBeatsDatabase::class.java,
-        ).allowMainThreadQueries().build()
+        db =
+            Room.inMemoryDatabaseBuilder(
+                ApplicationProvider.getApplicationContext(),
+                CliBeatsDatabase::class.java,
+            ).allowMainThreadQueries().build()
         dao = db.songDao()
     }
 
     @After
-    fun tearDown() { db.close() }
-
-    private fun testSong(id: String = "s1") = SongEntity(
-        id = id, title = "Song $id", artist = "Artist", album = "Album",
-        durationMs = 180_000L, artworkUrl = null, streamUrl = null, providerId = "local",
-    )
-
-    @Test
-    fun upsertAndGetById() = runTest {
-        dao.upsert(testSong("s1"))
-        val result = dao.getById("s1")
-        assertNotNull(result)
-        assertEquals("Song s1", result?.title)
+    fun tearDown() {
+        db.close()
     }
 
-    @Test
-    fun getById_returnsNullWhenMissing() = runTest {
-        assertNull(dao.getById("missing"))
-    }
+    private fun testSong(id: String = "s1") =
+        SongEntity(
+            id = id,
+            title = "Song $id",
+            artist = "Artist",
+            album = "Album",
+            durationMs = 180_000L,
+            artworkUrl = null,
+            streamUrl = null,
+            providerId = "local",
+        )
 
     @Test
-    fun upsertReplacesExistingOnConflict() = runTest {
-        dao.upsert(testSong("s1"))
-        dao.upsert(testSong("s1").copy(title = "Updated"))
-        assertEquals("Updated", dao.getById("s1")?.title)
-    }
+    fun upsertAndGetById() =
+        runTest {
+            dao.upsert(testSong("s1"))
+            val result = dao.getById("s1")
+            assertNotNull(result)
+            assertEquals("Song s1", result?.title)
+        }
 
     @Test
-    fun getAllAsFlow_returnsAllSongs() = runTest {
-        dao.upsert(testSong("s1"))
-        dao.upsert(testSong("s2"))
-        val songs = dao.getAllAsFlow().first()
-        assertEquals(2, songs.size)
-    }
+    fun getById_returnsNullWhenMissing() =
+        runTest {
+            assertNull(dao.getById("missing"))
+        }
 
     @Test
-    fun deleteById_removesSong() = runTest {
-        dao.upsert(testSong("s1"))
-        dao.deleteById("s1")
-        assertNull(dao.getById("s1"))
-    }
+    fun upsertReplacesExistingOnConflict() =
+        runTest {
+            dao.upsert(testSong("s1"))
+            dao.upsert(testSong("s1").copy(title = "Updated"))
+            assertEquals("Updated", dao.getById("s1")?.title)
+        }
 
     @Test
-    fun searchAsFlow_findsMatchingTitles() = runTest {
-        dao.upsert(testSong("s1").copy(title = "Rock Anthem"))
-        dao.upsert(testSong("s2").copy(title = "Jazz Ballad"))
-        val results = dao.searchAsFlow("Rock").first()
-        assertEquals(1, results.size)
-        assertEquals("Rock Anthem", results.first().title)
-    }
+    fun getAllAsFlow_returnsAllSongs() =
+        runTest {
+            dao.upsert(testSong("s1"))
+            dao.upsert(testSong("s2"))
+            val songs = dao.getAllAsFlow().first()
+            assertEquals(2, songs.size)
+        }
+
+    @Test
+    fun deleteById_removesSong() =
+        runTest {
+            dao.upsert(testSong("s1"))
+            dao.deleteById("s1")
+            assertNull(dao.getById("s1"))
+        }
+
+    @Test
+    fun searchAsFlow_findsMatchingTitles() =
+        runTest {
+            dao.upsert(testSong("s1").copy(title = "Rock Anthem"))
+            dao.upsert(testSong("s2").copy(title = "Jazz Ballad"))
+            val results = dao.searchAsFlow("Rock").first()
+            assertEquals(1, results.size)
+            assertEquals("Rock Anthem", results.first().title)
+        }
 }

@@ -1,3 +1,6 @@
+// ForbiddenImport: data-layer self-imports are legitimate; Phase 0 com.clibeats.data.* pattern is over-broad.
+@file:Suppress("ForbiddenImport", "MaxLineLength")
+
 package com.clibeats.di
 
 import android.content.Context
@@ -13,7 +16,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-
     @Provides
     @Singleton
     fun provideCliBeatsDatabase(

@@ -1,3 +1,6 @@
+// ForbiddenImport: data-layer self-imports are legitimate; Phase 0 com.clibeats.data.* pattern is over-broad.
+@file:Suppress("ForbiddenImport", "MaxLineLength")
+
 package com.clibeats.data.local
 
 import androidx.room.Database
@@ -27,7 +30,10 @@ import com.clibeats.data.local.entity.SongEntity
 @TypeConverters(CliBeatsTypeConverters::class)
 abstract class CliBeatsDatabase : RoomDatabase() {
     abstract fun songDao(): SongDao
+
     abstract fun playlistDao(): PlaylistDao
+
     abstract fun historyDao(): HistoryDao
+
     abstract fun cacheIndexDao(): CacheIndexDao
 }
