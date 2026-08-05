@@ -44,7 +44,7 @@
 **Goal**: Setup Room database schemas, DAOs, and encrypted storage for tracks, playlists, history, and user settings.
 
 - Requirements: `REQ-LIB-03`, `REQ-OFF-03`, `REQ-ENG-09`
-- Progress: Plans 03-01 (Dependency Setup), 03-02 (Room Entities & Database), 03-03 (DAOs, Repositories, Mappers & AppPreferences) and 03-04 (DAO Integration Tests, Repository Unit Tests & ADR-003) COMPLETE 2026-08-05. Phase 3 COMPLETE (4/4 plans).
+- Progress: Plans 03-01 (Dependency Setup), 03-02 (Room Entities & Database), 03-03 (DAOs, Repositories, Mappers & AppPreferences), 03-04 (DAO Integration Tests, Repository Unit Tests & ADR-003) and 03-05 (Gap Closure — Encrypted Storage, Mapper Integrity, Foreign Keys & Query Safety) COMPLETE 2026-08-05. Phase 3 COMPLETE (5/5 plans).
 - Deliverables:
   - Room Database setup (`SongEntity`, `PlaylistEntity`, `PlaylistSongCrossRef`, `HistoryEntity`, `CacheIndexEntity`).
   - DAOs for track library, playlists, search history, and cache index.
