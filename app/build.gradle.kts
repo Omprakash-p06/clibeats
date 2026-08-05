@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.detekt)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.paparazzi)
 }
 
 android {
@@ -67,11 +68,15 @@ dependencies {
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.ui)
     implementation(libs.compose.material3)
+    implementation(libs.material3.adaptive.nav)
+    implementation(libs.material.icons.extended)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     detektPlugins(libs.detekt.formatting)
     debugImplementation(libs.compose.ui.tooling)
     testImplementation(libs.junit)
+    testImplementation(libs.compose.ui.test.junit4)
+    debugImplementation(libs.compose.ui.test.manifest)
     androidTestImplementation(libs.espresso.core)
 }
