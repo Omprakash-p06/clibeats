@@ -18,7 +18,10 @@ fun SongEntity.toDomain(): Track =
         providerId = providerId,
     )
 
-fun Track.toEntity(): SongEntity =
+fun Track.toEntity(
+    existingLocalPath: String? = null,
+    existingCachedAt: Long? = null,
+): SongEntity =
     SongEntity(
         id = id,
         title = title,
@@ -28,4 +31,6 @@ fun Track.toEntity(): SongEntity =
         artworkUrl = artworkUrl,
         streamUrl = streamUrl,
         providerId = providerId,
+        localPath = existingLocalPath,
+        cachedAt = existingCachedAt,
     )

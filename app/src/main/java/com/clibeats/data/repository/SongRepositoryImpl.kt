@@ -29,9 +29,20 @@ class SongRepositoryImpl
 
         override suspend fun getTrackById(id: String): Track? = songDao.getById(id)?.toDomain()
 
-        override suspend fun upsertTrack(track: Track) = songDao.upsert(track.toEntity())
+        override suspend fun upsertTrack(track: Track) {
+            val existing = songDao.getById(track.id)
+            songDao.upsert(track.toEntity(existing?.localPath, existing?.cachedAt))
+        }
 
-        override suspend fun upsertTracks(tracks: List<Track>) = songDao.upsertAll(tracks.map { it.toEntity() })
+        override suspend fun upsertTracks(tracks: List<Track>) {
+            val existingById = songDao.getByIds(tracks.map { it.id }).associateBy { it.id }
+            songDao.upsertAll(
+                tracks.map { track ->
+                    val existing = existingById[track.id]
+                    track.toEntity(existing?.localPath, existing?.cachedAt)
+                },
+            )
+        }
 
         override suspend fun deleteTrack(id: String) = songDao.deleteById(id)
     }

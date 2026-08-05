@@ -28,7 +28,15 @@ class PlaylistRepositoryImpl
 
         override suspend fun getPlaylistById(id: String): Playlist? = playlistDao.getById(id)?.toDomain()
 
-        override suspend fun upsertPlaylist(playlist: Playlist) = playlistDao.upsert(playlist.toEntity())
+        override suspend fun upsertPlaylist(playlist: Playlist) {
+            val existing = playlistDao.getById(playlist.id)
+            playlistDao.upsert(
+                playlist.toEntity(
+                    createdAt = existing?.createdAt ?: System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis(),
+                ),
+            )
+        }
 
         override suspend fun deletePlaylist(id: String) = playlistDao.deleteById(id)
 
