@@ -1,5 +1,8 @@
 # PROJECT: CLIBeats
 
+## What This Is
+CLIBeats is a free, production-grade Android music client inspired by terminal interfaces (TUI). It features a compact, text-dense layout with monospaced JetBrains Mono typography, high-contrast dark theme, persistent playback controls, and a provider-agnostic architecture supporting local media and external music sources.
+
 ## Vision
 Build a free, production-grade Android music client inspired by terminal interfaces (TUI) using a compact, keyboard-inspired UI while supporting multiple music providers through a modular abstraction layer.
 
@@ -11,6 +14,15 @@ Build a free, production-grade Android music client inspired by terminal interfa
 - **Provider-Agnostic Architecture**: Decoupled `MusicProvider` interface supporting official and custom media sources.
 - **Reliable Offline Playback**: Encrypted local storage, offline audio caching, queue persistence across restarts.
 - **Atomic Verified Commits**: Always commit changes immediately upon completing and verifying any debug session or roadmap phase once all test cases pass.
+
+## Requirements
+Project requirements are tracked in detail in `.planning/REQUIREMENTS.md`. Key functional requirement pillars:
+- `REQ-ARCH`: Modular Architecture & Provider Abstraction
+- `REQ-UI`: TUI Design System & Compact Components
+- `REQ-NAV`: Predictable Layout Shell & Navigation
+- `REQ-DATA`: Local Room Persistence & Storage
+- `REQ-AUDIO`: ExoPlayer Playback Engine & Background Service
+- `REQ-ENG`: Testing, CI/CD Pipeline & Static Analysis Gates
 
 ## Definition of Done (DoD)
 Every PR, feature, and roadmap phase MUST satisfy the following quality criteria before merge/completion:
