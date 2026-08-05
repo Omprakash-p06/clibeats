@@ -2,9 +2,9 @@
 
 ## Project Status
 - **Current Milestone**: Milestone 1 - Engineering Foundation & Core TUI Client
-- **Current Phase**: Phase 0 - Engineering Foundation & CI/CD Pipeline
-- **Phase Status**: Pending Planning
-- **Last Action**: Upgraded project roadmap to a 12-phase Engineering Roadmap with quality gates, static analysis, CI/CD pipeline, and DoD enforcement.
+- **Current Phase**: Phase 2 - TUI Design System & Navigation Layout
+- **Phase Status**: Phases 0 & 1 COMPLETED. Phase 2 pending planning.
+- **Last Action**: Completed Phase 1 (Architecture Core & Provider API Abstraction) — all quality gates passed, unit tests green, domain models and MusicProvider contract defined.
 
 ## Phase Matrix
 - [x] **Phase 0**: Engineering Foundation & CI/CD Pipeline ← COMPLETED
@@ -27,4 +27,4 @@
 - Architecture Decision Records: `docs/adr/` directory for all major technical decisions.
 
 ## Next Action
-Run `/gsd-plan-phase 0` to create execution plans for Phase 0 (Engineering Foundation & CI/CD Pipeline).
+Run `/gsd-plan-phase 2` to create execution plans for Phase 2 (TUI Design System & Navigation Layout).
