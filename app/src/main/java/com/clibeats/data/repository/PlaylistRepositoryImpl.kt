@@ -13,27 +13,32 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PlaylistRepositoryImpl @Inject constructor(
-    private val playlistDao: PlaylistDao,
-) : PlaylistRepository {
-    override fun getAllPlaylistsAsFlow(): Flow<List<Playlist>> =
-        playlistDao.getAllAsFlow().map { list -> list.map { it.toDomain() } }
+class PlaylistRepositoryImpl
+    @Inject
+    constructor(
+        private val playlistDao: PlaylistDao,
+    ) : PlaylistRepository {
+        override fun getAllPlaylistsAsFlow(): Flow<List<Playlist>> = playlistDao.getAllAsFlow().map { list -> list.map { it.toDomain() } }
 
-    override suspend fun getPlaylistById(id: String): Playlist? = playlistDao.getById(id)?.toDomain()
+        override suspend fun getPlaylistById(id: String): Playlist? = playlistDao.getById(id)?.toDomain()
 
-    override suspend fun upsertPlaylist(playlist: Playlist) =
-        playlistDao.upsert(playlist.toEntity())
+        override suspend fun upsertPlaylist(playlist: Playlist) = playlistDao.upsert(playlist.toEntity())
 
-    override suspend fun deletePlaylist(id: String) = playlistDao.deleteById(id)
+        override suspend fun deletePlaylist(id: String) = playlistDao.deleteById(id)
 
-    override fun getSongsForPlaylistAsFlow(playlistId: String): Flow<List<Track>> =
-        playlistDao.getSongsForPlaylistAsFlow(playlistId).map { list ->
-            list.map { it.toDomain() }
-        }
+        override fun getSongsForPlaylistAsFlow(playlistId: String): Flow<List<Track>> =
+            playlistDao.getSongsForPlaylistAsFlow(playlistId).map { list ->
+                list.map { it.toDomain() }
+            }
 
-    override suspend fun addSongToPlaylist(playlistId: String, songId: String, position: Int) =
-        playlistDao.addSongToPlaylist(PlaylistSongCrossRef(playlistId, songId, position))
+        override suspend fun addSongToPlaylist(
+            playlistId: String,
+            songId: String,
+            position: Int,
+        ) = playlistDao.addSongToPlaylist(PlaylistSongCrossRef(playlistId, songId, position))
 
-    override suspend fun removeSongFromPlaylist(playlistId: String, songId: String) =
-        playlistDao.removeSongFromPlaylist(playlistId, songId)
-}
+        override suspend fun removeSongFromPlaylist(
+            playlistId: String,
+            songId: String,
+        ) = playlistDao.removeSongFromPlaylist(playlistId, songId)
+    }

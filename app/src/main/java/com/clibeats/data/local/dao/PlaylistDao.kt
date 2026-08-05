@@ -27,7 +27,10 @@ interface PlaylistDao {
     suspend fun addSongToPlaylist(crossRef: PlaylistSongCrossRef)
 
     @Query("DELETE FROM playlist_song_cross_ref WHERE playlist_id = :playlistId AND song_id = :songId")
-    suspend fun removeSongFromPlaylist(playlistId: String, songId: String)
+    suspend fun removeSongFromPlaylist(
+        playlistId: String,
+        songId: String,
+    )
 
     @Query(
         """
@@ -35,7 +38,7 @@ interface PlaylistDao {
         INNER JOIN playlist_song_cross_ref ON songs.id = playlist_song_cross_ref.song_id
         WHERE playlist_song_cross_ref.playlist_id = :playlistId
         ORDER BY playlist_song_cross_ref.position ASC
-        """
+        """,
     )
     fun getSongsForPlaylistAsFlow(playlistId: String): Flow<List<SongEntity>>
 }

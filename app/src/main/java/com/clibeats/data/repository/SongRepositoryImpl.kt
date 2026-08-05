@@ -11,21 +11,21 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SongRepositoryImpl @Inject constructor(
-    private val songDao: SongDao,
-) : SongRepository {
-    override fun getAllTracksAsFlow(): Flow<List<Track>> =
-        songDao.getAllAsFlow().map { entities -> entities.map { it.toDomain() } }
+class SongRepositoryImpl
+    @Inject
+    constructor(
+        private val songDao: SongDao,
+    ) : SongRepository {
+        override fun getAllTracksAsFlow(): Flow<List<Track>> = songDao.getAllAsFlow().map { entities -> entities.map { it.toDomain() } }
 
-    override fun searchTracksAsFlow(query: String): Flow<List<Track>> =
-        songDao.searchAsFlow(query).map { entities -> entities.map { it.toDomain() } }
+        override fun searchTracksAsFlow(query: String): Flow<List<Track>> =
+            songDao.searchAsFlow(query).map { entities -> entities.map { it.toDomain() } }
 
-    override suspend fun getTrackById(id: String): Track? = songDao.getById(id)?.toDomain()
+        override suspend fun getTrackById(id: String): Track? = songDao.getById(id)?.toDomain()
 
-    override suspend fun upsertTrack(track: Track) = songDao.upsert(track.toEntity())
+        override suspend fun upsertTrack(track: Track) = songDao.upsert(track.toEntity())
 
-    override suspend fun upsertTracks(tracks: List<Track>) =
-        songDao.upsertAll(tracks.map { it.toEntity() })
+        override suspend fun upsertTracks(tracks: List<Track>) = songDao.upsertAll(tracks.map { it.toEntity() })
 
-    override suspend fun deleteTrack(id: String) = songDao.deleteById(id)
-}
+        override suspend fun deleteTrack(id: String) = songDao.deleteById(id)
+    }
