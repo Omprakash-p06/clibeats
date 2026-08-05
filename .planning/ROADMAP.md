@@ -36,7 +36,7 @@
 ### Phase 3: Database & Local Persistence Layer
 **Goal**: Setup Room database schemas, DAOs, and encrypted storage for tracks, playlists, history, and user settings.
 - Requirements: `REQ-LIB-03`, `REQ-OFF-03`, `REQ-ENG-09`
-- Progress: Plan 03-01 (Dependency Setup — Room & DataStore) COMPLETE 2026-08-05. 3/4 plans remaining.
+- Progress: Plans 03-01 (Dependency Setup) and 03-02 (Room Entities & Database) COMPLETE 2026-08-05. 2/4 plans remaining.
 - Deliverables:
   - Room Database setup (`SongEntity`, `PlaylistEntity`, `PlaylistSongCrossRef`, `HistoryEntity`, `CacheIndexEntity`).
   - DAOs for track library, playlists, search history, and cache index.
