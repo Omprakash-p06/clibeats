@@ -55,10 +55,10 @@
   - ADR-004: AndroidX Media3 & Background Audio Architecture.
 
 ### Phase 5: Provider Integration & Search
-**Goal**: Implement default `MusicProvider` adapter, debounced search UI, and track metadata display.
+**Goal**: Implement default `MusicProvider` adapter (referencing `sigma67/ytmusicapi` for YouTube Music InnerTube API schemas), debounced search UI, and track metadata display.
 - Requirements: `REQ-MUS-01`, `REQ-MUS-04`, `REQ-NAV-01`, `REQ-SET-01`
 - Deliverables:
-  - Default `MusicProvider` adapter implementation.
+  - Default `MusicProvider` adapter implementation (`YouTubeMusicProvider` using InnerTube API specification based on `sigma67/ytmusicapi`).
   - Search ViewModel and debounced search input flow.
   - Search results display in dense TUI song table layout.
   - Track detail view and metadata formatting.
