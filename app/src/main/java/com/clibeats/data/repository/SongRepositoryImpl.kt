@@ -4,6 +4,7 @@
 package com.clibeats.data.repository
 
 import com.clibeats.data.local.dao.SongDao
+import com.clibeats.data.local.dao.escapeForLike
 import com.clibeats.data.local.mapper.toDomain
 import com.clibeats.data.local.mapper.toEntity
 import com.clibeats.domain.model.Track
@@ -25,7 +26,7 @@ class SongRepositoryImpl
         override fun getAllTracksAsFlow(): Flow<List<Track>> = songDao.getAllAsFlow().map { entities -> entities.map { it.toDomain() } }
 
         override fun searchTracksAsFlow(query: String): Flow<List<Track>> =
-            songDao.searchAsFlow(query).map { entities -> entities.map { it.toDomain() } }
+            songDao.searchAsFlow(query.escapeForLike()).map { entities -> entities.map { it.toDomain() } }
 
         override suspend fun getTrackById(id: String): Track? = songDao.getById(id)?.toDomain()
 

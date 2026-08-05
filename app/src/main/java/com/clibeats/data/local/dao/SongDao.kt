@@ -27,7 +27,13 @@ interface SongDao {
     @Query("SELECT * FROM songs ORDER BY title ASC")
     fun getAllAsFlow(): Flow<List<SongEntity>>
 
-    @Query("SELECT * FROM songs WHERE title LIKE '%' || :query || '%' OR artist LIKE '%' || :query || '%'")
+    @Query(
+        """
+        SELECT * FROM songs 
+        WHERE title LIKE '%' || :query || '%' ESCAPE '\' 
+           OR artist LIKE '%' || :query || '%' ESCAPE '\'
+        """,
+    )
     fun searchAsFlow(query: String): Flow<List<SongEntity>>
 
     @Query("DELETE FROM songs WHERE id = :id")
@@ -36,3 +42,13 @@ interface SongDao {
     @Query("DELETE FROM songs")
     suspend fun deleteAll()
 }
+
+/**
+ * Escapes SQL LIKE wildcards so a user query containing `%`, `_`, or `\`
+ * matches literally instead of broadening the search (wildcard injection).
+ * Used in conjunction with the `ESCAPE '\'` clause in [SongDao.searchAsFlow].
+ */
+fun String.escapeForLike(): String =
+    this.replace("\\", "\\\\")
+        .replace("%", "\\%")
+        .replace("_", "\\_")
