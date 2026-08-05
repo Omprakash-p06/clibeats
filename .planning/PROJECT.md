@@ -45,6 +45,11 @@ Every PR, feature, and roadmap phase MUST satisfy the following quality criteria
 - **Typography**: JetBrains Mono (Titles: 18sp, Body: 14sp, Metadata: 12sp)
 - **Spacing & Layout**: 8dp padding, 16dp margins, 48dp list row height, square album artwork
 
+## Milestone 1 Progress
+- `[x]` **Phase 0**: Engineering Foundation & CI/CD Pipeline (Completed)
+- `[x]` **Phase 1**: Architecture Core & Provider API Abstraction (Completed)
+- `[x]` **Phase 2**: TUI Design System & Navigation Layout (Completed 2026-08-05)
+
 ## Documentation Context
 - Original specs: `docs/01_Design_Brief.docx` through `docs/06_User_Research_Report_Template.docx`
 - Architecture Decision Records: `docs/adr/`
