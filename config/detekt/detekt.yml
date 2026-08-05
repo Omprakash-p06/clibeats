@@ -1,0 +1,42 @@
+build:
+  maxIssues: 0
+  excludeCorrectable: false
+
+config:
+  validation: true
+  warningsAsErrors: false
+
+complexity:
+  active: true
+  TooManyFunctions:
+    active: true
+    thresholdInFiles: 15
+    thresholdInClasses: 15
+    thresholdInInterfaces: 10
+  LongMethod:
+    active: true
+    threshold: 60
+  LargeClass:
+    active: true
+    threshold: 300
+
+style:
+  active: true
+  UnusedPrivateMember:
+    active: true
+  MagicNumber:
+    active: true
+    ignoreNumbers:
+      - '-1'
+      - '0'
+      - '1'
+      - '2'
+      - '100'
+      - '1000'
+    ignoreHashCodeFunction: true
+    ignorePropertyDeclaration: true
+  ForbiddenImport:
+    active: true
+    imports:
+      - value: 'com.clibeats.data.*'
+        reason: 'Clean Architecture Violation: Presentation layer MUST NOT directly import Data layer packages.'

@@ -7,8 +7,8 @@
 - **Last Action**: Upgraded project roadmap to a 12-phase Engineering Roadmap with quality gates, static analysis, CI/CD pipeline, and DoD enforcement.
 
 ## Phase Matrix
-- [ ] **Phase 0**: Engineering Foundation & CI/CD Pipeline
-- [ ] **Phase 1**: Architecture Core & Provider API Abstraction
+- [x] **Phase 0**: Engineering Foundation & CI/CD Pipeline ← COMPLETED
+- [x] **Phase 1**: Architecture Core & Provider API Abstraction ← COMPLETED
 - [ ] **Phase 2**: TUI Design System & Navigation Layout
 - [ ] **Phase 3**: Database & Local Persistence Layer
 - [ ] **Phase 4**: Playback Engine & Background Media Service
