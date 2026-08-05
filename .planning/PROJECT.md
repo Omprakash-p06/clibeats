@@ -24,6 +24,8 @@ Project requirements are tracked in detail in `.planning/REQUIREMENTS.md`. Key f
 - `REQ-AUDIO`: ExoPlayer Playback Engine & Background Service
 - `REQ-ENG`: Testing, CI/CD Pipeline & Static Analysis Gates
 
+**Validated in Phase 3 (2026-08-05):** `REQ-DATA` (Room persistence layer — 5 entities, 4 DAOs, repository pattern), `REQ-OFF`/encrypted storage (Keystore-backed `EncryptedSharedPreferences` for credentials + DataStore for settings + backup exclusions), and the `REQ-ENG` quality gates (compile, unit, ktlint, detekt, schema export all green).
+
 ## Definition of Done (DoD)
 Every PR, feature, and roadmap phase MUST satisfy the following quality criteria before merge/completion:
 1. `✓ Builds` — Clean Gradle compile with zero errors.
@@ -61,6 +63,7 @@ Every PR, feature, and roadmap phase MUST satisfy the following quality criteria
 - `[x]` **Phase 0**: Engineering Foundation & CI/CD Pipeline (Completed)
 - `[x]` **Phase 1**: Architecture Core & Provider API Abstraction (Completed)
 - `[x]` **Phase 2**: TUI Design System & Navigation Layout (Completed 2026-08-05)
+- `[x]` **Phase 3**: Database & Local Persistence Layer (Completed 2026-08-05) — Room schemas, DAOs, repositories, DataStore + Keystore-backed EncryptedSharedPreferences (MasterKey AES256_GCM), DAO/repo tests, ADR-003. Gap closure (03-05) verified; 7/7 must-haves.
 
 ## Documentation Context
 - Original specs: `docs/01_Design_Brief.docx` through `docs/06_User_Research_Report_Template.docx`
