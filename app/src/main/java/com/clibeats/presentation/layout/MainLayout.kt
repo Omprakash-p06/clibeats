@@ -79,7 +79,9 @@ fun MainLayout(
         containerColor = MaterialTheme.colorScheme.background,
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            CliBeatsTopAppBar()
+            CliBeatsTopAppBar(
+                onSearchClick = { onDestinationSelected(NavDestination.Search) },
+            )
 
             HorizontalDivider(
                 thickness = 1.dp,
@@ -131,7 +133,9 @@ private fun NavigationSuiteScope.buildNavItems(
 @Suppress("FunctionNaming")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CliBeatsTopAppBar() {
+private fun CliBeatsTopAppBar(
+    onSearchClick: () -> Unit = {},
+) {
     TopAppBar(
         modifier = Modifier.height(48.dp),
         title = {
@@ -150,7 +154,7 @@ private fun CliBeatsTopAppBar() {
             }
         },
         actions = {
-            IconButton(onClick = {}) {
+            IconButton(onClick = onSearchClick) {
                 Icon(
                     imageVector = Icons.Outlined.Search,
                     contentDescription = "Open search",
@@ -165,3 +169,4 @@ private fun CliBeatsTopAppBar() {
         scrollBehavior = null,
     )
 }
+
