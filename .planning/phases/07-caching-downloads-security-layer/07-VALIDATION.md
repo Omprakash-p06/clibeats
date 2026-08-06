@@ -1,7 +1,7 @@
 ---
 phase: 7
 slug: caching-downloads-security-layer
-status: draft
+status: validated
 nyquist_compliant: true
 wave_0_complete: true
 created: 2026-08-06
@@ -38,14 +38,14 @@ created: 2026-08-06
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 07-01-01 | 01 | 1 | REQ-OFF-01 | unit | `./gradlew testDebugUnitTest --tests "com.clibeats.data.cache.CacheManagerTest"` | ✅ | ⬜ pending |
-| 07-01-02 | 01 | 1 | REQ-OFF-01 | integration | `./gradlew assembleDebug` | ✅ | ⬜ pending |
-| 07-02-01 | 02 | 1 | REQ-OFF-02 | unit | `./gradlew testDebugUnitTest --tests "com.clibeats.data.download.TrackDownloadManagerTest"` | ✅ | ⬜ pending |
-| 07-02-02 | 02 | 1 | REQ-OFF-02 | integration | `./gradlew assembleDebug` | ✅ | ⬜ pending |
-| 07-03-01 | 03 | 2 | REQ-OFF-03 | unit | `./gradlew testDebugUnitTest --tests "com.clibeats.data.network.NetworkMonitorTest"` | ✅ | ⬜ pending |
-| 07-03-02 | 03 | 2 | REQ-OFF-03 | integration | `./gradlew assembleDebug` | ✅ | ⬜ pending |
-| 07-04-01 | 04 | 3 | REQ-ENG-09 | audit | `./gradlew assembleDebug` | ✅ | ⬜ pending |
-| 07-04-02 | 04 | 3 | All Phase 7 REQs | full gate | `./gradlew assembleDebug testDebugUnitTest ktlintCheck detekt` | ✅ | ⬜ pending |
+| 07-01-01 | 01 | 1 | REQ-OFF-01 | unit | `./gradlew testDebugUnitTest --tests "com.clibeats.data.cache.CacheManagerTest"` | ✅ | ✅ green |
+| 07-01-02 | 01 | 1 | REQ-OFF-01 | integration | `./gradlew assembleDebug` | ✅ | ✅ green |
+| 07-02-01 | 02 | 1 | REQ-OFF-02 | unit | `./gradlew testDebugUnitTest --tests "com.clibeats.data.download.TrackDownloadManagerTest"` | ✅ | ✅ green |
+| 07-02-02 | 02 | 1 | REQ-OFF-02 | integration | `./gradlew assembleDebug` | ✅ | ✅ green |
+| 07-03-01 | 03 | 2 | REQ-OFF-03 | unit | `./gradlew testDebugUnitTest --tests "com.clibeats.data.network.NetworkMonitorTest"` | ✅ | ✅ green |
+| 07-03-02 | 03 | 2 | REQ-OFF-03 | integration | `./gradlew assembleDebug` | ✅ | ✅ green |
+| 07-04-01 | 04 | 3 | REQ-ENG-09 | audit | `./gradlew assembleDebug` | ✅ | ✅ green |
+| 07-04-02 | 04 | 3 | All Phase 7 REQs | full gate | `./gradlew assembleDebug testDebugUnitTest ktlintCheck detekt` | ✅ | ✅ green |
 
 ---
 
@@ -70,4 +70,17 @@ All phase behaviors have automated verification.
 - [x] Feedback latency < 25s
 - [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** approved 2026-08-06
+
+---
+
+## Validation Audit 2026-08-06
+
+| Metric | Count |
+|--------|-------|
+| Gaps found | 0 |
+| Resolved | 0 |
+| Escalated | 0 |
+| Total Automated Tests (Phase 7) | 3 |
+| Total Project Test Suite | 96 |
+| Quality Gates Status | All Green |
