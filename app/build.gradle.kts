@@ -41,6 +41,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     lint {
@@ -120,4 +121,3 @@ dependencies {
     androidTestImplementation(libs.room.testing)
     androidTestImplementation(libs.coroutines.test)
 }
-
