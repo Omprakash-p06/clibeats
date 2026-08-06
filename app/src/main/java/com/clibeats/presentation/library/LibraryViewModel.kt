@@ -25,13 +25,15 @@ class LibraryViewModel
                     if (tracks.isEmpty()) {
                         LibraryUiState.Empty
                     } else {
-                        val artists = tracks.groupBy { it.artist.ifBlank { "Unknown Artist" } }
-                            .map { (artist, list) -> ArtistGroup(artist, list.size) }
-                            .sortedBy { it.name }
+                        val artists =
+                            tracks.groupBy { it.artist.ifBlank { "Unknown Artist" } }
+                                .map { (artist, list) -> ArtistGroup(artist, list.size) }
+                                .sortedBy { it.name }
 
-                        val albums = tracks.groupBy { (it.album.ifBlank { "Unknown Album" }) to it.artist }
-                            .map { (key, list) -> AlbumGroup(key.first, key.second, list.size) }
-                            .sortedBy { it.title }
+                        val albums =
+                            tracks.groupBy { (it.album.ifBlank { "Unknown Album" }) to it.artist }
+                                .map { (key, list) -> AlbumGroup(key.first, key.second, list.size) }
+                                .sortedBy { it.title }
 
                         LibraryUiState.Success(
                             tracks = tracks,
@@ -45,7 +47,12 @@ class LibraryViewModel
                     initialValue = LibraryUiState.Loading,
                 )
 
-        fun onTrackClick(track: Track, tracks: List<Track>, index: Int) {
+        @Suppress("UnusedParameter")
+        fun onTrackClick(
+            track: Track,
+            tracks: List<Track>,
+            index: Int,
+        ) {
             playbackRepository.setQueue(tracks, index)
         }
     }

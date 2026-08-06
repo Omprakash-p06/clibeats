@@ -46,9 +46,7 @@ import com.clibeats.presentation.theme.CliBeatsTextSecondary
 
 @Suppress("FunctionNaming", "LongMethod")
 @Composable
-fun LibraryScreen(
-    viewModel: LibraryViewModel = hiltViewModel(),
-) {
+fun LibraryScreen(viewModel: LibraryViewModel = hiltViewModel()) {
     val state by viewModel.uiState.collectAsState()
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf("Tracks", "Artists", "Albums")

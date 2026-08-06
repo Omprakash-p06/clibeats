@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:property-naming", "PropertyName")
+
 package com.clibeats.presentation.playlist
 
 import androidx.lifecycle.ViewModel
@@ -27,7 +29,6 @@ class PlaylistViewModel
         private val playlistRepository: PlaylistRepository,
         private val playbackRepository: PlaybackRepository,
     ) : ViewModel() {
-
         private val _selectedPlaylistId = MutableStateFlow<String?>(null)
 
         val uiState: StateFlow<PlaylistUiState> =
@@ -53,18 +54,22 @@ class PlaylistViewModel
                     initialValue = PlaylistUiState.Loading,
                 )
 
-        fun createPlaylist(name: String, description: String?) {
+        fun createPlaylist(
+            name: String,
+            description: String?,
+        ) {
             if (name.isBlank()) return
             viewModelScope.launch {
-                val newPlaylist = Playlist(
-                    id = UUID.randomUUID().toString(),
-                    name = name.trim(),
-                    description = description?.trim(),
-                    artworkUrl = null,
-                    trackCount = 0,
-                    isOwned = true,
-                    providerId = "local",
-                )
+                val newPlaylist =
+                    Playlist(
+                        id = UUID.randomUUID().toString(),
+                        name = name.trim(),
+                        description = description?.trim(),
+                        artworkUrl = null,
+                        trackCount = 0,
+                        isOwned = true,
+                        providerId = "local",
+                    )
                 playlistRepository.upsertPlaylist(newPlaylist)
             }
         }
@@ -82,13 +87,19 @@ class PlaylistViewModel
             _selectedPlaylistId.value = playlistId
         }
 
-        fun removeSongFromPlaylist(playlistId: String, songId: String) {
+        fun removeSongFromPlaylist(
+            playlistId: String,
+            songId: String,
+        ) {
             viewModelScope.launch {
                 playlistRepository.removeSongFromPlaylist(playlistId, songId)
             }
         }
 
-        fun playPlaylist(tracks: List<Track>, startIndex: Int = 0) {
+        fun playPlaylist(
+            tracks: List<Track>,
+            startIndex: Int = 0,
+        ) {
             if (tracks.isNotEmpty()) {
                 playbackRepository.setQueue(tracks, startIndex)
             }

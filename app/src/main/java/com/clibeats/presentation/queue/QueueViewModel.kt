@@ -36,7 +36,10 @@ class QueueViewModel
                 initialValue = QueueUiState.Empty,
             )
 
-        fun onMove(from: Int, to: Int) {
+        fun onMove(
+            from: Int,
+            to: Int,
+        ) {
             playbackRepository.moveTrackInQueue(from, to)
         }
 
@@ -48,7 +51,11 @@ class QueueViewModel
             playbackRepository.clearQueue()
         }
 
-        fun onTrackClick(track: Track, index: Int) {
+        @Suppress("UnusedParameter")
+        fun onTrackClick(
+            track: Track,
+            index: Int,
+        ) {
             playbackRepository.setQueue(playbackRepository.queueState.value, index)
         }
     }

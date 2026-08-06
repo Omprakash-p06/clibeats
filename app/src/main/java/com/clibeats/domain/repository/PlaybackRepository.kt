@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package com.clibeats.domain.repository
 
 import com.clibeats.domain.model.PlaybackState

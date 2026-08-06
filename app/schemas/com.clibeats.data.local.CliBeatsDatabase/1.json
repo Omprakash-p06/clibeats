@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "37321c8ddfc0744f40c48eb6aecc4a66",
+    "identityHash": "3fe9cba3f9ceb4efe3b91dc4b0b049fc",
     "entities": [
       {
         "tableName": "songs",
@@ -302,12 +302,38 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "queue_items",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`position` INTEGER NOT NULL, `songId` TEXT NOT NULL, PRIMARY KEY(`position`))",
+        "fields": [
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "songId",
+            "columnName": "songId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "position"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '37321c8ddfc0744f40c48eb6aecc4a66')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3fe9cba3f9ceb4efe3b91dc4b0b049fc')"
     ]
   }
 }

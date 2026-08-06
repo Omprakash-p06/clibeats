@@ -135,7 +135,10 @@ class PlayerAdapter
             updateState()
         }
 
-        fun moveTrack(fromIndex: Int, toIndex: Int) {
+        fun moveTrack(
+            fromIndex: Int,
+            toIndex: Int,
+        ) {
             if (fromIndex in trackList.indices && toIndex in trackList.indices && fromIndex != toIndex) {
                 val track = trackList.removeAt(fromIndex)
                 trackList.add(toIndex, track)

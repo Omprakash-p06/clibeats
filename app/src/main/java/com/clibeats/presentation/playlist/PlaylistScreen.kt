@@ -2,6 +2,8 @@
     "ktlint:standard:function-naming",
     "ktlint:standard:multiline-expression-wrapping",
     "MagicNumber",
+    "LongMethod",
+    "FunctionNaming",
 )
 
 package com.clibeats.presentation.playlist
@@ -56,9 +58,7 @@ import com.clibeats.presentation.theme.CliBeatsTextSecondary
 
 @Suppress("FunctionNaming", "LongMethod")
 @Composable
-fun PlaylistScreen(
-    viewModel: PlaylistViewModel = hiltViewModel(),
-) {
+fun PlaylistScreen(viewModel: PlaylistViewModel = hiltViewModel()) {
     val state by viewModel.uiState.collectAsState()
     var showCreateDialog by remember { mutableStateOf(false) }
 
@@ -170,7 +170,7 @@ private fun PlaylistListView(
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = CliBeatsTextPrimary,
                             )
-                            if (!playlist.description.isNull_or_blank_compat()) {
+                            if (!playlist.description.isNullOrBlankCompat()) {
                                 Text(
                                     text = playlist.description.orEmpty(),
                                     style = MaterialTheme.typography.bodySmall,
@@ -194,7 +194,7 @@ private fun PlaylistListView(
     }
 }
 
-private fun String?.isNull_or_blank_compat(): Boolean = this == null || this.trim().isEmpty()
+private fun String?.isNullOrBlankCompat(): Boolean = this == null || this.trim().isEmpty()
 
 @Suppress("FunctionNaming")
 @Composable

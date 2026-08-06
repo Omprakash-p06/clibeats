@@ -39,9 +39,7 @@ import com.clibeats.presentation.theme.CliBeatsTextSecondary
 
 @Suppress("FunctionNaming", "LongMethod")
 @Composable
-fun QueueScreen(
-    viewModel: QueueViewModel = hiltViewModel(),
-) {
+fun QueueScreen(viewModel: QueueViewModel = hiltViewModel()) {
     val state by viewModel.uiState.collectAsState()
 
     Column(
