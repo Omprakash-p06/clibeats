@@ -31,12 +31,13 @@ data class InnerTubeContext(
     companion object {
         fun default(): InnerTubeContext =
             InnerTubeContext(
-                client = InnerTubeClient(
-                    clientName = "WEB_REMIX",
-                    clientVersion = "1.20240101.01.00",
-                    hl = "en",
-                    gl = "US",
-                ),
+                client =
+                    InnerTubeClient(
+                        clientName = "WEB_REMIX",
+                        clientVersion = "1.20240101.01.00",
+                        hl = "en",
+                        gl = "US",
+                    ),
             )
     }
 }

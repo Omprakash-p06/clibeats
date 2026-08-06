@@ -1,6 +1,7 @@
 @file:Suppress(
     "ktlint:standard:function-naming",
     "ktlint:standard:multiline-expression-wrapping",
+    "MagicNumber",
 )
 
 package com.clibeats.presentation.search

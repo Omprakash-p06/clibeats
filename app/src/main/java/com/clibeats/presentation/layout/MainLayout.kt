@@ -133,9 +133,7 @@ private fun NavigationSuiteScope.buildNavItems(
 @Suppress("FunctionNaming")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CliBeatsTopAppBar(
-    onSearchClick: () -> Unit = {},
-) {
+private fun CliBeatsTopAppBar(onSearchClick: () -> Unit = {}) {
     TopAppBar(
         modifier = Modifier.height(48.dp),
         title = {
@@ -169,4 +167,3 @@ private fun CliBeatsTopAppBar(
         scrollBehavior = null,
     )
 }
-

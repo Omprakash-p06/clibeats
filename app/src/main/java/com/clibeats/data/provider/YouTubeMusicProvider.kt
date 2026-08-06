@@ -38,8 +38,9 @@ class YouTubeMusicProvider
                 )
             }
 
-        override suspend fun getTrack(trackId: String): ProviderResult<Track> =
-            ProviderResult.Error("getTrack not implemented in Phase 5")
+        override suspend fun getTrack(trackId: String): ProviderResult<Track> {
+            return ProviderResult.Error("Not implemented in Phase 5")
+        }
 
         override suspend fun stream(trackId: String): ProviderResult<String> =
             runCatching {
@@ -57,9 +58,11 @@ class YouTubeMusicProvider
                 )
             }
 
-        override suspend fun playlists(): ProviderResult<List<Playlist>> =
-            ProviderResult.Success(emptyList())
+        override suspend fun playlists(): ProviderResult<List<Playlist>> {
+            return ProviderResult.Success(emptyList())
+        }
 
-        override suspend fun queue(): ProviderResult<List<Track>> =
-            ProviderResult.Success(emptyList())
+        override suspend fun queue(): ProviderResult<List<Track>> {
+            return ProviderResult.Success(emptyList())
+        }
     }

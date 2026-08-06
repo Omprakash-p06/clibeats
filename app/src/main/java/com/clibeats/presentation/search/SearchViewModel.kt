@@ -40,7 +40,7 @@ class SearchViewModel
                 .distinctUntilChanged()
                 .flatMapLatest { q ->
                     if (q.isBlank()) {
-                        flowOf(SearchUiState.Idle)
+                        flowOf<SearchUiState>(SearchUiState.Idle)
                     } else {
                         flow {
                             emit(SearchUiState.Loading)

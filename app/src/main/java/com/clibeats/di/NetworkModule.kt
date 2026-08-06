@@ -1,3 +1,5 @@
+@file:Suppress("ForbiddenImport")
+
 package com.clibeats.di
 
 import com.clibeats.BuildConfig
@@ -20,21 +22,20 @@ private const val INNERTUBE_BASE_URL = "https://music.youtube.com/youtubei/v1/"
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
+    @Provides
+    @Singleton
+    fun provideJson(): Json =
+        Json {
+            ignoreUnknownKeys = true
+            isLenient = true
+        }
 
     @Provides
     @Singleton
-    fun provideJson(): Json = Json {
-        ignoreUnknownKeys = true
-        isLenient = true
-    }
-
-    @Provides
-    @Singleton
-    fun provideOkHttpClient(
-        headerInterceptor: InnerTubeHeaderInterceptor,
-    ): OkHttpClient {
-        val builder = OkHttpClient.Builder()
-            .addInterceptor(headerInterceptor)
+    fun provideOkHttpClient(headerInterceptor: InnerTubeHeaderInterceptor): OkHttpClient {
+        val builder =
+            OkHttpClient.Builder()
+                .addInterceptor(headerInterceptor)
 
         if (BuildConfig.DEBUG) {
             builder.addInterceptor(
@@ -51,14 +52,14 @@ object NetworkModule {
     fun provideRetrofit(
         okHttpClient: OkHttpClient,
         json: Json,
-    ): Retrofit = Retrofit.Builder()
-        .baseUrl(INNERTUBE_BASE_URL)
-        .client(okHttpClient)
-        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-        .build()
+    ): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(INNERTUBE_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .build()
 
     @Provides
     @Singleton
-    fun provideInnerTubeApi(retrofit: Retrofit): InnerTubeApi =
-        retrofit.create(InnerTubeApi::class.java)
+    fun provideInnerTubeApi(retrofit: Retrofit): InnerTubeApi = retrofit.create(InnerTubeApi::class.java)
 }
