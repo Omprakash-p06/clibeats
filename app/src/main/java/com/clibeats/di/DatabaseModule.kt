@@ -42,4 +42,8 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideCacheIndexDao(db: CliBeatsDatabase) = db.cacheIndexDao()
+
+    @Provides
+    @Singleton
+    fun provideQueueDao(db: CliBeatsDatabase) = db.queueDao()
 }

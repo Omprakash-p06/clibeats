@@ -9,11 +9,13 @@ import androidx.room.TypeConverters
 import com.clibeats.data.local.dao.CacheIndexDao
 import com.clibeats.data.local.dao.HistoryDao
 import com.clibeats.data.local.dao.PlaylistDao
+import com.clibeats.data.local.dao.QueueDao
 import com.clibeats.data.local.dao.SongDao
 import com.clibeats.data.local.entity.CacheIndexEntity
 import com.clibeats.data.local.entity.HistoryEntity
 import com.clibeats.data.local.entity.PlaylistEntity
 import com.clibeats.data.local.entity.PlaylistSongCrossRef
+import com.clibeats.data.local.entity.QueueEntity
 import com.clibeats.data.local.entity.SongEntity
 
 @Database(
@@ -23,6 +25,7 @@ import com.clibeats.data.local.entity.SongEntity
         PlaylistSongCrossRef::class,
         HistoryEntity::class,
         CacheIndexEntity::class,
+        QueueEntity::class,
     ],
     version = 1,
     exportSchema = true,
@@ -36,4 +39,6 @@ abstract class CliBeatsDatabase : RoomDatabase() {
     abstract fun historyDao(): HistoryDao
 
     abstract fun cacheIndexDao(): CacheIndexDao
+
+    abstract fun queueDao(): QueueDao
 }

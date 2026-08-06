@@ -8,12 +8,23 @@ import kotlinx.coroutines.flow.StateFlow
 interface PlaybackRepository {
     val playbackState: StateFlow<PlaybackState>
 
+    val queueState: StateFlow<List<Track>>
+
     fun playTrack(track: Track)
 
     fun setQueue(
         tracks: List<Track>,
         startIndex: Int = 0,
     )
+
+    fun moveTrackInQueue(
+        fromIndex: Int,
+        toIndex: Int,
+    )
+
+    fun removeFromQueue(index: Int)
+
+    fun clearQueue()
 
     fun play()
 

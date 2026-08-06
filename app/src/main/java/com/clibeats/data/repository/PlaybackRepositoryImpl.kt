@@ -17,12 +17,23 @@ class PlaybackRepositoryImpl
     ) : PlaybackRepository {
         override val playbackState: StateFlow<PlaybackState> = playerAdapter.playbackState
 
+        override val queueState: StateFlow<List<Track>> = playerAdapter.queueFlow
+
         override fun playTrack(track: Track) = playerAdapter.playTrack(track)
 
         override fun setQueue(
             tracks: List<Track>,
             startIndex: Int,
         ) = playerAdapter.setQueue(tracks, startIndex)
+
+        override fun moveTrackInQueue(
+            fromIndex: Int,
+            toIndex: Int,
+        ) = playerAdapter.moveTrack(fromIndex, toIndex)
+
+        override fun removeFromQueue(index: Int) = playerAdapter.removeFromQueue(index)
+
+        override fun clearQueue() = playerAdapter.clearQueue()
 
         override fun play() = playerAdapter.play()
 

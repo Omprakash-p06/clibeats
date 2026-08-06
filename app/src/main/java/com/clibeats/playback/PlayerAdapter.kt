@@ -35,6 +35,9 @@ class PlayerAdapter
             )
         val playbackState: StateFlow<PlaybackState> = _playbackState.asStateFlow()
 
+        private val _queueFlow = MutableStateFlow<List<Track>>(emptyList())
+        val queueFlow: StateFlow<List<Track>> = _queueFlow.asStateFlow()
+
         private val trackList = mutableListOf<Track>()
 
         init {
@@ -77,6 +80,7 @@ class PlayerAdapter
             player.setMediaItem(mediaItem)
             player.prepare()
             player.play()
+            updateState()
         }
 
         fun setQueue(
@@ -89,6 +93,7 @@ class PlayerAdapter
             player.setMediaItems(mediaItems, startIndex, 0L)
             player.prepare()
             player.play()
+            updateState()
         }
 
         fun play() {
@@ -130,7 +135,31 @@ class PlayerAdapter
             updateState()
         }
 
+        fun moveTrack(fromIndex: Int, toIndex: Int) {
+            if (fromIndex in trackList.indices && toIndex in trackList.indices && fromIndex != toIndex) {
+                val track = trackList.removeAt(fromIndex)
+                trackList.add(toIndex, track)
+                player.moveMediaItem(fromIndex, toIndex)
+                updateState()
+            }
+        }
+
+        fun removeFromQueue(index: Int) {
+            if (index in trackList.indices) {
+                trackList.removeAt(index)
+                player.removeMediaItem(index)
+                updateState()
+            }
+        }
+
+        fun clearQueue() {
+            trackList.clear()
+            player.clearMediaItems()
+            updateState()
+        }
+
         private fun updateState() {
+            _queueFlow.value = trackList.toList()
             val currentIndex = player.currentMediaItemIndex
             val currentTrack = if (currentIndex in trackList.indices) trackList[currentIndex] else null
             val mappedRepeatMode =
