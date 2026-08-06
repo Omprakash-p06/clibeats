@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.paparazzi)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -97,6 +98,12 @@ dependencies {
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.session)
     implementation(libs.media3.common)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.kotlinx.serialization.converter)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.coil.compose)
     detektPlugins(libs.detekt.formatting)
     debugImplementation(libs.compose.ui.tooling)
     testImplementation(libs.junit)
@@ -105,6 +112,7 @@ dependencies {
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.mockito.core)
     testImplementation(libs.media3.test.utils)
+    testImplementation(libs.okhttp.mockwebserver)
     testImplementation(libs.compose.ui.test.junit4)
     debugImplementation(libs.compose.ui.test.manifest)
     androidTestImplementation(libs.espresso.core)
@@ -112,3 +120,4 @@ dependencies {
     androidTestImplementation(libs.room.testing)
     androidTestImplementation(libs.coroutines.test)
 }
+
