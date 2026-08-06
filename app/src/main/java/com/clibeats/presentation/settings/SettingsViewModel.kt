@@ -52,9 +52,13 @@ class SettingsViewModel
         fun setCacheMaxMb(maxMb: Int) {
             viewModelScope.launch {
                 appPreferences.setCacheMaxMb(maxMb)
-                cacheManager.maxCacheSizeBytes = maxMb * 1024 * 1024L
+                cacheManager.maxCacheSizeBytes = maxMb * BYTES_IN_MB
                 cacheManager.evictLruIfNeeded()
             }
+        }
+
+        companion object {
+            private const val BYTES_IN_MB = 1048576L
         }
 
         fun setHighQualityStreaming(enabled: Boolean) {

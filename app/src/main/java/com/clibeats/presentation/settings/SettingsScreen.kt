@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:function-naming")
+
 package com.clibeats.presentation.settings
 
 import androidx.compose.foundation.background
@@ -34,6 +36,7 @@ import com.clibeats.presentation.theme.CliBeatsSurface
 
 private const val BYTES_PER_MB = 1048576L
 
+@Suppress("FunctionNaming", "LongMethod", "MagicNumber")
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
@@ -42,11 +45,12 @@ fun SettingsScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Text(
@@ -69,10 +73,11 @@ fun SettingsScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 listOf("ytmusic" to "YouTube Music", "local" to "Local Device Media").forEach { (id, label) ->
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { viewModel.setActiveProvider(id) }
-                            .padding(vertical = 4.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable { viewModel.setActiveProvider(id) }
+                                .padding(vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         RadioButton(
@@ -109,10 +114,11 @@ fun SettingsScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 listOf(256, 512, 1024, 2048).forEach { mb ->
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { viewModel.setCacheMaxMb(mb) }
-                            .padding(vertical = 4.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable { viewModel.setCacheMaxMb(mb) }
+                                .padding(vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         RadioButton(
@@ -136,9 +142,10 @@ fun SettingsScreen(
             colors = CardDefaults.cardColors(containerColor = CliBeatsSurface),
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
