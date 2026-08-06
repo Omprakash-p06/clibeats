@@ -7,12 +7,14 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import com.clibeats.data.cache.CacheManager
 import com.clibeats.domain.model.PlaybackState
 import com.clibeats.domain.model.RepeatMode
 import com.clibeats.domain.model.Track
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -21,6 +23,7 @@ class PlayerAdapter
     @Inject
     constructor(
         private val player: ExoPlayer,
+        private val cacheManager: CacheManager,
     ) {
         private val _playbackState =
             MutableStateFlow(
@@ -183,10 +186,17 @@ class PlayerAdapter
                 )
         }
 
-        private fun Track.toMediaItem(): MediaItem =
-            MediaItem.Builder()
+        private fun Track.toMediaItem(): MediaItem {
+            val cachedFile = runCatching { runBlocking { cacheManager.getCachedFile(id) } }.getOrNull()
+            val uri = if (cachedFile != null && cachedFile.exists()) {
+                android.net.Uri.fromFile(cachedFile)
+            } else {
+                streamUrl?.let { android.net.Uri.parse(it) } ?: android.net.Uri.EMPTY
+            }
+
+            return MediaItem.Builder()
                 .setMediaId(id)
-                .setUri(streamUrl ?: "")
+                .setUri(uri)
                 .setMediaMetadata(
                     MediaMetadata.Builder()
                         .setTitle(title)
@@ -196,4 +206,5 @@ class PlayerAdapter
                         .build(),
                 )
                 .build()
+        }
     }
