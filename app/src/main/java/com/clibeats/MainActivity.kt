@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import com.clibeats.presentation.layout.MainLayout
 import com.clibeats.presentation.layout.NavDestination
 import com.clibeats.presentation.library.LibraryScreen
+import com.clibeats.presentation.playlist.PlaylistScreen
 import com.clibeats.presentation.queue.QueueScreen
 import com.clibeats.presentation.search.SearchScreen
 import com.clibeats.presentation.theme.CliBeatsTextSecondary
@@ -41,6 +42,7 @@ class MainActivity : ComponentActivity() {
                         NavDestination.Search -> SearchScreen()
                         NavDestination.Queue -> QueueScreen()
                         NavDestination.Library -> LibraryScreen()
+                        NavDestination.Playlists -> PlaylistScreen()
                         else -> {
                             Box(
                                 modifier = Modifier.fillMaxSize(),
