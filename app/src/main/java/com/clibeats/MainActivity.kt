@@ -20,6 +20,7 @@ import com.clibeats.presentation.library.LibraryScreen
 import com.clibeats.presentation.playlist.PlaylistScreen
 import com.clibeats.presentation.queue.QueueScreen
 import com.clibeats.presentation.search.SearchScreen
+import com.clibeats.presentation.settings.SettingsScreen
 import com.clibeats.presentation.theme.CliBeatsTextSecondary
 import com.clibeats.presentation.theme.CliBeatsTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,6 +44,7 @@ class MainActivity : ComponentActivity() {
                         NavDestination.Queue -> QueueScreen()
                         NavDestination.Library -> LibraryScreen()
                         NavDestination.Playlists -> PlaylistScreen()
+                        NavDestination.Settings -> SettingsScreen()
                         else -> {
                             Box(
                                 modifier = Modifier.fillMaxSize(),
