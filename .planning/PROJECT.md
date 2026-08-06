@@ -67,6 +67,7 @@ Every PR, feature, and roadmap phase MUST satisfy the following quality criteria
 - `[x]` **Phase 4**: Playback Engine & Background Media Service (Completed 2026-08-05) — AndroidX Media3 (1.4.1), PlaybackService (MediaSessionService), PlayerAdapter (ExoPlayer), PlaybackRepository, PlayerViewModel, MainLayout PlayerBar state binding, ADR-004. 7/7 must-haves verified.
 - `[x]` **Phase 5**: Provider Integration & Search (Completed 2026-08-06) — YouTubeMusicProvider (InnerTube v1 API), NetworkModule (OkHttp/Retrofit/kotlinx.serialization), SearchViewModel (debounced flow), SearchScreen (dense TUI song table), Coil artwork loading, ADR-005, 84/84 tests passing.
 - `[x]` **Phase 6**: Playlists, Queue Management & Library (Completed 2026-08-06) — Queue reorder/clear/remove, QueueEntity/QueueDao Room persistence, QueueViewModel & QueueScreen, LibraryViewModel & LibraryScreen (Tracks/Artists/Albums tabs), PlaylistViewModel & PlaylistScreen (CRUD + Create Dialog + Detail View), ADR-006, 93/93 tests passing.
+- `[x]` **Phase 7**: Caching, Downloads & Security Layer (Completed 2026-08-06) — CacheManager (LRU 500MB capacity + CacheIndexDao Room sync), TrackDownloadManager (OkHttp byte stream writer + DownloadStatus flow), NetworkMonitor (ConnectivityManager + offline fallback resolution in PlayerAdapter), ProGuard rules + ADR-007, 96/96 tests passing.
 
 ## Documentation Context
 - Original specs: `docs/01_Design_Brief.docx` through `docs/06_User_Research_Report_Template.docx`
