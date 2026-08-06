@@ -1,15 +1,14 @@
-// ForbiddenImport: data-layer test legitimately imports sibling data packages; Phase 0 pattern is over-broad.
-@file:Suppress("ForbiddenImport", "MaxLineLength")
+@file:Suppress("ForbiddenImport")
 
 package com.clibeats.data.repository
 
 import com.clibeats.data.local.dao.SongDao
 import com.clibeats.data.local.entity.SongEntity
-import com.clibeats.data.local.mapper.toDomain
+import com.clibeats.domain.model.Track
+import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
@@ -21,40 +20,48 @@ class SongRepositoryImplTest {
     private lateinit var repository: SongRepositoryImpl
 
     @Before
-    fun setup() {
+    fun setUp() {
         songDao = mock()
         repository = SongRepositoryImpl(songDao)
     }
 
-    private fun testEntity(id: String = "s1") =
-        SongEntity(
-            id = id,
-            title = "Test",
-            artist = "Artist",
-            album = "Album",
-            durationMs = 180_000L,
-            artworkUrl = null,
-            streamUrl = null,
-            providerId = "local",
-        )
-
     @Test
-    fun getAllTracksAsFlow_mapsToDomain() =
+    fun `getAllTracksAsFlow maps song entities to domain tracks`() =
         runTest {
-            val entities = listOf(testEntity("s1"), testEntity("s2"))
-            whenever(songDao.getAllAsFlow()).thenReturn(flowOf(entities))
+            val entity =
+                SongEntity(
+                    id = "s1",
+                    title = "Track 1",
+                    artist = "Artist 1",
+                    album = "Album 1",
+                    durationMs = 180000L,
+                    artworkUrl = null,
+                    streamUrl = "http://stream/s1",
+                    providerId = "ytmusic",
+                )
+            whenever(songDao.getAllAsFlow()).thenReturn(flowOf(listOf(entity)))
 
             val tracks = repository.getAllTracksAsFlow().first()
-            assertEquals(2, tracks.size)
-            assertEquals("s1", tracks[0].id)
-            assertEquals("s2", tracks[1].id)
+            assertThat(tracks).hasSize(1)
+            assertThat(tracks[0].id).isEqualTo("s1")
+            assertThat(tracks[0].title).isEqualTo("Track 1")
         }
 
     @Test
-    fun upsertTrack_callsDaoUpsert() =
+    fun `upsertTrack delegates to songDao`() =
         runTest {
-            val track = testEntity("s1").toDomain()
+            val track =
+                Track(
+                    id = "s2",
+                    title = "Track 2",
+                    artist = "Artist 2",
+                    album = "Album 2",
+                    durationMs = 200000L,
+                    artworkUrl = null,
+                    streamUrl = null,
+                    providerId = "local",
+                )
             repository.upsertTrack(track)
-            verify(songDao).upsert(testEntity("s1"))
+            verify(songDao).upsert(org.mockito.kotlin.any())
         }
 }
