@@ -1,3 +1,5 @@
+@file:Suppress("ForbiddenImport")
+
 package com.clibeats.di
 
 import android.content.Context

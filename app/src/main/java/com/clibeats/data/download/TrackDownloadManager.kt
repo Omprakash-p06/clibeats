@@ -1,3 +1,5 @@
+@file:Suppress("ForbiddenImport", "TooGenericExceptionCaught")
+
 package com.clibeats.data.download
 
 import com.clibeats.data.cache.CacheManager
@@ -28,10 +30,11 @@ class TrackDownloadManager
         suspend fun isTrackDownloaded(songId: String): Boolean = cacheManager.getCachedFile(songId) != null
 
         fun downloadTrack(track: Track) {
-            val streamUrl = track.streamUrl ?: run {
-                updateStatus(track.id, DownloadStatus.Failed("No stream URL available"))
-                return
-            }
+            val streamUrl =
+                track.streamUrl ?: run {
+                    updateStatus(track.id, DownloadStatus.Failed("No stream URL available"))
+                    return
+                }
 
             scope.launch {
                 try {
@@ -57,8 +60,9 @@ class TrackDownloadManager
             songId: String,
             status: DownloadStatus,
         ) {
-            _downloads.value = _downloads.value.toMutableMap().apply {
-                put(songId, status)
-            }
+            _downloads.value =
+                _downloads.value.toMutableMap().apply {
+                    put(songId, status)
+                }
         }
     }

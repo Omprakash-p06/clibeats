@@ -1,8 +1,11 @@
+@file:Suppress("ForbiddenImport")
+
 package com.clibeats.playback
 
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import com.clibeats.data.cache.CacheManager
 import com.clibeats.domain.model.RepeatMode
 import com.clibeats.domain.model.Track
 import org.junit.Assert.assertEquals
@@ -18,15 +21,17 @@ import org.mockito.kotlin.whenever
 
 class PlayerAdapterQueueTest {
     private lateinit var exoPlayer: ExoPlayer
+    private lateinit var cacheManager: CacheManager
     private lateinit var adapter: PlayerAdapter
 
     @Before
     fun setup() {
         exoPlayer = mock()
+        cacheManager = mock()
         whenever(exoPlayer.currentPosition).thenReturn(0L)
         whenever(exoPlayer.bufferedPosition).thenReturn(0L)
         whenever(exoPlayer.isPlaying).thenReturn(false)
-        adapter = PlayerAdapter(exoPlayer)
+        adapter = PlayerAdapter(exoPlayer, cacheManager)
     }
 
     private fun track(id: String = "t1") =

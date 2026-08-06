@@ -25,9 +25,10 @@ class NetworkMonitor
         val isOnline: StateFlow<Boolean> = _isOnline.asStateFlow()
 
         init {
-            val request = NetworkRequest.Builder()
-                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                .build()
+            val request =
+                NetworkRequest.Builder()
+                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                    .build()
 
             connectivityManager.registerNetworkCallback(
                 request,
@@ -44,8 +45,8 @@ class NetworkMonitor
         }
 
         private fun checkInitialOnline(): Boolean {
-            val activeNetwork = connectivityManager.activeNetwork ?: return false
-            val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
-            return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            val activeNetwork = connectivityManager.activeNetwork
+            val capabilities = activeNetwork?.let { connectivityManager.getNetworkCapabilities(it) }
+            return capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
         }
     }

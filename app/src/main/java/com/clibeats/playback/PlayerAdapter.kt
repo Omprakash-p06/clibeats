@@ -188,11 +188,12 @@ class PlayerAdapter
 
         private fun Track.toMediaItem(): MediaItem {
             val cachedFile = runCatching { runBlocking { cacheManager.getCachedFile(id) } }.getOrNull()
-            val uri = if (cachedFile != null && cachedFile.exists()) {
-                android.net.Uri.fromFile(cachedFile)
-            } else {
-                streamUrl?.let { android.net.Uri.parse(it) } ?: android.net.Uri.EMPTY
-            }
+            val uri =
+                if (cachedFile != null && cachedFile.exists()) {
+                    android.net.Uri.fromFile(cachedFile)
+                } else {
+                    streamUrl?.let { android.net.Uri.parse(it) } ?: android.net.Uri.EMPTY
+                }
 
             return MediaItem.Builder()
                 .setMediaId(id)

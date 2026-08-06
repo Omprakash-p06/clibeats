@@ -1,3 +1,5 @@
+@file:Suppress("ForbiddenImport")
+
 package com.clibeats.data.cache
 
 import android.content.Context
@@ -18,9 +20,10 @@ class CacheManager
         @ApplicationContext private val context: Context,
         private val cacheIndexDao: CacheIndexDao,
     ) {
-        private val cacheDir: File = File(context.cacheDir, "audio_cache").apply {
-            if (!exists()) mkdirs()
-        }
+        private val cacheDir: File =
+            File(context.cacheDir, "audio_cache").apply {
+                if (!exists()) mkdirs()
+            }
 
         var maxCacheSizeBytes: Long = DEFAULT_MAX_CACHE_BYTES
 
@@ -40,13 +43,14 @@ class CacheManager
             }
 
             val fileSize = targetFile.length()
-            val entry = CacheIndexEntity(
-                songId = songId,
-                localPath = targetFile.absolutePath,
-                fileSizeBytes = fileSize,
-                cachedAt = System.currentTimeMillis(),
-                expiresAt = null,
-            )
+            val entry =
+                CacheIndexEntity(
+                    songId = songId,
+                    localPath = targetFile.absolutePath,
+                    fileSizeBytes = fileSize,
+                    cachedAt = System.currentTimeMillis(),
+                    expiresAt = null,
+                )
             cacheIndexDao.upsert(entry)
             evictLruIfNeeded()
             return targetFile
