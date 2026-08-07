@@ -6,7 +6,7 @@
 
 ## Context
 
-Different music sources (**YouTube Music**, **Jellyfin**, **Navidrome**, **Spotify**, **Piped**) vary in supported features. For instance, YouTube supports playback and recommendations but not offline downloads; Jellyfin and Navidrome support downloads and custom libraries but limited recommendations; Spotify supports radio and lyrics but restricted web stream extraction.
+Different music sources (**YouTube Music**, **Jellyfin**, **Navidrome**, **Spotify**, **Piped**) vary in supported features (e.g. YouTube supports playback and recommendations but not offline downloads; Jellyfin and Navidrome support downloads and custom libraries but limited recommendations; Spotify supports radio and lyrics but restricted web stream extraction).
 
 Assuming every provider supports identical methods (`search`, `stream`, `album`, `playlist`, `lyrics`, `downloads`) forces adapters to return dummy fallbacks or fake unsupported operations.
 
@@ -32,13 +32,11 @@ export interface ProviderCapabilities {
 }
 ```
 
-The gateway exposes `GET /providers/capabilities` so the Android UI queries capability matrices once during startup and dynamically enables/disables UI features (e.g. download buttons, radio tabs) without faking unsupported operations.
-
 ---
 
 ### 2. Contextual Adapter Invocations (`ProviderContext`)
 
-Adapter calls MUST receive a contextual execution environment to avoid leaking Android-specific assumptions into provider implementations:
+Adapter calls MUST receive a contextual execution environment:
 
 ```typescript
 export interface ProviderContext {
@@ -71,7 +69,7 @@ export interface ProviderAdapter {
 ```text
        ┌──────────────────────────────────────────────┐
        │                  API Layer                   │
-       │   (Fastify Routes, Input Validation, Trace)  │
+       │   (Fastify /api/v1 Routes, Input, Tracing)   │
        └──────────────────────┬───────────────────────┘
                               │
                               ▼
@@ -83,7 +81,7 @@ export interface ProviderAdapter {
                               ▼
        ┌──────────────────────────────────────────────┐
        │           Provider Selection Engine          │
-       │  (Health Scoring 0-100, Latency, Capability) │
+       │  (Adaptive Multi-Factor Health Scoring)      │
        └──────────────────────┬───────────────────────┘
                               │
                               ▼
@@ -93,47 +91,67 @@ export interface ProviderAdapter {
        └──────────────────────────────────────────────┘
 ```
 
-1. **API Layer**: Fastify HTTP handlers, input validation, request `Trace ID` injection.
-2. **Gateway Services**: Distributed caching (separate namespaces for Search, Metadata, Artwork, Provider Health), request tracing.
-3. **Provider Selection Engine**: Dynamically routes requests based on health scores ($0 - 100$), latency, capability support, and content availability. Transparent to the client — provider failover is invisible to the Android UI.
-4. **Provider Registry & Adapters**: Auto-discovered provider plugins (`YouTubeAdapter`, `PipedAdapter`, `JellyfinAdapter`, `NavidromeAdapter`).
+---
+
+### 4. Adaptive Provider Selection Engine & Health Scoring
+
+Instead of binary flags or static priority, the **Provider Selection Engine** computes a dynamic adaptive score ($S$):
+
+$$\text{Score} = \text{Health} + \text{Availability} + \text{Capability} + \text{LatencyScore} + \text{UserPreference} - \text{Penalty}$$
+
+- Incoming client requests route to the highest-scoring available adapter.
+- Failover across registered adapters is **transparent and invisible** to the client.
 
 ---
 
-### 4. Direct-to-CDN Streaming Strategy
+### 5. Direct-to-CDN Streaming & Expiration Refresh
 
-The gateway **NEVER** proxies audio data bytes through Node.js.
-- **Gateway Responsibility**: Resolves signed stream URLs, format tokens, and headers.
-- **Client Responsibility**: The Android application (`ExoPlayer`) streams directly from the provider's CDN using the returned signed URL and request headers.
-- Prevents the gateway from becoming a network bandwidth bottleneck.
+- The gateway resolves short-lived signed stream URLs and headers, but **never proxies audio bytes**.
+- The Android client streams directly from the provider's CDN.
+- If a signed URL expires mid-playback or returns HTTP 403, the Android client automatically requests a URL refresh from `POST /api/v1/stream` before retrying playback.
 
 ---
 
-### 5. Health Scoring ($0 - 100$) & Failover Routing
+### 6. Isolated Redis Cache Namespaces
 
-Instead of binary `Healthy/Unhealthy` flags, the **Provider Selection Engine** computes a continuous health score ($S \in [0, 100]$):
-$$S = \text{BaseScore} - (\text{FailureRate} \times 50) - (\text{P95LatencyMs} / 100)$$
+Redis keys are strictly segmented into dedicated logical namespaces:
+- `metadata:` (Track, album, artist, playlist metadata)
+- `search:` (Search query response cache)
+- `albums:` (Album tracklists and details)
+- `artists:` (Artist profiles and discographies)
+- `playlists:` (Playlist structures)
+- `provider-health:` (Provider health scores and circuit breaker states)
+- `session:` (Provider authentication sessions)
+- `artwork:` (Image and artwork thumbnail cache)
 
-- Score $> 80$: **Primary** routing choice.
-- Score $30 - 80$: **Degraded** (secondary fallback).
-- Score $< 30$: **Circuit Open** (bypassed until health probe recovers).
+---
+
+### 7. Canonical Gateway Core Endpoints
+
+The gateway exposes a minimalist initial API surface under `/api/v1/`:
+
+- `GET  /api/v1/bootstrap` (Aggregated initialization context, capabilities, server version)
+- `GET  /api/v1/search`
+- `GET  /api/v1/album/{id}`
+- `GET  /api/v1/artist/{id}`
+- `GET  /api/v1/playlist/{id}`
+- `POST /api/v1/stream` (Resolves direct stream URL and headers)
+- `GET  /health` (Prometheus health check)
+- `GET  /metrics` (Prometheus metrics exporter)
+- `GET  /version` (Gateway version & active plugins)
 
 ---
 
 ## Consequences
 
 ### Positive
-- **Heterogeneous Provider Support**: Adapters declare exact capabilities; UI adapts dynamically without runtime crashes or fake fallbacks.
-- **Transparent Failover**: Client receives clean responses without exposing backend retry/failover attempts.
-- **Zero Gateway Bandwidth Bottlenecks**: Direct-to-CDN streaming ensures gateway resources are reserved for lightweight metadata resolution.
-- **End-to-End Tracing**: `Trace ID` correlation across gateway layers and loggers.
-
-### Negative / Mitigations
-- Requires explicit capability checks in gateway services before delegating to adapters (enforced by the `Provider Selection Engine`).
+- **Heterogeneous Provider Support**: Adapters declare capabilities explicitly; client queries `/bootstrap` once during cold start and adapts UI dynamically.
+- **Zero Gateway Bandwidth Bottleneck**: Direct-to-CDN streaming keeps gateway memory and CPU lightweight.
+- **Transparent Failover**: Client receives clean responses regardless of backend provider retries or circuit breaker trips.
 
 ---
 
 ## Referenced Documents
 - `docs/adr/ADR-012-clibeats-gateway-provider-architecture.md`
 - `docs/adr/ADR-013-provider-plugin-architecture.md`
-- `domain/provider/MusicProvider.kt`
+- `docs/adr/ADR-020-api-versioning-bootstrap.md`
