@@ -19,4 +19,9 @@ interface InnerTubeApi {
     suspend fun player(
         @Body body: PlayerRequest,
     ): PlayerResponse
+
+    @POST("visitor_id")
+    suspend fun visitorId(
+        @Body body: com.clibeats.data.provider.dto.VisitorDataRequest = com.clibeats.data.provider.dto.VisitorDataRequest(),
+    ): com.clibeats.data.provider.dto.VisitorDataResponse
 }

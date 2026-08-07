@@ -54,7 +54,21 @@ class PlayerAdapter
         init {
             player.addListener(
                 object : Player.Listener {
+                    override fun onPlaybackStateChanged(playbackState: Int) {
+                        val stateName = when (playbackState) {
+                            Player.STATE_IDLE -> "STATE_IDLE"
+                            Player.STATE_BUFFERING -> "STATE_BUFFERING"
+                            Player.STATE_READY -> "STATE_READY"
+                            Player.STATE_ENDED -> "STATE_ENDED"
+                            else -> "STATE_UNKNOWN($playbackState)"
+                        }
+                        runCatching { android.util.Log.d("PlayerAdapterDiagnostics", "[EXOPLAYER_STATE] Changed to: $stateName") }
+                        updateState()
+                    }
+
+
                     override fun onIsPlayingChanged(isPlaying: Boolean) {
+                        runCatching { android.util.Log.d("PlayerAdapterDiagnostics", "[EXOPLAYER_IS_PLAYING] isPlaying: $isPlaying") }
                         updateState()
                         if (isPlaying) {
                             startTicker()
@@ -67,6 +81,12 @@ class PlayerAdapter
                         mediaItem: MediaItem?,
                         reason: Int,
                     ) {
+                        runCatching {
+                            android.util.Log.d(
+                                "PlayerAdapterDiagnostics",
+                                "[EXOPLAYER_TRANSITION] MediaItem URI: ${mediaItem?.localConfiguration?.uri}, Title: ${mediaItem?.mediaMetadata?.title}, Reason: $reason",
+                            )
+                        }
                         updateState()
                     }
 
@@ -87,7 +107,14 @@ class PlayerAdapter
                     }
 
                     override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
-                        android.util.Log.e("PlayerAdapter", "ExoPlayer playback error: ${error.message}", error)
+                        val httpStatus = (error.cause as? androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException)?.responseCode ?: -1
+                        runCatching {
+                            android.util.Log.e(
+                                "PlayerAdapterDiagnostics",
+                                "[EXOPLAYER_ERROR] errorCode: ${error.errorCode}, errorCodeName: ${error.errorCodeName}, httpStatus: $httpStatus, message: ${error.message}",
+                                error,
+                            )
+                        }
                         stopTicker()
                         updateState()
                     }

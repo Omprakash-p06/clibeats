@@ -6,7 +6,9 @@ import kotlinx.serialization.Serializable
 data class PlayerRequest(
     val context: InnerTubeContext,
     val videoId: String,
-    val playbackContext: PlaybackContext? = null,
+    val playbackContext: PlaybackContext? = PlaybackContext(),
+    val racyCheckOk: Boolean = true,
+    val contentCheckOk: Boolean = true,
 ) {
     companion object {
         fun forVideoId(videoId: String): PlayerRequest =
@@ -19,10 +21,11 @@ data class PlayerRequest(
 
 @Serializable
 data class PlaybackContext(
-    val contentPlaybackContext: ContentPlaybackContext,
+    val contentPlaybackContext: ContentPlaybackContext = ContentPlaybackContext(),
 )
 
 @Serializable
 data class ContentPlaybackContext(
-    val signatureTimestamp: Int = 0,
+    val signatureTimestamp: Int = 19842,
+    val html5Preference: String = "HTML5_PREFER_FORMAT_22",
 )
