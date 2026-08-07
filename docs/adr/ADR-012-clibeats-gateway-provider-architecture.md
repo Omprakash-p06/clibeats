@@ -1,4 +1,4 @@
-# ADR-012: CliBeats Gateway Provider Architecture & Decoupled Extraction
+# ADR-012: Provider Gateway Architecture & Decoupled Extraction
 
 **Date:** 2026-08-07  
 **Status:** Accepted  
@@ -14,49 +14,54 @@ Extensive research into the 2026 YouTube extraction ecosystem (**NewPipeExtracto
 
 ## Decision
 
-We decouple YouTube stream extraction from the CliBeats Android application and transition to a **Gateway Provider Architecture**.
+We decouple upstream stream extraction from the CliBeats Android application and transition to a **Provider Gateway Architecture**. The gateway itself is provider-agnostic; YouTube is implemented as one adapter plugin alongside future music sources (Jellyfin, Navidrome, Spotify, Piped).
 
 ```text
-CliBeats Android Application (Jetpack Compose TUI)
+CliBeats Android Application (Jetpack Compose TUI + Media3 ExoPlayer)
          │
          │ (Stable, Provider-Agnostic REST API)
          ▼
-CliBeats Gateway Service (Fastify / Node.js + YouTube.js)
+Provider Gateway Service (Fastify / Node.js)
  ┌───────┴───────────────────────────────────────────┐
- │ • YouTube.js & InnerTube Extraction Engine       │
- │ • PO Token & BotGuard JS Challenge Handling       │
- │ • VisitorData & Session Management                │
- │ • Audio Stream Resolution & Format Selection      │
- │ • Rate Limiting & Response Caching               │
- └───────────────────────────────────────────────────┘
-         │
-         ▼
-     YouTube / Future Music Providers (Jellyfin, Navidrome, Spotify)
+ │ Core Gateway Services:                            │
+ │ • Unified Provider Manager & Priority Router      │
+ │ • Metadata & Playback Separation                  │
+ │ • Redis Cache Layer (Metadata vs Playback URLs)   │
+ │ • Circuit Breakers, Retries & Backoff             │
+ │ • Prometheus Observability (/health, /metrics)    │
+ └───────────────────────┬───────────────────────────┘
+                         │
+        ┌────────────────┼────────────────┐
+        ▼                ▼                ▼
+ YouTubeAdapter   JellyfinAdapter  NavidromeAdapter
+ (YouTube.js,     (Subsonic REST)   (Subsonic API)
+  PO Token,
+  BotGuard)
 ```
 
-### 1. Technology Selection: Fastify (Node.js) + YouTube.js
-- **Fastify (Node.js)** is selected for the gateway service to leverage the JavaScript/TypeScript ecosystem surrounding **YouTube.js** and Node.js-native BotGuard/player.js evaluation.
-- Minimizes impedance by avoiding embedding JavaScript engines inside native Android runtimes.
+### 1. Technology Selection: Fastify (Node.js)
+- **Fastify (TypeScript/Node.js)** is selected for the gateway service to leverage the JavaScript/TypeScript ecosystem surrounding **YouTube.js**, official PO Token helper plugins, and Fastify's high-performance plugin lifecycle hooks.
+- Minimizes impedance by keeping extraction logic in Node.js rather than embedding JavaScript runtimes inside Android native code.
 
-### 2. Provider-Agnostic Android Client
+### 2. Encapsulated Adapter Implementation
+- YouTube.js, PO Token provider integration, and BotGuard helper orchestration are encapsulated entirely within the `YouTubeAdapter` plugin inside `providers/youtube/`.
+- The core **Provider Gateway** remains provider-agnostic and relies strictly on internal TypeScript interfaces (`ProviderAdapter`).
+
+### 3. Provider-Agnostic Android Client
 - The Android application retains its clean `MusicProvider` domain interface (`domain/provider/MusicProvider.kt`).
-- The Android app consumes a stable, unified REST API exposed by the CliBeats Gateway.
-
-### 3. Isolation of Upstream Protocol Changes
-- All YouTube-specific changes (PO Tokens, signature deciphering, visitorData, header updates) are isolated inside the gateway service.
-- Upstream changes by YouTube are resolved via gateway backend updates without forcing Android app releases or user APK updates.
+- The Android app consumes a stable, unified REST API exposed by the Provider Gateway.
 
 ## Consequences
 
 ### Positive
 - **Android Client Stability**: The mobile codebase remains provider-agnostic, clean, and robust against YouTube API updates.
-- **Simplified Maintenance**: InnerTube and BotGuard extraction logic are centralized in the Node.js/Fastify ecosystem where extraction libraries (**YouTube.js**) are actively maintained by the community.
-- **Future-Proof Multi-Provider Support**: Provides a clean foundation to add Jellyfin, Navidrome, Piped, or custom music adapters to the gateway without changing the mobile UI.
+- **Encapsulated Maintenance**: Upstream extraction changes affect only the specific adapter plugin (e.g., `YouTubeAdapter`), leaving core gateway routing and client interfaces untouched.
+- **Multi-Provider Architecture**: Provides a clean foundation to route requests across YouTube, Piped, Jellyfin, Navidrome, or Spotify adapters.
 
 ### Negative / Mitigations
-- Requires deploying/hosting a lightweight Node.js gateway instance (mitigated by support for local self-hosting or simple cloud deployment).
+- Requires running a lightweight Node.js gateway service (mitigated by Docker containerization and self-hosting options).
 
 ## Referenced Files
 - `domain/provider/MusicProvider.kt` — Domain provider contract
 - `domain/provider/StreamResolver.kt` — Stream resolver interface
-- `data/provider/YouTubeMusicProvider.kt` — Provider implementation
+- `docs/adr/ADR-013-provider-plugin-architecture.md` — Provider Plugin Architecture ADR
