@@ -1,10 +1,13 @@
 package com.clibeats.data.repository
 
+import com.clibeats.core.logging.PlaybackEvent
+import com.clibeats.core.logging.StructuredLogger
 import com.clibeats.domain.model.PlaybackState
 import com.clibeats.domain.model.RepeatMode
 import com.clibeats.domain.model.Track
-import com.clibeats.domain.provider.MusicProvider
-import com.clibeats.domain.provider.ProviderResult
+import com.clibeats.domain.playback.QueueManager
+import com.clibeats.domain.provider.StreamResolver
+import com.clibeats.domain.provider.StreamResult
 import com.clibeats.domain.repository.PlaybackRepository
 import com.clibeats.playback.PlayerAdapter
 import kotlinx.coroutines.CoroutineScope
@@ -20,24 +23,30 @@ class PlaybackRepositoryImpl
     @Inject
     constructor(
         private val playerAdapter: PlayerAdapter,
-        private val musicProvider: MusicProvider,
+        private val streamResolver: StreamResolver,
+        private val queueManager: QueueManager,
     ) : PlaybackRepository {
         private val repositoryScope = CoroutineScope(Dispatchers.Main)
 
         override val playbackState: StateFlow<PlaybackState> = playerAdapter.playbackState
 
-        override val queueState: StateFlow<List<Track>> = playerAdapter.queueFlow
+        override val queueState: StateFlow<List<Track>> = queueManager.queue
 
         override fun playTrack(track: Track) {
+            StructuredLogger.log(PlaybackEvent.TrackSelected(track.id, track.title))
             repositoryScope.launch {
+                val start = System.currentTimeMillis()
+                StructuredLogger.log(PlaybackEvent.PlayerRequest(track.id))
                 val resolvedTrack = withContext(Dispatchers.IO) { ensureStreamUrl(track) }
+                val duration = System.currentTimeMillis() - start
+
                 if (!resolvedTrack.streamUrl.isNullOrBlank()) {
+                    StructuredLogger.log(PlaybackEvent.StreamResolved(track.id, resolvedTrack.streamUrl!!, duration))
+                    StructuredLogger.log(PlaybackEvent.Buffering(track.id))
                     playerAdapter.playTrack(resolvedTrack)
+                    StructuredLogger.log(PlaybackEvent.Playing(track.id))
                 } else {
-                    android.util.Log.e(
-                        "PlaybackRepositoryImpl",
-                        "Could not resolve stream URL for track: ${track.id} (${track.title})",
-                    )
+                    StructuredLogger.log(PlaybackEvent.Failure("STREAM_RESOLUTION", "Could not resolve stream URL for track: ${track.id}"))
                 }
             }
         }
@@ -46,15 +55,10 @@ class PlaybackRepositoryImpl
             tracks: List<Track>,
             startIndex: Int,
         ) {
-            repositoryScope.launch {
-                val targetIndex = startIndex.coerceIn(tracks.indices)
-                val resolvedTracks =
-                    withContext(Dispatchers.IO) {
-                        tracks.mapIndexed { index, item ->
-                            if (index == targetIndex) ensureStreamUrl(item) else item
-                        }
-                    }
-                playerAdapter.setQueue(resolvedTracks, targetIndex)
+            queueManager.setQueue(tracks, startIndex)
+            val current = queueManager.currentTrack()
+            if (current != null) {
+                playTrack(current)
             }
         }
 
@@ -62,24 +66,20 @@ class PlaybackRepositoryImpl
             if (!track.streamUrl.isNullOrBlank()) {
                 return track
             }
-            return when (val result = musicProvider.stream(track.id)) {
-                is ProviderResult.Success -> track.copy(streamUrl = result.data)
+            return when (val result = streamResolver.resolve(track.id)) {
+                is StreamResult.Success -> track.copy(streamUrl = result.url)
                 else -> track
             }
         }
 
-        private fun String?.isNullOrBlank(): Boolean = this == null || this.trim().isEmpty()
-
-        private fun String?.isNullOrNotBlank(): Boolean = !this.isNullOrBlank()
-
         override fun moveTrackInQueue(
             fromIndex: Int,
             toIndex: Int,
-        ) = playerAdapter.moveTrack(fromIndex, toIndex)
+        ) = queueManager.moveTrack(fromIndex, toIndex)
 
-        override fun removeFromQueue(index: Int) = playerAdapter.removeFromQueue(index)
+        override fun removeFromQueue(index: Int) = queueManager.removeTrack(index)
 
-        override fun clearQueue() = playerAdapter.clearQueue()
+        override fun clearQueue() = queueManager.clearQueue()
 
         override fun play() = playerAdapter.play()
 
@@ -87,9 +87,19 @@ class PlaybackRepositoryImpl
 
         override fun seekTo(positionMs: Long) = playerAdapter.seekTo(positionMs)
 
-        override fun skipToNext() = playerAdapter.skipToNext()
+        override fun skipToNext() {
+            val next = queueManager.nextTrack()
+            if (next != null) {
+                playTrack(next)
+            }
+        }
 
-        override fun skipToPrevious() = playerAdapter.skipToPrevious()
+        override fun skipToPrevious() {
+            val prev = queueManager.previousTrack()
+            if (prev != null) {
+                playTrack(prev)
+            }
+        }
 
         override fun setRepeatMode(mode: RepeatMode) = playerAdapter.setRepeatMode(mode)
 

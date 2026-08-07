@@ -7,7 +7,6 @@
 
 package com.clibeats.data.provider.mapper
 
-import com.clibeats.data.provider.dto.PlayerResponse
 import com.clibeats.data.provider.dto.SearchResponse
 import com.clibeats.domain.model.Track
 import kotlinx.serialization.json.JsonElement
@@ -112,42 +111,6 @@ internal fun parseDurationMs(duration: String): Long {
         3 -> (parts[0] * SECONDS_PER_HOUR + parts[1] * SECONDS_PER_MINUTE + parts[2]) * MS_PER_SECOND
         else -> 0L
     }
-}
-
-/**
- * Extract the best audio stream URL from an InnerTube player response.
- * Looks for audio/mp4 or audio/webm formats.
- */
-fun PlayerResponse.extractStreamUrl(): String? {
-    val streamingData = this.streamingData ?: return null
-    val formats =
-        streamingData.nav("adaptiveFormats")?.safeArray()
-            ?: streamingData.nav("formats")?.safeArray()
-            ?: return null
-
-    val audioFormats =
-        formats.filter { item ->
-            val mimeType = item.nav("mimeType")?.safeString() ?: ""
-            mimeType.startsWith("audio/")
-        }.ifEmpty { formats }
-
-    for (item in audioFormats.sortedByDescending { if (it.nav("mimeType")?.safeString()?.contains("mp4") == true) 1 else 0 }) {
-        val url = item.nav("url")?.safeString()
-        if (!url.isNullOrBlank()) return url
-
-        val cipher =
-            item.nav("signatureCipher")?.safeString()
-                ?: item.nav("cipher")?.safeString()
-        if (!cipher.isNullOrBlank()) {
-            val extractedUrl =
-                cipher.split("&")
-                    .firstOrNull { it.startsWith("url=") }
-                    ?.removePrefix("url=")
-                    ?.let { runCatching { java.net.URLDecoder.decode(it, "UTF-8") }.getOrNull() }
-            if (!extractedUrl.isNullOrBlank()) return extractedUrl
-        }
-    }
-    return null
 }
 
 // ── Navigation helpers ─────────────────────────────────────────────────────

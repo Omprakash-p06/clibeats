@@ -3,9 +3,10 @@
 package com.clibeats.data.provider
 
 import com.clibeats.data.provider.api.InnerTubeApi
-import com.clibeats.data.provider.dto.PlayerResponse
 import com.clibeats.data.provider.dto.SearchResponse
 import com.clibeats.domain.provider.ProviderResult
+import com.clibeats.domain.provider.StreamResolver
+import com.clibeats.domain.provider.StreamResult
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -16,12 +17,14 @@ import org.mockito.kotlin.whenever
 
 class YouTubeMusicProviderTest {
     private lateinit var api: InnerTubeApi
+    private lateinit var streamResolver: StreamResolver
     private lateinit var provider: YouTubeMusicProvider
 
     @Before
     fun setUp() {
         api = mock()
-        provider = YouTubeMusicProvider(api)
+        streamResolver = mock()
+        provider = YouTubeMusicProvider(api, streamResolver)
     }
 
     @Test
@@ -47,19 +50,20 @@ class YouTubeMusicProviderTest {
         }
 
     @Test
-    fun `stream returns Error when player response has null streamingData`() =
+    fun `stream returns Success when streamResolver returns Success`() =
         runTest {
-            whenever(api.player(any())).thenReturn(PlayerResponse(streamingData = null))
+            whenever(streamResolver.resolve(any())).thenReturn(StreamResult.Success("https://stream.url"))
 
             val result = provider.stream("someVideoId")
 
-            assertThat(result).isInstanceOf(ProviderResult.Error::class.java)
+            assertThat(result).isInstanceOf(ProviderResult.Success::class.java)
+            assertThat((result as ProviderResult.Success).data).isEqualTo("https://stream.url")
         }
 
     @Test
-    fun `stream returns Error when api throws exception`() =
+    fun `stream returns Error when streamResolver returns NoFormats`() =
         runTest {
-            whenever(api.player(any())).thenThrow(RuntimeException("player error"))
+            whenever(streamResolver.resolve(any())).thenReturn(StreamResult.NoFormats)
 
             val result = provider.stream("someVideoId")
 
