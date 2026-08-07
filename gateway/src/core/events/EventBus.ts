@@ -3,6 +3,7 @@ import { EventEmitter } from 'events';
 export type GatewayEventPayload =
   | { type: 'REQUEST_RECEIVED'; traceId: string; endpoint: string; clientIp?: string }
   | { type: 'CACHE_CHECKED'; traceId: string; namespace: string; hit: boolean }
+  | { type: 'CACHE_ERROR'; traceId: string; namespace: string; operation: string }
   | { type: 'PROVIDER_SELECTED'; traceId: string; providerId: string; score: number }
   | { type: 'PROVIDER_FAILED'; traceId: string; providerId: string; error: string }
   | { type: 'PROVIDER_FAILOVER'; traceId: string; fromProvider: string; toProvider: string }

@@ -1,16 +1,19 @@
 import Redis from 'ioredis';
 import { Playlist } from '../../../types/domain';
+import { RedisCacheBase } from '../RedisCacheBase';
 
-export class PlaylistCache {
-  constructor(private redis: Redis, private ttlSeconds: number = 86400) {}
+export class PlaylistCache extends RedisCacheBase {
+  constructor(redis: Redis, ttlSeconds: number = 86400, keyPrefix?: string) {
+    super(redis, 'playlists', ttlSeconds, keyPrefix);
+  }
 
   public async get(id: string): Promise<Playlist | null> {
-    const raw = await this.redis.get(`playlists:${id}`);
+    const raw = await this.safeGet(this.key(id));
     if (!raw) return null;
     return JSON.parse(raw) as Playlist;
   }
 
   public async set(id: string, playlist: Playlist): Promise<void> {
-    await this.redis.set(`playlists:${id}`, JSON.stringify(playlist), 'EX', this.ttlSeconds);
+    await this.safeSet(this.key(id), JSON.stringify(playlist));
   }
 }

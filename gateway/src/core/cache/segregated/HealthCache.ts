@@ -1,4 +1,5 @@
 import Redis from 'ioredis';
+import { RedisCacheBase } from '../RedisCacheBase';
 
 export interface ProviderHealthRecord {
   status: 'HEALTHY' | 'DEGRADED' | 'UNHEALTHY';
@@ -7,16 +8,18 @@ export interface ProviderHealthRecord {
   lastChecked: string;
 }
 
-export class HealthCache {
-  constructor(private redis: Redis, private ttlSeconds: number = 300) {}
+export class HealthCache extends RedisCacheBase {
+  constructor(redis: Redis, ttlSeconds: number = 300, keyPrefix?: string) {
+    super(redis, 'provider-health', ttlSeconds, keyPrefix);
+  }
 
   public async getHealth(providerId: string): Promise<ProviderHealthRecord | null> {
-    const raw = await this.redis.get(`provider-health:${providerId}`);
+    const raw = await this.safeGet(this.key(providerId));
     if (!raw) return null;
     return JSON.parse(raw) as ProviderHealthRecord;
   }
 
   public async setHealth(providerId: string, record: ProviderHealthRecord): Promise<void> {
-    await this.redis.set(`provider-health:${providerId}`, JSON.stringify(record), 'EX', this.ttlSeconds);
+    await this.safeSet(this.key(providerId), JSON.stringify(record));
   }
 }

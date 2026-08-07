@@ -18,12 +18,13 @@ export class CacheManager {
   public readonly health: HealthCache;
 
   constructor(public readonly redis: Redis, config: GatewayConfig) {
-    this.search = new SearchCache(redis, config.cache.searchTTLSeconds);
-    this.albums = new AlbumCache(redis, config.cache.metadataTTLSeconds);
-    this.artists = new ArtistCache(redis, config.cache.metadataTTLSeconds);
-    this.playlists = new PlaylistCache(redis, config.cache.metadataTTLSeconds);
-    this.session = new SessionCache(redis);
-    this.artwork = new ArtworkCache(redis, config.cache.artworkTTLSeconds);
-    this.health = new HealthCache(redis);
+    const prefix = config.cache.keyPrefix ?? 'clibeats';
+    this.search = new SearchCache(redis, config.cache.searchTTLSeconds, prefix);
+    this.albums = new AlbumCache(redis, config.cache.metadataTTLSeconds, prefix);
+    this.artists = new ArtistCache(redis, config.cache.metadataTTLSeconds, prefix);
+    this.playlists = new PlaylistCache(redis, config.cache.metadataTTLSeconds, prefix);
+    this.session = new SessionCache(redis, prefix);
+    this.artwork = new ArtworkCache(redis, config.cache.artworkTTLSeconds, prefix);
+    this.health = new HealthCache(redis, undefined, prefix);
   }
 }

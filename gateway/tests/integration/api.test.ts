@@ -6,7 +6,7 @@ describe('Gateway Fastify Integration Tests (fastify.inject)', () => {
   let app: FastifyInstance;
 
   beforeEach(async () => {
-    app = buildApp();
+    app = await buildApp();
     await app.ready();
   });
 
@@ -95,5 +95,16 @@ describe('Gateway Fastify Integration Tests (fastify.inject)', () => {
     });
 
     expect([200, 302]).toContain(res.statusCode);
+  });
+
+  it('propagates trace ID for end-to-end request correlation (P4)', async () => {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/api/v1/search?q=trace-test',
+      headers: { 'x-trace-id': 'trace-abc-123' },
+    });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.headers['x-trace-id']).toBe('trace-abc-123');
   });
 });

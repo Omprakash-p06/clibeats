@@ -3,7 +3,7 @@ import autocannon from 'autocannon';
 import { buildApp } from '../../src/app';
 
 async function runLoadTest() {
-  const app = buildApp();
+  const app = await buildApp();
   const address = await app.listen({ port: 0, host: '127.0.0.1' });
   console.log(`[LOAD_TEST] Gateway running on ${address}`);
 

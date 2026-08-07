@@ -1,18 +1,19 @@
 import Redis from 'ioredis';
 import { Track } from '../../../types/domain';
+import { RedisCacheBase } from '../RedisCacheBase';
 
-export class SearchCache {
-  constructor(private redis: Redis, private ttlSeconds: number = 3600) {}
+export class SearchCache extends RedisCacheBase {
+  constructor(redis: Redis, ttlSeconds: number = 3600, keyPrefix?: string) {
+    super(redis, 'search', ttlSeconds, keyPrefix);
+  }
 
   public async get(query: string): Promise<Track[] | null> {
-    const key = `search:${query.toLowerCase().trim()}`;
-    const raw = await this.redis.get(key);
+    const raw = await this.safeGet(this.key(query.toLowerCase().trim()));
     if (!raw) return null;
     return JSON.parse(raw) as Track[];
   }
 
   public async set(query: string, tracks: Track[]): Promise<void> {
-    const key = `search:${query.toLowerCase().trim()}`;
-    await this.redis.set(key, JSON.stringify(tracks), 'EX', this.ttlSeconds);
+    await this.safeSet(this.key(query.toLowerCase().trim()), JSON.stringify(tracks));
   }
 }

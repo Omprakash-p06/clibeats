@@ -1,6 +1,7 @@
 # Android / Gradle
 *.iml
 .gradle/
+.kotlin/
 /local.properties
 /.idea/
 .DS_Store
@@ -18,4 +19,8 @@ app/build/
 gateway/node_modules/
 gateway/dist/
 gateway/tests/**/*.js
+gateway/tests/**/*.js.map
 gateway/tests/**/*.d.ts
+gateway/openapi.json
+gateway/coverage/
+gateway/reports/

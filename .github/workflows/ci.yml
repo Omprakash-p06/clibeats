@@ -83,10 +83,32 @@ jobs:
           cd gateway
           npm run check
 
-      - name: Run Vitest Unit, Integration, Contract & Property Tests
+      - name: Run Vitest Unit, Integration, Contract, Property & Architecture Tests
         run: |
           cd gateway
           npm test
+
+      - name: Run Test Coverage with Minimum Threshold (70%)
+        run: |
+          cd gateway
+          npm run test:coverage
+
+      - name: Validate OpenAPI Contract Matches Route Schemas
+        run: |
+          cd gateway
+          npm run openapi:validate
+
+      - name: Run Load Test
+        run: |
+          cd gateway
+          npm run test:load
+
+      - name: Upload Test Coverage Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gateway-coverage
+          path: gateway/coverage/
 
       - name: Build Docker Container
         run: |

@@ -9,7 +9,7 @@ describe('Gateway Failover & Circuit Breaker Integration Tests', () => {
   let secondaryMock: MockProviderAdapter;
 
   beforeEach(async () => {
-    app = buildApp({ providers: { mock: { enabled: false, priority: 0 } } });
+    app = await buildApp({ providers: { mock: { enabled: false, priority: 0 } } });
 
     primaryMock = new MockProviderAdapter('primary-mock', 42, 300);
     secondaryMock = new MockProviderAdapter('secondary-mock', 100, 100);

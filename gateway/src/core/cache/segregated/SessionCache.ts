@@ -1,10 +1,13 @@
 import Redis from 'ioredis';
+import { RedisCacheBase } from '../RedisCacheBase';
 
-export class SessionCache {
-  constructor(private redis: Redis) {}
+export class SessionCache extends RedisCacheBase {
+  constructor(redis: Redis, keyPrefix?: string) {
+    super(redis, 'session', 0, keyPrefix);
+  }
 
   public async getSession(providerId: string, userId: string): Promise<string | null> {
-    return this.redis.get(`session:${providerId}:${userId}`);
+    return this.safeGet(this.key(`${providerId}:${userId}`));
   }
 
   public async setSession(
@@ -13,6 +16,6 @@ export class SessionCache {
     sessionData: string,
     ttlSeconds: number = 86400
   ): Promise<void> {
-    await this.redis.set(`session:${providerId}:${userId}`, sessionData, 'EX', ttlSeconds);
+    await this.safeSetTtl(this.key(`${providerId}:${userId}`), sessionData, ttlSeconds);
   }
 }

@@ -1,13 +1,16 @@
 import Redis from 'ioredis';
+import { RedisCacheBase } from '../RedisCacheBase';
 
-export class ArtworkCache {
-  constructor(private redis: Redis, private ttlSeconds: number = 604800) {}
+export class ArtworkCache extends RedisCacheBase {
+  constructor(redis: Redis, ttlSeconds: number = 604800, keyPrefix?: string) {
+    super(redis, 'artwork', ttlSeconds, keyPrefix);
+  }
 
   public async get(id: string): Promise<string | null> {
-    return this.redis.get(`artwork:${id}`);
+    return this.safeGet(this.key(id));
   }
 
   public async set(id: string, url: string): Promise<void> {
-    await this.redis.set(`artwork:${id}`, url, 'EX', this.ttlSeconds);
+    await this.safeSet(this.key(id), url);
   }
 }

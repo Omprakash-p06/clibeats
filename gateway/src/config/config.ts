@@ -26,6 +26,7 @@ export interface GatewayConfig {
   >;
   cache: {
     redisUrl: string;
+    keyPrefix: string;
     metadataTTLSeconds: number;
     searchTTLSeconds: number;
     streamTTLSeconds: number;
@@ -34,6 +35,9 @@ export interface GatewayConfig {
   stream: {
     validateHeadRequests: boolean;
     urlRefreshBufferSeconds: number;
+  };
+  health?: {
+    redisTimeoutMs: number;
   };
 }
 
@@ -61,6 +65,7 @@ export function loadConfig(configPath?: string): GatewayConfig {
       },
       cache: {
         redisUrl: process.env.REDIS_URL || 'redis://localhost:6379',
+        keyPrefix: 'clibeats',
         metadataTTLSeconds: 86400,
         searchTTLSeconds: 3600,
         streamTTLSeconds: 900,
@@ -69,6 +74,9 @@ export function loadConfig(configPath?: string): GatewayConfig {
       stream: {
         validateHeadRequests: true,
         urlRefreshBufferSeconds: 300,
+      },
+      health: {
+        redisTimeoutMs: 1000,
       },
     };
   }

@@ -2,7 +2,16 @@ import { ProviderAdapter, AdapterHealth } from '../../types/adapter';
 import { ProviderCapabilities } from '../../types/capabilities';
 import { ProviderContext } from '../../types/context';
 import { Album, Artist, Playlist, StreamResult, Track } from '../../types/domain';
-import { NotFoundError, RateLimitedError, PlaybackError } from '../../types/error';
+import {
+  NotFoundError,
+  RateLimitedError,
+  PlaybackError,
+  AuthenticationFailedError,
+  GeoBlockedError,
+  NetworkError,
+  InternalError,
+  TimeoutError,
+} from '../../types/error';
 
 // Seedable Pseudo-Random Number Generator (PRNG)
 class SeededRandom {
@@ -18,6 +27,30 @@ class SeededRandom {
     return Math.floor(min + this.next() * (max - min + 1));
   }
 }
+
+/**
+ * Failure modes that MockProvider can simulate (Task 4, audit §5).
+ */
+export type MockProviderState =
+  | 'HEALTHY'
+  | 'SLOW'
+  | 'OFFLINE'
+  | 'MALFORMED'
+  | 'RATE_LIMITED'
+  | 'AUTHENTICATION_FAILED'
+  | 'GEO_BLOCKED'
+  | 'INTERNAL_ERROR';
+
+export const MOCK_PROVIDER_STATES: readonly MockProviderState[] = [
+  'HEALTHY',
+  'SLOW',
+  'OFFLINE',
+  'MALFORMED',
+  'RATE_LIMITED',
+  'AUTHENTICATION_FAILED',
+  'GEO_BLOCKED',
+  'INTERNAL_ERROR',
+];
 
 export class MockProviderAdapter implements ProviderAdapter {
   public readonly capabilities: ProviderCapabilities = {
@@ -37,9 +70,13 @@ export class MockProviderAdapter implements ProviderAdapter {
   private artists: Artist[] = [];
   private playlists: Playlist[] = [];
 
-  // Testing flag for failure simulation
-  public shouldSimulateError: boolean = false;
-  public simulatedErrorCode: 'RATE_LIMITED' | 'PLAYBACK_ERROR' | 'NETWORK_ERROR' = 'PLAYBACK_ERROR';
+  /**
+   * Current simulated failure state. Configure per-instance before invocation.
+   */
+  public state: MockProviderState = 'HEALTHY';
+
+  /** Latency delay in ms applied when state === 'SLOW'. */
+  public slowLatencyMs: number = 1500;
 
   constructor(
     public readonly id: string = 'mock',
@@ -51,6 +88,17 @@ export class MockProviderAdapter implements ProviderAdapter {
   }
 
   public readonly name: string;
+
+  // Backwards-compatible failure knobs used by earlier failover tests.
+  public set shouldSimulateError(value: boolean) {
+    this.state = value ? 'PLAYBACK_ERROR' as unknown as MockProviderState : 'HEALTHY';
+  }
+  public get shouldSimulateError(): boolean {
+    return this.state !== 'HEALTHY' && this.state !== 'SLOW';
+  }
+  public set simulatedErrorCode(value: 'RATE_LIMITED' | 'PLAYBACK_ERROR') {
+    this.state = value as unknown as MockProviderState;
+  }
 
   private generateDataset(seed: number): void {
     const rng = new SeededRandom(seed);
@@ -117,12 +165,43 @@ export class MockProviderAdapter implements ProviderAdapter {
     }));
   }
 
+  private async maybeApplyState(): Promise<void> {
+    if (this.state === 'SLOW') {
+      await new Promise((resolve) => setTimeout(resolve, this.slowLatencyMs));
+    }
+  }
+
+  /** Simulate a failure based on the configured state. Returns malformed payload if MALFORMED. */
+  private simulateFailure(): void {
+    switch (this.state) {
+      case 'HEALTHY':
+      case 'SLOW':
+        return;
+      case 'OFFLINE':
+        throw new NetworkError(`MockProvider ${this.id} is offline (connection refused)`, this.id);
+      case 'MALFORMED':
+        // Simulate an upstream parser failure / malformed JSON that is not a canonical ProviderError.
+        throw new SyntaxError(`Malformed upstream JSON from provider ${this.id}`);
+      case 'RATE_LIMITED':
+        throw new RateLimitedError('MockProvider rate limit exceeded', this.id, 30);
+      case 'AUTHENTICATION_FAILED':
+        throw new AuthenticationFailedError('MockProvider authentication failed', this.id);
+      case 'GEO_BLOCKED':
+        throw new GeoBlockedError('MockProvider content geo-blocked', this.id);
+      case 'INTERNAL_ERROR':
+        throw new InternalError('MockProvider internal upstream error', this.id);
+      default:
+        throw new PlaybackError('MockProvider playback stream failure', this.id);
+    }
+  }
+
   public async search(
     query: string,
     context: ProviderContext,
     filterSongs: boolean = true
   ): Promise<Track[]> {
-    if (this.shouldSimulateError) this.throwSimulatedError();
+    this.simulateFailure();
+    await this.maybeApplyState();
 
     const q = query.toLowerCase().trim();
     if (!q) return this.tracks.slice(0, 20);
@@ -133,7 +212,8 @@ export class MockProviderAdapter implements ProviderAdapter {
   }
 
   public async stream(trackId: string, context: ProviderContext): Promise<StreamResult> {
-    if (this.shouldSimulateError) this.throwSimulatedError();
+    this.simulateFailure();
+    await this.maybeApplyState();
 
     const track = this.tracks.find((t) => t.id === trackId);
     if (!track) {
@@ -155,7 +235,8 @@ export class MockProviderAdapter implements ProviderAdapter {
   }
 
   public async album(albumId: string, context: ProviderContext): Promise<Album> {
-    if (this.shouldSimulateError) this.throwSimulatedError();
+    this.simulateFailure();
+    await this.maybeApplyState();
 
     const album = this.albums.find((a) => a.id === albumId);
     if (!album) {
@@ -165,7 +246,8 @@ export class MockProviderAdapter implements ProviderAdapter {
   }
 
   public async artist(artistId: string, context: ProviderContext): Promise<Artist> {
-    if (this.shouldSimulateError) this.throwSimulatedError();
+    this.simulateFailure();
+    await this.maybeApplyState();
 
     const artist = this.artists.find((a) => a.id === artistId);
     if (!artist) {
@@ -175,7 +257,8 @@ export class MockProviderAdapter implements ProviderAdapter {
   }
 
   public async playlist(playlistId: string, context: ProviderContext): Promise<Playlist> {
-    if (this.shouldSimulateError) this.throwSimulatedError();
+    this.simulateFailure();
+    await this.maybeApplyState();
 
     const playlist = this.playlists.find((p) => p.id === playlistId);
     if (!playlist) {
@@ -185,12 +268,29 @@ export class MockProviderAdapter implements ProviderAdapter {
   }
 
   public async healthCheck(): Promise<AdapterHealth> {
-    if (this.shouldSimulateError) {
+    if (this.state === 'OFFLINE') {
       return {
         status: 'UNHEALTHY',
         score: 0,
         latencyMs: 1500,
-        message: 'Simulated health failure',
+        message: 'Simulated host unreachable',
+      };
+    }
+    if (this.state === 'SLOW') {
+      await this.maybeApplyState();
+      return {
+        status: 'DEGRADED',
+        score: 30,
+        latencyMs: this.slowLatencyMs,
+        message: 'Simulated slow provider',
+      };
+    }
+    if (this.state !== 'HEALTHY') {
+      return {
+        status: 'DEGRADED',
+        score: 40,
+        latencyMs: 100,
+        message: `Simulated ${this.state.toLowerCase()} state`,
       };
     }
     return {
@@ -198,12 +298,5 @@ export class MockProviderAdapter implements ProviderAdapter {
       score: 100,
       latencyMs: 5,
     };
-  }
-
-  private throwSimulatedError(): void {
-    if (this.simulatedErrorCode === 'RATE_LIMITED') {
-      throw new RateLimitedError('MockProvider rate limit exceeded', this.id, 30);
-    }
-    throw new PlaybackError('MockProvider playback stream failure', this.id);
   }
 }

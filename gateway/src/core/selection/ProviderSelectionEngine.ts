@@ -5,6 +5,7 @@ import { ProviderRegistry } from '../registry/ProviderRegistry';
 import { CircuitBreaker } from '../circuit/CircuitBreaker';
 import { globalEventBus } from '../events/EventBus';
 import { ProviderError, InternalError } from '../../types/error';
+import { recordProviderHealth } from '../metrics/metrics';
 
 export class ProviderSelectionEngine {
   private circuitBreakers: Map<string, CircuitBreaker> = new Map();
@@ -40,10 +41,12 @@ export class ProviderSelectionEngine {
     // Health check check
     try {
       const health = await adapter.healthCheck();
+      recordProviderHealth(adapter.id, health.status, health.score);
       score += health.score; // 0 to 100
       if (health.latencyMs < 200) score += 20;
       else if (health.latencyMs > 1000) score -= 20;
     } catch {
+      recordProviderHealth(adapter.id, 'UNHEALTHY', 0);
       score -= 50;
     }
 

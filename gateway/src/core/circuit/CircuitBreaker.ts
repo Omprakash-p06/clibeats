@@ -1,4 +1,5 @@
 import { globalEventBus } from '../events/EventBus';
+import { recordCircuitBreakerState } from '../metrics/metrics';
 
 export type CircuitState = 'CLOSED' | 'OPEN' | 'HALF_OPEN';
 
@@ -11,7 +12,9 @@ export class CircuitBreaker {
     public readonly providerId: string,
     private failureThreshold: number = 3,
     private cooldownSeconds: number = 60
-  ) {}
+  ) {
+    recordCircuitBreakerState(this.providerId, this.state);
+  }
 
   public getState(): CircuitState {
     if (this.state === 'OPEN') {
@@ -19,6 +22,7 @@ export class CircuitBreaker {
       if (elapsed >= this.cooldownSeconds) {
         this.state = 'HALF_OPEN';
         this.lastStateChangeEpoch = Date.now();
+        recordCircuitBreakerState(this.providerId, this.state);
       }
     }
     return this.state;
@@ -29,6 +33,7 @@ export class CircuitBreaker {
     if (this.state !== 'CLOSED') {
       this.state = 'CLOSED';
       this.lastStateChangeEpoch = Date.now();
+      recordCircuitBreakerState(this.providerId, this.state);
     }
   }
 
@@ -37,6 +42,7 @@ export class CircuitBreaker {
     if (this.failureCount >= this.failureThreshold && this.state !== 'OPEN') {
       this.state = 'OPEN';
       this.lastStateChangeEpoch = Date.now();
+      recordCircuitBreakerState(this.providerId, this.state);
       globalEventBus.emitEvent({
         type: 'CIRCUIT_TRIPPED',
         providerId: this.providerId,

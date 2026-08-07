@@ -1,11 +1,14 @@
 import { buildApp } from './app';
 import { logger } from './core/logging/logger';
+import type { FastifyInstance } from 'fastify';
 
-const app = buildApp();
-const port = app.config.server.port;
-const host = app.config.server.host;
+let app: FastifyInstance | null = null;
 
 const start = async () => {
+  app = await buildApp();
+  const port = app.config.server.port;
+  const host = app.config.server.host;
+
   try {
     await app.listen({ port, host });
     logger.info(`CliBeats Provider Gateway running on http://${host}:${port}`);
@@ -19,7 +22,9 @@ const start = async () => {
 const shutdown = async (signal: string) => {
   logger.info(`Received ${signal}. Shutting down gateway gracefully...`);
   try {
-    await app.close();
+    if (app) {
+      await app.close();
+    }
     logger.info('Gateway server stopped cleanly.');
     process.exit(0);
   } catch (err) {
