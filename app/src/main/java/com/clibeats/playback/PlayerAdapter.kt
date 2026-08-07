@@ -11,9 +11,15 @@ import com.clibeats.data.cache.CacheManager
 import com.clibeats.domain.model.PlaybackState
 import com.clibeats.domain.model.RepeatMode
 import com.clibeats.domain.model.Track
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -25,6 +31,9 @@ class PlayerAdapter
         private val player: ExoPlayer,
         private val cacheManager: CacheManager,
     ) {
+        private val adapterScope = CoroutineScope(Dispatchers.Main)
+        private var tickerJob: Job? = null
+
         private val _playbackState =
             MutableStateFlow(
                 PlaybackState(
@@ -48,6 +57,11 @@ class PlayerAdapter
                 object : Player.Listener {
                     override fun onIsPlayingChanged(isPlaying: Boolean) {
                         updateState()
+                        if (isPlaying) {
+                            startTicker()
+                        } else {
+                            stopTicker()
+                        }
                     }
 
                     override fun onMediaItemTransition(
@@ -74,6 +88,22 @@ class PlayerAdapter
                     }
                 },
             )
+        }
+
+        private fun startTicker() {
+            stopTicker()
+            tickerJob =
+                adapterScope.launch {
+                    while (isActive) {
+                        delay(500L)
+                        updateState()
+                    }
+                }
+        }
+
+        private fun stopTicker() {
+            tickerJob?.cancel()
+            tickerJob = null
         }
 
         fun playTrack(track: Track) {

@@ -19,10 +19,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -38,11 +34,11 @@ import com.clibeats.domain.model.Track
 import com.clibeats.presentation.component.SongTableHeader
 import com.clibeats.presentation.component.SongTableRow
 import com.clibeats.presentation.component.TuiBlock
+import com.clibeats.presentation.component.TuiTabBar
 import com.clibeats.presentation.search.formatDuration
 import com.clibeats.presentation.theme.CliBeatsAccent
 import com.clibeats.presentation.theme.CliBeatsBackground
 import com.clibeats.presentation.theme.CliBeatsDivider
-import com.clibeats.presentation.theme.CliBeatsSurface
 import com.clibeats.presentation.theme.CliBeatsTextPrimary
 import com.clibeats.presentation.theme.CliBeatsTextSecondary
 
@@ -61,31 +57,11 @@ fun LibraryScreen(viewModel: LibraryViewModel = hiltViewModel()) {
     ) {
         TuiBlock(title = "Library (${tabs[selectedTabIndex]})", isActive = true, modifier = Modifier.weight(1f)) {
             Column(modifier = Modifier.fillMaxSize()) {
-                TabRow(
-                    selectedTabIndex = selectedTabIndex,
-                    containerColor = CliBeatsSurface,
-                    contentColor = CliBeatsAccent,
-                    indicator = { tabPositions ->
-                        TabRowDefaults.SecondaryIndicator(
-                            modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
-                            color = CliBeatsAccent,
-                        )
-                    },
-                ) {
-                    tabs.forEachIndexed { index, title ->
-                        Tab(
-                            selected = selectedTabIndex == index,
-                            onClick = { selectedTabIndex = index },
-                            text = {
-                                Text(
-                                    text = title,
-                                    style = MaterialTheme.typography.titleSmall,
-                                    color = if (selectedTabIndex == index) CliBeatsAccent else CliBeatsTextSecondary,
-                                )
-                            },
-                        )
-                    }
-                }
+                TuiTabBar(
+                    tabs = tabs,
+                    selectedIndex = selectedTabIndex,
+                    onTabSelected = { selectedTabIndex = it },
+                )
 
                 when (val currentState = state) {
                     is LibraryUiState.Loading -> {

@@ -134,8 +134,10 @@ private fun NavigationSuiteScope.buildNavItems(
     onDestinationSelected: (NavDestination) -> Unit,
 ) {
     NavDestination.mainTabs.forEach { destination ->
+        val isSelected = destination == selectedDestination
+        val labelText = if (isSelected) "> ${destination.label}" else destination.label
         item(
-            selected = destination == selectedDestination,
+            selected = isSelected,
             onClick = { onDestinationSelected(destination) },
             icon = {
                 Icon(
@@ -143,7 +145,7 @@ private fun NavigationSuiteScope.buildNavItems(
                     contentDescription = destination.contentDescription,
                 )
             },
-            label = { Text(destination.label, maxLines = 1) },
+            label = { Text(text = labelText, maxLines = 1) },
         )
     }
 }

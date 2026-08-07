@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -33,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.clibeats.presentation.component.TuiBlock
 import com.clibeats.presentation.layout.NavDestination
 import com.clibeats.presentation.theme.CliBeatsAccent
 import com.clibeats.presentation.theme.CliBeatsDivider
@@ -46,67 +46,52 @@ fun MoreScreen(onNavigate: (NavDestination) -> Unit) {
             Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp)
+                .padding(12.dp)
                 .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Text(
-            text = "SYSTEM NAVIGATION & MORE",
-            style = MaterialTheme.typography.titleMedium,
-            color = CliBeatsAccent,
-        )
+        TuiBlock(title = "Navigation", isActive = true) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                MoreNavigationCard(
+                    title = "Playback Queue",
+                    description = "View, reorder, or clear active queue items",
+                    icon = Icons.AutoMirrored.Outlined.QueueMusic,
+                    onClick = { onNavigate(NavDestination.Queue) },
+                )
 
-        Spacer(modifier = Modifier.height(16.dp))
+                MoreNavigationCard(
+                    title = "Playlists",
+                    description = "Manage and create custom audio playlists",
+                    icon = Icons.AutoMirrored.Outlined.PlaylistPlay,
+                    onClick = { onNavigate(NavDestination.Playlists) },
+                )
 
-        MoreNavigationCard(
-            title = "Playback Queue",
-            description = "View, reorder, or clear active queue items",
-            icon = Icons.AutoMirrored.Outlined.QueueMusic,
-            onClick = { onNavigate(NavDestination.Queue) },
-        )
+                MoreNavigationCard(
+                    title = "Settings",
+                    description = "Configure audio provider, cache limits & options",
+                    icon = Icons.Outlined.Settings,
+                    onClick = { onNavigate(NavDestination.Settings) },
+                )
+            }
+        }
 
-        Spacer(modifier = Modifier.height(12.dp))
-
-        MoreNavigationCard(
-            title = "Playlists",
-            description = "Manage and create custom audio playlists",
-            icon = Icons.AutoMirrored.Outlined.PlaylistPlay,
-            onClick = { onNavigate(NavDestination.Playlists) },
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        MoreNavigationCard(
-            title = "Settings",
-            description = "Configure audio provider, cache limits & developer options",
-            icon = Icons.Outlined.Settings,
-            onClick = { onNavigate(NavDestination.Settings) },
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // System Developer Status Card
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .background(CliBeatsSurface)
-                    .border(1.dp, CliBeatsDivider)
-                    .padding(12.dp),
-        ) {
-            Text(
-                text = "> system --status",
-                style = MaterialTheme.typography.labelSmall,
-                color = CliBeatsAccent,
-            )
-            Spacer(modifier = Modifier.height(6.dp))
-            Text(
-                text =
-                    "ACTIVE PROVIDER : YouTube Music (InnerTube API v1)\n" +
-                        "CACHE STORAGE   : 500 MB (LRU Active)\n" +
-                        "SYSTEM STATUS   : CONNECTED & OPERATIONAL",
-                style = MaterialTheme.typography.bodySmall,
-                color = CliBeatsTextSecondary,
-            )
+        // Developer Hub Card
+        TuiBlock(title = "Developer Hub") {
+            Column {
+                Text(
+                    text =
+                        "Developer    : Omprakash Panda\n" +
+                            "Version      : v0.2.0-beta\n" +
+                            "Architecture : MVVM + Clean Architecture\n" +
+                            "Provider     : YouTube Music (InnerTube API)\n" +
+                            "Build        : Production Release\n" +
+                            "Engine       : Media3 ExoPlayer\n" +
+                            "Cache        : 500 MB LRU Storage\n" +
+                            "Status       : Operational",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = CliBeatsTextSecondary,
+                )
+            }
         }
     }
 }
