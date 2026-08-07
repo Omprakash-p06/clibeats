@@ -42,7 +42,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.clibeats.domain.model.Track
+import com.clibeats.presentation.component.SongTableHeader
 import com.clibeats.presentation.component.SongTableRow
+import com.clibeats.presentation.component.TuiBlock
 import com.clibeats.presentation.theme.CliBeatsAccent
 import com.clibeats.presentation.theme.CliBeatsBackground
 import com.clibeats.presentation.theme.CliBeatsDivider
@@ -63,69 +65,76 @@ fun SearchScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(CliBeatsBackground),
+            .background(CliBeatsBackground)
+            .padding(12.dp),
     ) {
-        // ── Search input bar ─────────────────────────────────────────────
-        TextField(
-            value = query,
-            onValueChange = viewModel::onQueryChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .semantics { contentDescription = "Search music" },
-            placeholder = {
-                Text(
-                    text = "Search songs, artists, albums…",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = CliBeatsTextSecondary,
-                )
-            },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Outlined.Search,
-                    contentDescription = null,
-                    tint = CliBeatsTextSecondary,
-                )
-            },
-            trailingIcon = {
-                if (query.isNotEmpty()) {
-                    IconButton(
-                        onClick = {
-                            viewModel.clearQuery()
-                            focusManager.clearFocus()
-                        },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Clear,
-                            contentDescription = "Clear search",
-                            tint = CliBeatsTextSecondary,
-                        )
+        // ── Search input block ───────────────────────────────────────────
+        TuiBlock(title = "Search Prompt", isActive = true) {
+            TextField(
+                value = query,
+                onValueChange = viewModel::onQueryChange,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .semantics { contentDescription = "Search music" },
+                placeholder = {
+                    Text(
+                        text = "> What do you want to play?",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = CliBeatsTextSecondary,
+                    )
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.Search,
+                        contentDescription = null,
+                        tint = CliBeatsAccent,
+                    )
+                },
+                trailingIcon = {
+                    if (query.isNotEmpty()) {
+                        IconButton(
+                            onClick = {
+                                viewModel.clearQuery()
+                                focusManager.clearFocus()
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Clear,
+                                contentDescription = "Clear search",
+                                tint = CliBeatsTextSecondary,
+                            )
+                        }
                     }
-                }
-            },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
-            textStyle = MaterialTheme.typography.bodyMedium,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = CliBeatsSurface,
-                unfocusedContainerColor = CliBeatsSurface,
-                focusedTextColor = CliBeatsTextPrimary,
-                unfocusedTextColor = CliBeatsTextPrimary,
-                focusedIndicatorColor = CliBeatsAccent,
-                unfocusedIndicatorColor = CliBeatsDivider,
-                cursorColor = CliBeatsAccent,
-            ),
-        )
-
-        // ── Results area ─────────────────────────────────────────────────
-        when (val currentState = state) {
-            is SearchUiState.Idle -> SearchIdleState()
-            is SearchUiState.Loading -> SearchLoadingState()
-            is SearchUiState.Error -> SearchErrorState(currentState.message)
-            is SearchUiState.Success -> SearchResultsList(
-                tracks = currentState.tracks,
-                onTrackClick = onTrackClick,
+                },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
+                textStyle = MaterialTheme.typography.bodyMedium,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = CliBeatsSurface,
+                    unfocusedContainerColor = CliBeatsSurface,
+                    focusedTextColor = CliBeatsTextPrimary,
+                    unfocusedTextColor = CliBeatsTextPrimary,
+                    focusedIndicatorColor = CliBeatsAccent,
+                    unfocusedIndicatorColor = CliBeatsDivider,
+                    cursorColor = CliBeatsAccent,
+                ),
             )
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // ── Results area block ───────────────────────────────────────────
+        TuiBlock(title = "Search Results", modifier = Modifier.weight(1f)) {
+            when (val currentState = state) {
+                is SearchUiState.Idle -> SearchIdleState()
+                is SearchUiState.Loading -> SearchLoadingState()
+                is SearchUiState.Error -> SearchErrorState(currentState.message)
+                is SearchUiState.Success -> SearchResultsList(
+                    tracks = currentState.tracks,
+                    onTrackClick = onTrackClick,
+                )
+            }
         }
     }
 }
@@ -138,7 +147,7 @@ private fun SearchIdleState() {
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = "Start typing to search",
+            text = "> Type a query to search tracks...",
             style = MaterialTheme.typography.bodyMedium,
             color = CliBeatsTextSecondary,
         )
@@ -180,9 +189,9 @@ private fun SearchErrorState(message: String) {
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = "Error: $message",
+            text = "> error --$message",
             style = MaterialTheme.typography.bodyMedium,
-            color = CliBeatsTextSecondary,
+            color = MaterialTheme.colorScheme.error,
         )
     }
 }
@@ -194,6 +203,9 @@ private fun SearchResultsList(
     onTrackClick: (Track) -> Unit,
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
+        item {
+            SongTableHeader()
+        }
         itemsIndexed(items = tracks, key = { _, track -> track.id }) { index, track ->
             SongTableRow(
                 trackTitle = track.title,

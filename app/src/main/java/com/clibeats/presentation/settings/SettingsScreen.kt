@@ -16,8 +16,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,8 +25,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.clibeats.presentation.component.TuiBlock
 import com.clibeats.presentation.theme.CliBeatsAccent
-import com.clibeats.presentation.theme.CliBeatsSurface
 
 private const val BYTES_PER_MB = 1048576L
 
@@ -45,28 +43,13 @@ fun SettingsScreen(
             modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp)
+                .padding(12.dp)
                 .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Text(
-            text = "[ SETTINGS ]",
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-        )
-
         // Section: Active Music Provider
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = CliBeatsSurface),
-        ) {
-            Column(modifier = Modifier.padding(12.dp)) {
-                Text(
-                    text = "ACTIVE MUSIC PROVIDER",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = CliBeatsAccent,
-                )
-                Spacer(modifier = Modifier.height(6.dp))
+        TuiBlock(title = "Active Provider", isActive = true) {
+            Column {
                 listOf("ytmusic" to "YouTube Music (InnerTube API)", "local" to "Local Device Media").forEach { (id, label) ->
                     val isSelected = uiState.activeProviderId == id
                     Row(
@@ -93,16 +76,8 @@ fun SettingsScreen(
         }
 
         // Section: Audio Cache Limit
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = CliBeatsSurface),
-        ) {
-            Column(modifier = Modifier.padding(12.dp)) {
-                Text(
-                    text = "DISK CACHE LIMIT",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = CliBeatsAccent,
-                )
+        TuiBlock(title = "Disk Cache Limit") {
+            Column {
                 Text(
                     text = "Current Usage: ${uiState.currentCacheSizeBytes / BYTES_PER_MB} MB",
                     style = MaterialTheme.typography.labelSmall,
@@ -135,16 +110,12 @@ fun SettingsScreen(
         }
 
         // Section: Streaming Quality
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = CliBeatsSurface),
-        ) {
+        TuiBlock(title = "Audio Quality") {
             Row(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .clickable { viewModel.setHighQualityStreaming(!uiState.highQualityStreaming) }
-                        .padding(12.dp),
+                        .clickable { viewModel.setHighQualityStreaming(!uiState.highQualityStreaming) },
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -169,19 +140,10 @@ fun SettingsScreen(
         }
 
         // Section: Actions
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = CliBeatsSurface),
-        ) {
+        TuiBlock(title = "Maintenance Actions") {
             Column(
-                modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Text(
-                    text = "MAINTENANCE ACTIONS",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = CliBeatsAccent,
-                )
                 Button(
                     onClick = { viewModel.clearCache() },
                     modifier = Modifier.fillMaxWidth(),

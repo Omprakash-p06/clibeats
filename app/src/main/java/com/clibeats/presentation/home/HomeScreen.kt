@@ -33,7 +33,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.clibeats.presentation.component.SongTableHeader
 import com.clibeats.presentation.component.SongTableRow
+import com.clibeats.presentation.component.TuiBlock
 import com.clibeats.presentation.layout.NavDestination
 import com.clibeats.presentation.player.PlayerViewModel
 import com.clibeats.presentation.search.SearchUiState
@@ -57,75 +59,67 @@ fun HomeScreen(
             Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp),
+                .padding(12.dp),
     ) {
-        // 1. System Provider Status Card
+        // 1. System Provider Status Block
         item {
-            Column(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .background(CliBeatsSurface)
-                        .border(1.dp, CliBeatsDivider)
-                        .padding(14.dp),
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
+            TuiBlock(title = "System Status", isActive = true) {
+                Column {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = "● ACTIVE PROVIDER",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = CliBeatsAccent,
+                        )
+                        Text(
+                            text = "[ ONLINE ]",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = CliBeatsAccent,
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "● ACTIVE PROVIDER",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = CliBeatsAccent,
-                    )
-                    Text(
-                        text = "[ ONLINE ]",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = CliBeatsAccent,
+                        text =
+                            "PROVIDER  : YouTube Music (InnerTube API)\n" +
+                                "CACHE CAP : 500 MB (LRU Active)\n" +
+                                "LATENCY   : 38ms | CODEC: AAC-LC",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = CliBeatsTextSecondary,
                     )
                 }
-                Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    text =
-                        "PROVIDER  : YouTube Music (InnerTube API)\n" +
-                            "CACHE CAP : 500 MB (LRU Active)\n" +
-                            "LATENCY   : 38ms | CODEC: AAC-LC",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = CliBeatsTextSecondary,
-                )
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
         }
 
         // 2. Quick Search Banner / Shortcuts
         item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                QuickShortcutButton(
-                    label = "[1] SEARCH MUSIC",
-                    modifier = Modifier.weight(1f),
-                    onClick = { onNavigate(NavDestination.Search) },
-                )
-                QuickShortcutButton(
-                    label = "[2] LIBRARY",
-                    modifier = Modifier.weight(1f),
-                    onClick = { onNavigate(NavDestination.Library) },
-                )
+            TuiBlock(title = "Quick Navigation") {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    QuickShortcutButton(
+                        label = "[1] SEARCH MUSIC",
+                        modifier = Modifier.weight(1f),
+                        onClick = { onNavigate(NavDestination.Search) },
+                    )
+                    QuickShortcutButton(
+                        label = "[2] LIBRARY",
+                        modifier = Modifier.weight(1f),
+                        onClick = { onNavigate(NavDestination.Library) },
+                    )
+                }
             }
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(12.dp))
         }
 
-        // 3. Trending Tracks Section Header
+        // 3. Trending Tracks Block Header
         item {
-            Text(
-                text = "TRENDING & RECOMMENDED TRACKS",
-                style = MaterialTheme.typography.titleSmall,
-                color = CliBeatsAccent,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+            SongTableHeader()
         }
 
         // 4. Track List Content
