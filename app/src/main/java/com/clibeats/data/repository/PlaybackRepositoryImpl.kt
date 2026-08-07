@@ -31,7 +31,14 @@ class PlaybackRepositoryImpl
         override fun playTrack(track: Track) {
             repositoryScope.launch {
                 val resolvedTrack = withContext(Dispatchers.IO) { ensureStreamUrl(track) }
-                playerAdapter.playTrack(resolvedTrack)
+                if (!resolvedTrack.streamUrl.isNullOrBlank()) {
+                    playerAdapter.playTrack(resolvedTrack)
+                } else {
+                    android.util.Log.e(
+                        "PlaybackRepositoryImpl",
+                        "Could not resolve stream URL for track: ${track.id} (${track.title})",
+                    )
+                }
             }
         }
 
