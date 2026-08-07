@@ -39,6 +39,28 @@ data class InnerTubeContext(
                         gl = "US",
                     ),
             )
+
+        fun tvHtml5(): InnerTubeContext =
+            InnerTubeContext(
+                client =
+                    InnerTubeClient(
+                        clientName = "TVHTML5_SIMPLY_EMBEDDED_PLAYER",
+                        clientVersion = "2.0",
+                        hl = "en",
+                        gl = "US",
+                    ),
+            )
+
+        fun android(): InnerTubeContext =
+            InnerTubeContext(
+                client =
+                    InnerTubeClient(
+                        clientName = "ANDROID",
+                        clientVersion = "19.05.36",
+                        hl = "en",
+                        gl = "US",
+                    ),
+            )
     }
 }
 

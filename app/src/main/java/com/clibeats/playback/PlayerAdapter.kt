@@ -85,6 +85,12 @@ class PlayerAdapter
                     override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
                         updateState()
                     }
+
+                    override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
+                        android.util.Log.e("PlayerAdapter", "ExoPlayer playback error: ${error.message}", error)
+                        stopTicker()
+                        updateState()
+                    }
                 },
             )
         }

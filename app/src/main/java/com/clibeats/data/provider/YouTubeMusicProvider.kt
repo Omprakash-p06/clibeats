@@ -45,13 +45,27 @@ class YouTubeMusicProvider
 
         override suspend fun stream(trackId: String): ProviderResult<String> =
             runCatching {
-                val response = api.player(PlayerRequest.forVideoId(trackId))
-                val url = response.extractStreamUrl()
-                if (url != null) {
-                    ProviderResult.Success(url)
-                } else {
-                    ProviderResult.Error("No audio stream URL found for: $trackId")
+                val requests =
+                    listOf(
+                        PlayerRequest(
+                            context = com.clibeats.data.provider.dto.InnerTubeContext.tvHtml5(),
+                            videoId = trackId,
+                        ),
+                        PlayerRequest(
+                            context = com.clibeats.data.provider.dto.InnerTubeContext.android(),
+                            videoId = trackId,
+                        ),
+                        PlayerRequest.forVideoId(trackId),
+                    )
+
+                for (request in requests) {
+                    val response = runCatching { api.player(request) }.getOrNull()
+                    val url = response?.extractStreamUrl()
+                    if (!url.isNullOrBlank()) {
+                        return ProviderResult.Success(url)
+                    }
                 }
+                ProviderResult.Error("No audio stream URL found for: $trackId")
             }.getOrElse { e ->
                 ProviderResult.Error(
                     message = e.message ?: "Stream failed for: $trackId",

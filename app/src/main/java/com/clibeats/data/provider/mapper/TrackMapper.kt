@@ -129,13 +129,25 @@ fun PlayerResponse.extractStreamUrl(): String? {
         formats.filter { item ->
             val mimeType = item.nav("mimeType")?.safeString() ?: ""
             mimeType.startsWith("audio/")
-        }
+        }.ifEmpty { formats }
 
-    // Prefer mp4 audio, fall back to any audio format
-    return audioFormats.firstOrNull { item ->
-        item.nav("mimeType")?.safeString()?.contains("mp4") == true
-    }?.nav("url")?.safeString()
-        ?: audioFormats.firstOrNull()?.nav("url")?.safeString()
+    for (item in audioFormats.sortedByDescending { if (it.nav("mimeType")?.safeString()?.contains("mp4") == true) 1 else 0 }) {
+        val url = item.nav("url")?.safeString()
+        if (!url.isNullOrBlank()) return url
+
+        val cipher =
+            item.nav("signatureCipher")?.safeString()
+                ?: item.nav("cipher")?.safeString()
+        if (!cipher.isNullOrBlank()) {
+            val extractedUrl =
+                cipher.split("&")
+                    .firstOrNull { it.startsWith("url=") }
+                    ?.removePrefix("url=")
+                    ?.let { runCatching { java.net.URLDecoder.decode(it, "UTF-8") }.getOrNull() }
+            if (!extractedUrl.isNullOrBlank()) return extractedUrl
+        }
+    }
+    return null
 }
 
 // ── Navigation helpers ─────────────────────────────────────────────────────

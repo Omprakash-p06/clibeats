@@ -16,10 +16,16 @@ class PlayerViewModel
         val playbackState: StateFlow<PlaybackState> = playbackRepository.playbackState
 
         fun onPlayPauseClick() {
-            if (playbackState.value.isPlaying) {
+            val state = playbackState.value
+            if (state.isPlaying) {
                 playbackRepository.pause()
             } else {
-                playbackRepository.play()
+                val currentTrack = state.currentTrack
+                if (currentTrack != null) {
+                    playbackRepository.playTrack(currentTrack)
+                } else {
+                    playbackRepository.play()
+                }
             }
         }
 
