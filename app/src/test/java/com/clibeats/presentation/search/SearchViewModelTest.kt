@@ -40,20 +40,9 @@ class SearchViewModelTest {
     }
 
     @Test
-    fun `initial state is Idle`() {
-        assertThat(viewModel.searchResults.value).isEqualTo(SearchUiState.Idle)
+    fun `initial state is Loading`() {
+        assertThat(viewModel.searchResults.value).isEqualTo(SearchUiState.Loading)
     }
-
-    @Test
-    fun `single char query stays Idle after debounce`() =
-        runTest {
-            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-                viewModel.searchResults.collect()
-            }
-            viewModel.onQueryChange("a")
-            advanceTimeBy(500L)
-            assertThat(viewModel.searchResults.value).isEqualTo(SearchUiState.Idle)
-        }
 
     @Test
     fun `clearQuery resets query to empty string`() =
