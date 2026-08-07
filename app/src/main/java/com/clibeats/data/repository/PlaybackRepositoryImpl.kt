@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -21,7 +22,7 @@ class PlaybackRepositoryImpl
         private val playerAdapter: PlayerAdapter,
         private val musicProvider: MusicProvider,
     ) : PlaybackRepository {
-        private val repositoryScope = CoroutineScope(Dispatchers.IO)
+        private val repositoryScope = CoroutineScope(Dispatchers.Main)
 
         override val playbackState: StateFlow<PlaybackState> = playerAdapter.playbackState
 
@@ -29,7 +30,7 @@ class PlaybackRepositoryImpl
 
         override fun playTrack(track: Track) {
             repositoryScope.launch {
-                val resolvedTrack = ensureStreamUrl(track)
+                val resolvedTrack = withContext(Dispatchers.IO) { ensureStreamUrl(track) }
                 playerAdapter.playTrack(resolvedTrack)
             }
         }
@@ -41,8 +42,10 @@ class PlaybackRepositoryImpl
             repositoryScope.launch {
                 val targetIndex = startIndex.coerceIn(tracks.indices)
                 val resolvedTracks =
-                    tracks.mapIndexed { index, track ->
-                        if (index == targetIndex) ensureStreamUrl(track) else track
+                    withContext(Dispatchers.IO) {
+                        tracks.mapIndexed { index, item ->
+                            if (index == targetIndex) ensureStreamUrl(item) else item
+                        }
                     }
                 playerAdapter.setQueue(resolvedTracks, targetIndex)
             }

@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -217,7 +216,7 @@ class PlayerAdapter
         }
 
         private fun Track.toMediaItem(): MediaItem {
-            val cachedFile = runCatching { runBlocking { cacheManager.getCachedFile(id) } }.getOrNull()
+            val cachedFile = cacheManager.getCachedFileDirect(id)
             val uri =
                 if (cachedFile != null && cachedFile.exists()) {
                     android.net.Uri.fromFile(cachedFile)
