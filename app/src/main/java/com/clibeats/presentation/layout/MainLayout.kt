@@ -99,13 +99,31 @@ fun MainLayout(
 
             // ── Persistent Player Bar ─────────────────────────────────────
             PlayerBar(
-                trackTitle = playbackState.currentTrack?.title ?: "Not playing",
-                artist = playbackState.currentTrack?.artist ?: "",
+                trackTitle = playbackState.currentTrack?.title ?: "Nothing Playing",
+                artist = buildString {
+                    val track = playbackState.currentTrack
+                    if (track != null) {
+                        append(track.artist)
+                        if (track.album.isNotBlank()) append(" • ${track.album}")
+                    } else {
+                        append("YouTube Music Provider")
+                    }
+                },
                 isPlaying = playbackState.isPlaying,
                 progress = progress,
+                artworkContent = playbackState.currentTrack?.artworkUrl?.let { url ->
+                    {
+                        coil.compose.AsyncImage(
+                            model = url,
+                            contentDescription = "Artwork for ${playbackState.currentTrack?.title}",
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
+                },
                 onPlayPauseClick = playerViewModel::onPlayPauseClick,
                 onSkipNextClick = playerViewModel::onSkipNextClick,
                 onSkipPreviousClick = playerViewModel::onSkipPreviousClick,
+                onQueueClick = { onDestinationSelected(NavDestination.Queue) },
             )
         }
     }
@@ -115,7 +133,7 @@ private fun NavigationSuiteScope.buildNavItems(
     selectedDestination: NavDestination,
     onDestinationSelected: (NavDestination) -> Unit,
 ) {
-    NavDestination.all.forEach { destination ->
+    NavDestination.mainTabs.forEach { destination ->
         item(
             selected = destination == selectedDestination,
             onClick = { onDestinationSelected(destination) },
@@ -125,7 +143,7 @@ private fun NavigationSuiteScope.buildNavItems(
                     contentDescription = destination.contentDescription,
                 )
             },
-            label = { Text(destination.label) },
+            label = { Text(destination.label, maxLines = 1) },
         )
     }
 }

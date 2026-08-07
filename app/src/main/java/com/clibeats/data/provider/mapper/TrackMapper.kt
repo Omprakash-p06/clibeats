@@ -29,32 +29,32 @@ private const val MS_PER_SECOND = 1000L
  */
 fun SearchResponse.toTrackList(): List<Track> {
     val contents = this.contents ?: return emptyList()
-
-    // Navigate: contents → tabbedSearchResultsRenderer → tabs[0] → tabRenderer
-    //          → content → sectionListRenderer → contents[*]
-    //          → musicShelfRenderer → contents[*] → musicResponsiveListItemRenderer
-    val tabs = contents.nav("tabbedSearchResultsRenderer", "tabs") ?: return emptyList()
-    val tabContent =
-        tabs.safeArray()?.getOrNull(0)
-            ?.nav("tabRenderer", "content") ?: return emptyList()
-
-    val shelves =
-        tabContent.nav("sectionListRenderer", "contents")
-            ?.safeArray() ?: return emptyList()
-
     val tracks = mutableListOf<Track>()
-    for (shelf in shelves) {
-        val items =
-            shelf.nav("musicShelfRenderer", "contents")
-                ?.safeArray() ?: continue
+    contents.collectTracks(tracks)
+    return tracks.distinctBy { it.id }
+}
 
-        for (item in items) {
-            val renderer = item.nav("musicResponsiveListItemRenderer") ?: continue
-            val track = renderer.parseTrack() ?: continue
-            tracks.add(track)
+private fun JsonElement.collectTracks(output: MutableList<Track>) {
+    when (this) {
+        is JsonObject -> {
+            val renderer = this.jsonObject["musicResponsiveListItemRenderer"]
+            if (renderer != null) {
+                val track = renderer.parseTrack()
+                if (track != null) {
+                    output.add(track)
+                    return
+                }
+            }
+            for (value in this.jsonObject.values) {
+                value.collectTracks(output)
+            }
+        }
+        else -> {
+            runCatching { this.jsonArray }.getOrNull()?.forEach { elem ->
+                elem.collectTracks(output)
+            }
         }
     }
-    return tracks
 }
 
 private fun JsonElement.parseTrack(): Track? {

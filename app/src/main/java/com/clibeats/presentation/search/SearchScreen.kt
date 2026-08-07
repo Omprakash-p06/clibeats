@@ -9,8 +9,10 @@ package com.clibeats.presentation.search
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -152,9 +154,19 @@ private fun SearchLoadingState() {
             .semantics { contentDescription = "Searching…" },
         contentAlignment = Alignment.Center,
     ) {
-        CircularProgressIndicator(
-            color = CliBeatsAccent,
-        )
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            CircularProgressIndicator(
+                color = CliBeatsAccent,
+                strokeWidth = 2.dp,
+                modifier = Modifier.size(24.dp),
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = "Searching... [████░░░░]",
+                style = MaterialTheme.typography.labelSmall,
+                color = CliBeatsAccent,
+            )
+        }
     }
 }
 

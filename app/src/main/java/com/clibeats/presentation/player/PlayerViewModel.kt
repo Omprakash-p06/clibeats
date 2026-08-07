@@ -30,4 +30,8 @@ class PlayerViewModel
         fun onSkipPreviousClick() {
             playbackRepository.skipToPrevious()
         }
+
+        fun playTrack(track: com.clibeats.domain.model.Track) {
+            playbackRepository.playTrack(track)
+        }
     }

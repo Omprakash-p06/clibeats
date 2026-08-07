@@ -19,10 +19,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -64,30 +60,31 @@ fun SettingsScreen(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = CliBeatsSurface),
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(12.dp)) {
                 Text(
                     text = "ACTIVE MUSIC PROVIDER",
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     color = CliBeatsAccent,
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-                listOf("ytmusic" to "YouTube Music", "local" to "Local Device Media").forEach { (id, label) ->
+                Spacer(modifier = Modifier.height(6.dp))
+                listOf("ytmusic" to "YouTube Music (InnerTube API)", "local" to "Local Device Media").forEach { (id, label) ->
+                    val isSelected = uiState.activeProviderId == id
                     Row(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
                                 .clickable { viewModel.setActiveProvider(id) }
-                                .padding(vertical = 4.dp),
+                                .padding(vertical = 6.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        RadioButton(
-                            selected = uiState.activeProviderId == id,
-                            onClick = { viewModel.setActiveProvider(id) },
-                            colors = RadioButtonDefaults.colors(selectedColor = CliBeatsAccent),
+                        Text(
+                            text = if (isSelected) "(•) " else "( ) ",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = if (isSelected) CliBeatsAccent else MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Text(
                             text = label,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -100,19 +97,20 @@ fun SettingsScreen(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = CliBeatsSurface),
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(12.dp)) {
                 Text(
                     text = "DISK CACHE LIMIT",
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     color = CliBeatsAccent,
                 )
                 Text(
                     text = "Current Usage: ${uiState.currentCacheSizeBytes / BYTES_PER_MB} MB",
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(6.dp))
                 listOf(256, 512, 1024, 2048).forEach { mb ->
+                    val isSelected = uiState.cacheMaxMb == mb
                     Row(
                         modifier =
                             Modifier
@@ -121,14 +119,14 @@ fun SettingsScreen(
                                 .padding(vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        RadioButton(
-                            selected = uiState.cacheMaxMb == mb,
-                            onClick = { viewModel.setCacheMaxMb(mb) },
-                            colors = RadioButtonDefaults.colors(selectedColor = CliBeatsAccent),
+                        Text(
+                            text = if (isSelected) "(•) " else "( ) ",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = if (isSelected) CliBeatsAccent else MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Text(
                             text = "$mb MB",
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -145,26 +143,27 @@ fun SettingsScreen(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .clickable { viewModel.setHighQualityStreaming(!uiState.highQualityStreaming) }
+                        .padding(12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column {
                     Text(
                         text = "HIGH QUALITY STREAMING",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleSmall,
                         color = CliBeatsAccent,
                     )
                     Text(
                         text = "Prefer 256kbps AAC audio streams",
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                Switch(
-                    checked = uiState.highQualityStreaming,
-                    onCheckedChange = { viewModel.setHighQualityStreaming(it) },
-                    colors = SwitchDefaults.colors(checkedThumbColor = CliBeatsAccent),
+                Text(
+                    text = if (uiState.highQualityStreaming) "[ ON ]" else "[ OFF ]",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = if (uiState.highQualityStreaming) CliBeatsAccent else MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }

@@ -28,7 +28,8 @@ class YouTubeMusicProvider
             limit: Int,
         ): ProviderResult<List<Track>> =
             runCatching {
-                val response = api.search(SearchRequest.forQuery(query))
+                val searchQuery = if (query.isBlank()) "Trending Hits" else query
+                val response = api.search(SearchRequest.forQuery(searchQuery))
                 val tracks = response.toTrackList().take(limit)
                 ProviderResult.Success(tracks)
             }.getOrElse { e ->
