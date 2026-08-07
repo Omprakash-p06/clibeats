@@ -13,3 +13,9 @@
 
 # Build output
 app/build/
+
+# Gateway / Node.js
+gateway/node_modules/
+gateway/dist/
+gateway/tests/**/*.js
+gateway/tests/**/*.d.ts

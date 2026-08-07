@@ -1,0 +1,28 @@
+version: "1.0"
+
+server:
+  port: 8080
+  host: "0.0.0.0"
+  corsOrigins: ["*"]
+  gatewayVersion: "1.0.0"
+  apiVersion: "1.0.0"
+  minimumAndroidVersion: "1.0.0"
+
+providers:
+  mock:
+    enabled: true
+    priority: 100
+    circuitBreaker:
+      failureThreshold: 3
+      cooldownSeconds: 60
+
+cache:
+  redisUrl: "redis://localhost:6379"
+  metadataTTLSeconds: 86400    # 24 hours
+  searchTTLSeconds: 3600       # 1 hour
+  streamTTLSeconds: 900        # 15 minutes
+  artworkTTLSeconds: 604800    # 7 days
+
+stream:
+  validateHeadRequests: true
+  urlRefreshBufferSeconds: 300 # 5 minutes before expiry

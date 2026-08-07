@@ -56,3 +56,40 @@ jobs:
             app/build/reports/tests/
             app/build/reports/detekt/
             app/build/reports/lint-results-debug.html
+
+  gateway-quality-and-test:
+    name: Provider Gateway Build, TypeCheck & Vitest Quality Gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: gateway/package-lock.json
+
+      - name: Install Gateway Dependencies
+        run: |
+          cd gateway
+          npm ci
+
+      - name: Run TypeScript Type Check
+        run: |
+          cd gateway
+          npm run check
+
+      - name: Run Vitest Unit, Integration, Contract & Property Tests
+        run: |
+          cd gateway
+          npm test
+
+      - name: Build Docker Container
+        run: |
+          cd gateway
+          docker build -t clibeats-provider-gateway:latest .
+
