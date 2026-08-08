@@ -14,6 +14,7 @@ import {
   ProviderError,
 } from '../../types/error';
 import { YOUTUBE_PROVIDER_ID, parseRawItem, parseSubtitle } from './media';
+import { ProviderTokenService, ProviderToken } from './ProviderTokenService';
 
 export interface YouTubeProviderOptions {
   priority?: number;
@@ -22,6 +23,12 @@ export interface YouTubeProviderOptions {
   timeoutMs?: number;
   language?: string;
   country?: string;
+  /**
+   * Optional PO token provider (RECOVERY-10). When present, stream requests
+   * carry the token + matching visitor data so playback works from datacenter
+   * IPs (Render) where YouTube demands bot attestation.
+   */
+  tokenService?: ProviderTokenService;
 }
 
 const OPERATION_TIMEOUT_MS = 30_000;
@@ -48,6 +55,10 @@ export class YouTubeProviderAdapter implements ProviderAdapter {
   private readonly country?: string;
   private sessionPromise?: Promise<Innertube>;
   private streamingSessionPromise?: Promise<Innertube>;
+  /** Visitor data the cached streaming session was created with (token binding). */
+  private streamingSessionTokenKey?: string;
+  /** @internal Exposed for diagnostics (see /debug-yt). */
+  public readonly tokenService?: ProviderTokenService;
 
   constructor(
     public readonly priority: number = 60,
@@ -58,6 +69,7 @@ export class YouTubeProviderAdapter implements ProviderAdapter {
     this.timeoutMs = options.timeoutMs ?? OPERATION_TIMEOUT_MS;
     this.language = options.language;
     this.country = options.country;
+    this.tokenService = options.tokenService;
   }
 
   private getSession(): Promise<Innertube> {
@@ -71,22 +83,34 @@ export class YouTubeProviderAdapter implements ProviderAdapter {
     return this.sessionPromise;
   }
 
-  private getStreamingSession(): Promise<Innertube> {
-    if (!this.streamingSessionPromise) {
-      this.streamingSessionPromise = Innertube.create({
+  private getStreamingSession(token?: ProviderToken): Promise<Innertube> {
+    // The session carries the visitor data its PO token is bound to. When a
+    // refreshed token arrives with different visitor data the session must be
+    // rebuilt, otherwise the cached session would send a mismatched pair.
+    const tokenKey = token ? `${token.visitorData}|${token.poToken}` : 'none';
+    if (!this.streamingSessionPromise || this.streamingSessionTokenKey !== tokenKey) {
+      const options: Record<string, unknown> = {
         client_type: this.streamingClientType,
         lang: this.language,
         country: this.country,
-      } as Parameters<typeof Innertube.create>[0]);
+      };
+      if (token) {
+        options.visitor_data = token.visitorData;
+        options.po_token = token.poToken;
+      }
+      this.streamingSessionPromise = Innertube.create(options as Parameters<typeof Innertube.create>[0]);
+      this.streamingSessionTokenKey = tokenKey;
     }
     return this.streamingSessionPromise;
   }
 
   private async withTimeout<T>(
     op: (yt: Innertube) => Promise<T>,
-    session: 'metadata' | 'streaming' = 'metadata'
+    session: 'metadata' | 'streaming' = 'metadata',
+    token?: ProviderToken
   ): Promise<T> {
-    const yt = session === 'streaming' ? await this.getStreamingSession() : await this.getSession();
+    const yt =
+      session === 'streaming' ? await this.getStreamingSession(token) : await this.getSession();
     const timeout = new Promise<never>((_, reject) => {
       const timer = setTimeout(
         () =>
@@ -162,48 +186,79 @@ export class YouTubeProviderAdapter implements ProviderAdapter {
   public async stream(trackId: string, _context: ProviderContext): Promise<StreamResult> {
     if (!trackId) this.errorCode(new Error('Missing video id'), 'NOT_FOUND');
     try {
-      const result = await this.withTimeout(
-        async (yt) => {
-          const info = await yt.getBasicInfo(trackId);
-          const sd = info.streaming_data;
-          const audio = (sd?.adaptive_formats ?? []).filter((f) =>
-            String(f.mime_type ?? '').startsWith('audio/')
-          );
-          if (audio.length === 0) {
-            throw new NotFoundError(`No audio stream available for ${trackId}`, this.id);
-          }
-          audio.sort((a, b) => (b.average_bitrate ?? 0) - (a.average_bitrate ?? 0));
-          const fmt = audio[0];
-          const url = fmt.url;
-          if (!url) {
-            throw new PlaybackError(
-              `Stream URL not resolvable for ${trackId} (decipher/PO token required)`,
-              this.id
-            );
-          }
-          const expires = sd?.expires;
-          return {
-            url,
-            mimeType: fmt.mime_type ?? 'audio/mp4',
-            bitrateKbps: fmt.average_bitrate ? Math.round(fmt.average_bitrate / 1000) : undefined,
-            expiresAtEpochSeconds: expires
-              ? Math.floor(new Date(expires).getTime() / 1000)
-              : Math.floor(Date.now() / 1000) + 3600,
-          };
-        },
-        'streaming'
-      );
-      return {
-        trackId,
-        providerId: this.id,
-        streamUrl: result.url,
-        mimeType: result.mimeType,
-        bitrateKbps: result.bitrateKbps,
-        expiresAtEpochSeconds: result.expiresAtEpochSeconds,
-      };
+      const token = this.tokenService ? await this.tokenService.getToken() : undefined;
+      try {
+        return await this.resolveStream(trackId, token);
+      } catch (err) {
+        // The token may have been rejected or expired server-side. Refresh once
+        // and retry before giving up (RECOVERY-10: automatic, no manual tokens).
+        if (token && this.tokenService && this.isPoTokenFailure(err)) {
+          const fresh = await this.tokenService.forceRefresh();
+          return await this.resolveStream(trackId, fresh);
+        }
+        throw err;
+      }
     } catch (e) {
       this.errorCode(e);
     }
+  }
+
+  private async resolveStream(trackId: string, token?: ProviderToken): Promise<StreamResult> {
+    const result = await this.withTimeout(
+      async (yt) => {
+        const info = await yt.getBasicInfo(trackId, token ? { po_token: token.poToken } : undefined);
+        const playability = info.playability_status as { status?: string; reason?: string } | undefined;
+        if (playability?.status === 'LOGIN_REQUIRED') {
+          throw new PlaybackError(
+            `YouTube requires PO token/verification for ${trackId} (${playability.reason ?? 'bot check'})`,
+            this.id
+          );
+        }
+        const sd = info.streaming_data;
+        const audio = (sd?.adaptive_formats ?? []).filter((f) =>
+          String(f.mime_type ?? '').startsWith('audio/')
+        );
+        if (audio.length === 0) {
+          throw new NotFoundError(`No audio stream available for ${trackId}`, this.id);
+        }
+        audio.sort((a, b) => (b.average_bitrate ?? 0) - (a.average_bitrate ?? 0));
+        const fmt = audio[0];
+        const url = fmt.url;
+        if (!url) {
+          throw new PlaybackError(
+            `Stream URL not resolvable for ${trackId} (decipher/PO token required)`,
+            this.id
+          );
+        }
+        const expires = sd?.expires;
+        return {
+          url,
+          mimeType: fmt.mime_type ?? 'audio/mp4',
+          bitrateKbps: fmt.average_bitrate ? Math.round(fmt.average_bitrate / 1000) : undefined,
+          expiresAtEpochSeconds: expires
+            ? Math.floor(new Date(expires).getTime() / 1000)
+            : Math.floor(Date.now() / 1000) + 3600,
+        };
+      },
+      'streaming',
+      token
+    );
+    return {
+      trackId,
+      providerId: this.id,
+      streamUrl: result.url,
+      mimeType: result.mimeType,
+      bitrateKbps: result.bitrateKbps,
+      expiresAtEpochSeconds: result.expiresAtEpochSeconds,
+    };
+  }
+
+  private isPoTokenFailure(err: unknown): boolean {
+    if (err instanceof ProviderError) {
+      return /po token|login_required|not a bot|verification/i.test(err.message);
+    }
+    const msg = err instanceof Error ? err.message : String(err);
+    return /po token|login_required|not a bot|verification/i.test(msg);
   }
 
   public async album(albumId: string, _context: ProviderContext): Promise<Album> {

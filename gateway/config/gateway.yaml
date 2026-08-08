@@ -12,6 +12,12 @@ providers:
   youtube:
     enabled: true
     priority: 100
+    # Server-side PO token (Proof of Origin) minting for playback from
+    # datacenter IPs. Automatic: minted in-process via BotGuard/WAA and
+    # refreshed before expiry. Set enabled: false to disable.
+    poToken:
+      enabled: true
+      refreshBufferSeconds: 1800
     circuitBreaker:
       failureThreshold: 5
       cooldownSeconds: 60

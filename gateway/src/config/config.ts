@@ -22,6 +22,10 @@ export interface GatewayConfig {
         cooldownSeconds: number;
       };
       instanceUrl?: string;
+      poToken?: {
+        enabled?: boolean;
+        refreshBufferSeconds?: number;
+      };
     }
   >;
   cache: {

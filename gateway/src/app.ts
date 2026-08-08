@@ -168,6 +168,9 @@ export async function buildApp(customConfig?: Partial<GatewayConfig>, redisClien
     }
 
     const message = error instanceof Error ? error.message : 'Internal Server Error';
+    if (error instanceof Error) {
+      logger.error({ traceId, err: { message: error.message, stack: error.stack } }, 'unhandled error');
+    }
     return reply.status(500).send({
       error: {
         code: 'INTERNAL_ERROR',
@@ -520,6 +523,12 @@ export async function buildApp(customConfig?: Partial<GatewayConfig>, redisClien
         };
       }
     }
+
+    // PO token service diagnostics (RECOVERY-10 evidence).
+    const ytAdapter = registry.getAll().find((p) => p.id === 'youtube') as
+      | { tokenService?: { getStatus(): unknown } }
+      | undefined;
+    results._poToken = ytAdapter?.tokenService?.getStatus() ?? { enabled: false };
 
     return reply.send({ results });
   });

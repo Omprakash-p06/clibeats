@@ -1022,3 +1022,204 @@ class TextBadge extends YTNode {
 {"level":"warn","time":"2026-08-08T19:55:35.878Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
 {"level":"warn","time":"2026-08-08T19:55:35.879Z","service":"clibeats-gateway","error":"Connection is closed.","msg":"Redis initial connection failed (degrading to cache-miss)"}
 {"level":"error","time":"2026-08-08T19:55:35.996Z","service":"clibeats-gateway","err":{"type":"Error","message":"listen EADDRINUSE: address already in use 0.0.0.0:8080","stack":"Error: listen EADDRINUSE: address already in use 0.0.0.0:8080\n    at Server.setupListenHandle [as _listen2] (node:net:1940:16)\n    at listenInCluster (node:net:1997:12)\n    at node:net:2206:7\n    at processTicksAndRejections (node:internal/process/task_queues:90:21)","code":"EADDRINUSE","errno":-4091,"syscall":"listen","address":"0.0.0.0","port":8080},"msg":"Failed to start gateway server"}
+[INFO] 02:49:29 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\providers\youtube\YouTubeProviderAdapter.ts has been modified
+{"level":"warn","time":"2026-08-08T21:19:32.564Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T21:19:32.565Z","service":"clibeats-gateway","error":"Connection is closed.","msg":"Redis initial connection failed (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:19:32.715Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T21:19:32.715Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"warn","time":"2026-08-08T21:19:33.074Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T21:19:33.579Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+[INFO] 02:49:34 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\config\config.ts has been modified
+{"level":"warn","time":"2026-08-08T21:19:35.492Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T21:19:35.493Z","service":"clibeats-gateway","error":"Connection is closed.","msg":"Redis initial connection failed (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:19:35.642Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T21:19:35.642Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"warn","time":"2026-08-08T21:19:35.999Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T21:19:36.543Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+[INFO] 02:49:45 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\providers\registerProviders.ts has been modified
+{"level":"warn","time":"2026-08-08T21:19:47.854Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T21:19:47.855Z","service":"clibeats-gateway","error":"Connection is closed.","msg":"Redis initial connection failed (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:19:48.060Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T21:19:48.060Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"warn","time":"2026-08-08T21:19:48.360Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:19:48.420Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: page visitor data acquired (520 chars)"}
+{"level":"info","time":"2026-08-08T21:19:48.420Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: page challenge parse failed: Expected property name or '}' in JSON at position 1 (line 1 column 2)"}
+{"level":"warn","time":"2026-08-08T21:19:49.527Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:19:49.587Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: attestation challenge acquired (requestKey 129 chars)"}
+{"level":"info","time":"2026-08-08T21:19:49.779Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: BotGuard interpreter loaded (63851 bytes)"}
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+{"level":"info","time":"2026-08-08T21:19:49.907Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: BotGuard snapshot resolved (4073 chars)"}
+{"level":"info","time":"2026-08-08T21:19:49.965Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: PO token minted (804 chars, ttl 43200s)"}
+[INFO] 02:50:00 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\app.ts has been modified
+{"level":"warn","time":"2026-08-08T21:20:02.986Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T21:20:02.987Z","service":"clibeats-gateway","error":"Connection is closed.","msg":"Redis initial connection failed (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:20:03.138Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T21:20:03.138Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"info","time":"2026-08-08T21:20:03.443Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: page visitor data acquired (520 chars)"}
+{"level":"info","time":"2026-08-08T21:20:03.444Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: page challenge parse failed: Expected property name or '}' in JSON at position 1 (line 1 column 2)"}
+{"level":"warn","time":"2026-08-08T21:20:03.501Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T21:20:04.683Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:20:04.743Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: attestation challenge acquired (requestKey 129 chars)"}
+{"level":"info","time":"2026-08-08T21:20:04.925Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: BotGuard interpreter loaded (63851 bytes)"}
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+{"level":"info","time":"2026-08-08T21:20:05.056Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: BotGuard snapshot resolved (4072 chars)"}
+{"level":"info","time":"2026-08-08T21:20:05.115Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: PO token minted (804 chars, ttl 43200s)"}
+[INFO] 02:52:38 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\providers\youtube\poToken\mint.ts has been modified
+{"level":"warn","time":"2026-08-08T21:22:40.847Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T21:22:40.847Z","service":"clibeats-gateway","error":"Connection is closed.","msg":"Redis initial connection failed (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:22:41.033Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T21:22:41.033Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"warn","time":"2026-08-08T21:22:41.358Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:22:41.416Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: page visitor data acquired (520 chars)"}
+{"level":"info","time":"2026-08-08T21:22:41.416Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: page challenge parse failed: Expected property name or '}' in JSON at position 1 (line 1 column 2)"}
+{"level":"warn","time":"2026-08-08T21:22:42.858Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:22:42.917Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: attestation challenge acquired (requestKey 129 chars)"}
+{"level":"warn","time":"2026-08-08T21:22:42.917Z","service":"clibeats-gateway","error":"jsdom_1.ResourceLoader is not a constructor","msg":"po-token warm-up failed"}
+[INFO] 02:53:16 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\providers\youtube\poToken\mint.ts has been modified
+{"level":"warn","time":"2026-08-08T21:23:19.402Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T21:23:19.403Z","service":"clibeats-gateway","error":"Connection is closed.","msg":"Redis initial connection failed (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:23:19.570Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T21:23:19.570Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"warn","time":"2026-08-08T21:23:19.919Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:23:19.947Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: page visitor data acquired (520 chars)"}
+{"level":"info","time":"2026-08-08T21:23:19.948Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: page challenge parse failed: Expected property name or '}' in JSON at position 1 (line 1 column 2)"}
+{"level":"warn","time":"2026-08-08T21:23:21.067Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:23:21.128Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: attestation challenge acquired (requestKey 129 chars)"}
+{"level":"info","time":"2026-08-08T21:23:21.304Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: BotGuard interpreter loaded (63851 bytes)"}
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+{"level":"info","time":"2026-08-08T21:23:21.431Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: BotGuard snapshot resolved (4075 chars)"}
+{"level":"info","time":"2026-08-08T21:23:21.485Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: PO token minted (804 chars, ttl 43200s)"}
+[INFO] 02:53:57 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\providers\youtube\poToken\mint.ts has been modified
+{"level":"warn","time":"2026-08-08T21:24:00.470Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T21:24:00.470Z","service":"clibeats-gateway","error":"Connection is closed.","msg":"Redis initial connection failed (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:24:00.626Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T21:24:00.627Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"info","time":"2026-08-08T21:24:00.893Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: page visitor data acquired (520 chars)"}
+{"level":"info","time":"2026-08-08T21:24:00.895Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: attestation challenge acquired (requestKey 174 chars)"}
+{"level":"warn","time":"2026-08-08T21:24:01.036Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:24:01.105Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: BotGuard interpreter loaded (63851 bytes)"}
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+{"level":"info","time":"2026-08-08T21:24:01.236Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: BotGuard snapshot resolved (4037 chars)"}
+{"level":"info","time":"2026-08-08T21:24:01.300Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: PO token minted (804 chars, ttl 43200s)"}
+{"level":"warn","time":"2026-08-08T21:24:01.550Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+[INFO] 02:57:13 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\providers\youtube\poToken\mint.ts has been modified
+{"level":"warn","time":"2026-08-08T21:27:16.602Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T21:27:16.602Z","service":"clibeats-gateway","error":"Connection is closed.","msg":"Redis initial connection failed (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:27:16.836Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T21:27:16.836Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"warn","time":"2026-08-08T21:27:17.110Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:27:17.132Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: page visitor data acquired (520 chars)"}
+{"level":"info","time":"2026-08-08T21:27:17.134Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: attestation challenge acquired (requestKey 174 chars)"}
+{"level":"info","time":"2026-08-08T21:27:17.391Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: BotGuard interpreter loaded (63851 bytes)"}
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+{"level":"info","time":"2026-08-08T21:27:17.533Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: BotGuard snapshot resolved (4012 chars)"}
+{"level":"info","time":"2026-08-08T21:27:17.595Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: PO token minted (804 chars, ttl 43200s)"}
+{"level":"warn","time":"2026-08-08T21:27:17.616Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+[INFO] 02:57:56 Reinitializing TS compilation
+[INFO] 02:57:56 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\tsconfig.json has been modified
+{"level":"warn","time":"2026-08-08T21:28:00.162Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T21:28:00.164Z","service":"clibeats-gateway","error":"Connection is closed.","msg":"Redis initial connection failed (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:28:00.358Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T21:28:00.358Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"warn","time":"2026-08-08T21:28:00.667Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:28:00.745Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: page visitor data acquired (520 chars)"}
+{"level":"info","time":"2026-08-08T21:28:00.746Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: attestation challenge acquired (requestKey 174 chars)"}
+{"level":"info","time":"2026-08-08T21:28:00.922Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: BotGuard interpreter loaded (63851 bytes)"}
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+{"level":"info","time":"2026-08-08T21:28:01.047Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: BotGuard snapshot resolved (4031 chars)"}
+{"level":"info","time":"2026-08-08T21:28:01.109Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: PO token minted (804 chars, ttl 43200s)"}
+{"level":"warn","time":"2026-08-08T21:28:01.170Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+[INFO] 02:58:07 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\providers\youtube\poToken\mint.ts has been modified
+{"level":"warn","time":"2026-08-08T21:28:10.294Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T21:28:10.295Z","service":"clibeats-gateway","error":"Connection is closed.","msg":"Redis initial connection failed (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:28:10.478Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T21:28:10.478Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"info","time":"2026-08-08T21:28:10.729Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: page visitor data acquired (520 chars)"}
+{"level":"info","time":"2026-08-08T21:28:10.730Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: attestation challenge acquired (requestKey 174 chars)"}
+{"level":"warn","time":"2026-08-08T21:28:10.838Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:28:10.908Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: BotGuard interpreter loaded (63851 bytes)"}
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+{"level":"info","time":"2026-08-08T21:28:11.042Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: BotGuard snapshot resolved (4039 chars)"}
+{"level":"info","time":"2026-08-08T21:28:11.103Z","service":"clibeats-gateway","providerId":"youtube","msg":"po-token: PO token minted (804 chars, ttl 43200s)"}
+{"level":"warn","time":"2026-08-08T21:28:11.351Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T21:28:59.717Z","service":"clibeats-gateway","traceId":"trace-gjkz188sw","method":"GET","url":"/health","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T21:28:59.720Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-gjkz188sw","endpoint":"/health","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+[YOUTUBEJS][Parser]: InnertubeError: TextBadge not found!
+This is a bug, want to help us fix it? Follow the instructions at https://github.com/LuanRT/YouTube.js/blob/main/docs/updating-the-parser.md or report it at https://github.com/LuanRT/YouTube.js/issues!
+Introspected and JIT generated this class in the meantime:
+class TextBadge extends YTNode {
+  static type = 'TextBadge';
+
+  label: Text;
+  background_color: number;
+  text_color: number;
+  border_color: number;
+
+  constructor(data: RawNode) {
+    super();
+    this.label = new Text(data.label);
+    this.background_color = data.backgroundColor;
+    this.text_color = data.textColor;
+    this.border_color = data.borderColor;
+  }
+}
+
+    at ERROR_HANDLER (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:71:27)
+    at createRuntimeClass (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/generator.js:320:5)
+    at generateRuntimeClass (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/generator.js:371:21)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:401:17)
+    at Module.parseArray (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:444:28)
+    at new MusicResponsiveListItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/classes/MusicResponsiveListItem.js:97:34)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:424:28)
+    at Module.parseArray (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:444:28)
+    at new ItemSection (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/classes/ItemSection.js:18:32)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:424:28) {
+  date: 2026-08-08T21:29:01.494Z,
+  version: '17.2.0',
+  info: undefined
+}
+{"level":"info","time":"2026-08-08T21:29:01.507Z","service":"clibeats-gateway","traceId":"trace-gjkz188sw","statusCode":200,"method":"GET","url":"/health","msg":"request completed"}
+{"level":"info","time":"2026-08-08T21:29:11.300Z","service":"clibeats-gateway","traceId":"trace-xjz9q1je4","method":"GET","url":"/version","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T21:29:11.300Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-xjz9q1je4","endpoint":"/version","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T21:29:11.300Z","service":"clibeats-gateway","traceId":"trace-xjz9q1je4","statusCode":200,"method":"GET","url":"/version","msg":"request completed"}
+{"level":"info","time":"2026-08-08T21:29:11.617Z","service":"clibeats-gateway","traceId":"trace-f6mm07h3s","method":"GET","url":"/debug-yt?trackId=rj5wZqReXQE","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T21:29:11.617Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-f6mm07h3s","endpoint":"/debug-yt?trackId=rj5wZqReXQE","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+[YOUTUBEJS][Parser]: InnertubeError: PlayerErrorCommand not found!
+This is a bug, want to help us fix it? Follow the instructions at https://github.com/LuanRT/YouTube.js/blob/main/docs/updating-the-parser.md or report it at https://github.com/LuanRT/YouTube.js/issues!
+Introspected and JIT generated this class in the meantime:
+class PlayerErrorCommand extends YTNode {
+  static type = 'PlayerErrorCommand';
+
+  command: {
+    click_tracking_params: string,
+    show_engagement_panel_endpoint: NavigationEndpoint
+  };
+
+  constructor(data: RawNode) {
+    super();
+    this.command = {
+      click_tracking_params: data.command.clickTrackingParams,
+      show_engagement_panel_endpoint: new NavigationEndpoint(data.command.showEngagementPanelEndpoint)
+    };
+  }
+}
+
+    at ERROR_HANDLER (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:71:27)
+    at createRuntimeClass (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/generator.js:320:5)
+    at generateRuntimeClass (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/generator.js:371:21)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:401:17)
+    at Module.parseResponse (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:275:23)
+    at new MediaInfo (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/core/mixins/MediaInfo.js:25:29)
+    at new VideoInfo (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/youtube/VideoInfo.js:45:9)
+    at Innertube.getBasicInfo (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/Innertube.js:102:16)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.<anonymous> (C:\Users\OM Prakash\Documents\clibeats\gateway\src\app.ts:504:22) {
+  date: 2026-08-08T21:29:16.626Z,
+  version: '17.2.0',
+  info: undefined
+}
+{"level":"info","time":"2026-08-08T21:29:18.446Z","service":"clibeats-gateway","traceId":"trace-f6mm07h3s","statusCode":200,"method":"GET","url":"/debug-yt?trackId=rj5wZqReXQE","msg":"request completed"}
+[INFO] 03:02:43 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\app.ts has been modified
+{"level":"warn","time":"2026-08-08T21:32:46.172Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T21:32:46.173Z","service":"clibeats-gateway","error":"Connection is closed.","msg":"Redis initial connection failed (degrading to cache-miss)"}
+{"level":"error","time":"2026-08-08T21:32:46.374Z","service":"clibeats-gateway","err":{"type":"Error","message":"listen EADDRINUSE: address already in use 0.0.0.0:8080","stack":"Error: listen EADDRINUSE: address already in use 0.0.0.0:8080\n    at Server.setupListenHandle [as _listen2] (node:net:1940:16)\n    at listenInCluster (node:net:1997:12)\n    at node:net:2206:7\n    at processTicksAndRejections (node:internal/process/task_queues:90:21)","code":"EADDRINUSE","errno":-4091,"syscall":"listen","address":"0.0.0.0","port":8080},"msg":"Failed to start gateway server"}
