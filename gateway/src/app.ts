@@ -46,6 +46,7 @@ function createRedis(config: GatewayConfig): Redis {
     return new RedisMock() as unknown as Redis;
   }
   const client = new Redis(config.cache.redisUrl, {
+    lazyConnect: true,
     maxRetriesPerRequest: 1,
     enableOfflineQueue: false,
     retryStrategy(times) {
@@ -55,6 +56,9 @@ function createRedis(config: GatewayConfig): Redis {
   });
   client.on('error', (err) => {
     logger.warn({ error: err.message }, 'Redis connection warning (degrading to cache-miss)');
+  });
+  client.connect().catch((err) => {
+    logger.warn({ error: err.message }, 'Redis initial connection failed (degrading to cache-miss)');
   });
   return client;
 }
