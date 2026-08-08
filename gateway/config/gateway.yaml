@@ -33,3 +33,4 @@ cache:
 stream:
   validateHeadRequests: true
   urlRefreshBufferSeconds: 300 # 5 minutes before expiry
+  proxyStreaming: true          # relay CDN audio through the gateway (Range-safe)

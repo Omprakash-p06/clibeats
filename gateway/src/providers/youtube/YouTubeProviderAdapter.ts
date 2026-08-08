@@ -54,7 +54,7 @@ export class YouTubeProviderAdapter implements ProviderAdapter {
     options: YouTubeProviderOptions = {}
   ) {
     this.clientType = options.clientType ?? ClientType.MUSIC;
-    this.streamingClientType = options.streamingClientType ?? ClientType.IOS;
+    this.streamingClientType = options.streamingClientType ?? ClientType.ANDROID_VR;
     this.timeoutMs = options.timeoutMs ?? OPERATION_TIMEOUT_MS;
     this.language = options.language;
     this.country = options.country;
