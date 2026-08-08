@@ -1,3 +1,4 @@
+import { Readable } from 'stream';
 import fastify, { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import cors from '@fastify/cors';
 import swagger from '@fastify/swagger';
@@ -182,6 +183,50 @@ export async function buildApp(customConfig?: Partial<GatewayConfig>, redisClien
     traceId: req.headers['x-trace-id'] as string,
   });
 
+  const cdnUrlCache = new Map<string, { url: string; total: number; expiresAt: number }>();
+
+  const resolveCdnStreamUrl = async (
+    trackId: string,
+    context: ProviderContext,
+  ): Promise<{ ok: true; url: string; total: number } | { ok: false; message: string }> => {
+    const cached = cdnUrlCache.get(trackId);
+    if (cached && cached.expiresAt > Date.now()) return { ok: true, url: cached.url, total: cached.total };
+    try {
+      const streamResult = await engine.executeWithFailover('playback', context, (adapter) =>
+        adapter.stream(trackId, context),
+      );
+      if (!streamResult?.streamUrl) {
+        return { ok: false, message: `No stream URL resolvable for ${trackId}` };
+      }
+      const probe = await fetch(streamResult.streamUrl, {
+        headers: { Range: 'bytes=0-0', 'User-Agent': 'CliBeatsGateway/1.0 (media relay)' },
+        redirect: 'follow',
+      });
+      let total = -1;
+      const cr = probe.headers.get('content-range');
+      if (probe.status === 206 && cr) {
+        const m = /^bytes \d+-\d+\/(\d+)$/.exec(cr);
+        if (m) total = parseInt(m[1], 10);
+      } else {
+        const cl = probe.headers.get('content-length');
+        if (cl) total = parseInt(cl, 10);
+      }
+      await probe.body?.cancel();
+      if (total <= 0) {
+        return { ok: false, message: `CDN probe failed for ${trackId} (HTTP ${probe.status})` };
+      }
+      cdnUrlCache.set(trackId, {
+        url: streamResult.streamUrl,
+        total,
+        expiresAt: Date.now() + (config.cache.streamTTLSeconds ?? 900) * 1000,
+      });
+      logger.info({ trackId, total }, 'proxy stream CDN URL resolved');
+      return { ok: true, url: streamResult.streamUrl, total };
+    } catch (err) {
+      return { ok: false, message: (err as Error).message };
+    }
+  };
+
   // 1. GET /api/v1/bootstrap (ADR-020 & user spec)
   app.get('/api/v1/bootstrap', { schema: bootstrapSchema }, async (req, reply) => {
     const providersHealth = await Promise.all(
@@ -204,7 +249,7 @@ export async function buildApp(customConfig?: Partial<GatewayConfig>, redisClien
       minimumAndroidVersion: config.server.minimumAndroidVersion,
       supportedProviders: providersHealth,
       features: {
-        directToCdnStreaming: true,
+        directToCdnStreaming: !config.stream.proxyStreaming,
         streamUrlAutoRefresh: true,
         circuitBreakerEnabled: true,
       },
@@ -306,7 +351,91 @@ export async function buildApp(customConfig?: Partial<GatewayConfig>, redisClien
       durationMs,
     });
 
+    if (config.stream.proxyStreaming && streamResult?.streamUrl) {
+      const host = req.headers.host ?? `localhost:${config.server.port}`;
+      return reply.send({
+        stream: {
+          ...streamResult,
+          streamUrl: `http://${host}/api/v1/stream/proxy/${encodeURIComponent(trackId)}`,
+          expiresAtEpochSeconds: 0,
+        },
+      });
+    }
+
     return reply.send({ stream: streamResult });
+  });
+
+  // 6b. GET /api/v1/stream/proxy/:trackId (CDN media relay — Range-safe)
+  app.get('/api/v1/stream/proxy/:trackId', async (req, reply) => {
+    const { trackId } = req.params as { trackId: string };
+    const context = getContext(req);
+
+    const resolved = await resolveCdnStreamUrl(trackId, context);
+    if (!resolved.ok) {
+      return reply.code(404).send({
+        error: {
+          code: 'STREAM_NOT_FOUND',
+          message: resolved.message,
+          providerId: 'youtube',
+        },
+      });
+    }
+
+    const clientRange = (req.headers.range as string | undefined) ?? '';
+    const abort = new AbortController();
+    req.raw.on('close', () => abort.abort());
+
+    const rangeMatch = /^bytes=(\d*)-(\d*)$/i.exec(clientRange);
+    const hasRange = !!rangeMatch;
+    const from = rangeMatch?.[1] ? parseInt(rangeMatch[1], 10) : undefined;
+    const to = rangeMatch?.[2] ? parseInt(rangeMatch[2], 10) : undefined;
+    const upstreamRange = hasRange
+      ? `bytes=${from ?? 0}-${to ?? Math.max(resolved.total - 1, 0)}`
+      : `bytes=0-${Math.max(resolved.total - 1, 0)}`;
+
+    let upstream: Response;
+    try {
+      upstream = await fetch(resolved.url, {
+        headers: {
+          Range: upstreamRange,
+          'User-Agent': 'CliBeatsGateway/1.0 (media relay)',
+        },
+        signal: abort.signal,
+        redirect: 'follow',
+      });
+    } catch (err) {
+      logger.warn({ error: (err as Error).message, trackId }, 'CDN relay fetch failed');
+      if (!reply.raw.writableEnded) reply.raw.destroy();
+      return reply;
+    }
+
+    if (!upstream.ok && upstream.status !== 206) {
+      return reply.code(502).send({
+        error: {
+          code: 'STREAM_UPSTREAM_ERROR',
+          message: `CDN responded with HTTP ${upstream.status}`,
+          providerId: 'youtube',
+        },
+      });
+    }
+
+    const contentType = upstream.headers.get('content-type') ?? 'audio/mp4';
+
+    reply.header('Accept-Ranges', 'bytes');
+    reply.header('Content-Type', contentType);
+
+    if (hasRange) {
+      const start = from ?? 0;
+      const end = to ?? resolved.total - 1;
+      reply.code(206);
+      reply.header('Content-Range', `bytes ${start}-${end}/${resolved.total}`);
+      reply.header('Content-Length', String(end - start + 1));
+    } else {
+      reply.code(200);
+      reply.header('Content-Length', String(resolved.total));
+    }
+
+    return reply.send(Readable.fromWeb(upstream.body as any));
   });
 
   // 7. GET /health (Machine-Readable Aggregate Health)
