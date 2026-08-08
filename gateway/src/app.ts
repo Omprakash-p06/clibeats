@@ -4,7 +4,6 @@ import cors from '@fastify/cors';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 import Redis from 'ioredis';
-import RedisMock from 'ioredis-mock';
 import { loadConfig, GatewayConfig } from './config/config';
 import { ProviderRegistry } from './core/registry/ProviderRegistry';
 import { ProviderSelectionEngine } from './core/selection/ProviderSelectionEngine';
@@ -43,7 +42,8 @@ declare module 'fastify' {
 
 function createRedis(config: GatewayConfig): Redis {
   if (process.env.NODE_ENV === 'test') {
-    return new RedisMock() as unknown as Redis;
+    const Mock = require('ioredis-mock');
+    return new Mock() as unknown as Redis;
   }
   const client = new Redis(config.cache.redisUrl, {
     lazyConnect: true,
