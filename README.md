@@ -1,117 +1,123 @@
 # CLIBeats 🎵
 
-> A free, production-grade Android music client inspired by terminal interfaces (TUI), featuring a text-dense monospaced aesthetic and provider-agnostic architecture.
+> **Free, Open-Source, Privacy-First Android Music Client & Provider Gateway**  
+> Inspired by Terminal User Interfaces (TUI), featuring a high-density monospaced aesthetic, local-first data ownership, and a provider-agnostic architecture.
 
 [![CI Pipeline](https://github.com/Omprakash-p06/clibeats/actions/workflows/ci.yml/badge.svg)](https://github.com/Omprakash-p06/clibeats/actions/workflows/ci.yml)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0.21-purple.svg)](https://kotlinlang.org/)
 [![Android](https://img.shields.io/badge/Android-SDK%2034-green.svg)](https://developer.android.com)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Railway Deploy](https://img.shields.io/badge/Deploy%20on-Railway-0B0D0E?logo=railway)](https://railway.app)
 
 ---
 
-## 📌 Overview
+## 📸 Screenshots & Evidence Showcase
 
-**CLIBeats** reimagines mobile music streaming with terminal-inspired design principles: high contrast, monospaced typography, flat zero-radius surfaces, and zero decorative animations or blurs. Under the hood, CLIBeats is built with strict Clean Architecture boundaries and a modular multi-provider backend.
+| Home & Startup | Search View | Search Results | Track Artwork |
+|:---:|:---:|:---:|:---:|
+| ![Startup](docs/evidence/final-release/01-startup.png) | ![Search](docs/evidence/final-release/02-search.png) | ![Results](docs/evidence/final-release/03-results.png) | ![Artwork](docs/evidence/final-release/04-artwork.png) |
 
----
-
-## 🎨 Visual Aesthetics & Design System
-
-- **Monochrome Dark Theme**: Background (`#0D0D0D`), Surface (`#151515`), Spotify Green Accent (`#1DB954`), Primary Text (`#FFFFFF`).
-- **Typography**: Bundled **JetBrains Mono** font hierarchy across all UI components.
-- **Flat Geometry**: 0dp corner radius globally — no rounded bubble cards or glassmorphism.
-- **Dense Components**: 48dp list rows with 32x32dp square album artwork and persistent 64dp player bar.
+| Now Playing | Seek Controls | Notification Controls | Background Playback |
+|:---:|:---:|:---:|:---:|
+| ![Playing](docs/evidence/final-release/06-playing.png) | ![Seek](docs/evidence/final-release/08-seek.png) | ![Notification](docs/evidence/final-release/07-notification.png) | ![Background](docs/evidence/final-release/11-background.png) |
 
 ---
 
-## 🏗 Architecture & Tech Stack
+## 🌟 Vision & Core Principles
 
-CLIBeats adheres to **MVVM + Clean Architecture** (`Presentation` ➔ `Domain` ➔ `Data`):
+- 🔒 **Privacy-First & Local-First**: No ads, no tracking IDs, no telemetry, no mandatory cloud account.
+- 📱 **User Owns Everything**: All library data, history, and playlists stored locally in Room SQLite database.
+- ⚙️ **Provider-Agnostic**: Decoupled `MusicProvider` engine using a stateless Node.js Fastify Gateway.
+- 🎨 **TUI Aesthetic**: Monospaced JetBrains Mono typography, high-contrast monochrome palette (`#0D0D0D` background, `#1DB954` accent), 0dp flat surfaces.
+- ⚡ **Range-Safe Audio Streaming**: Seamless HTTP 206 audio relay preventing YouTube 403 authorization drops.
+
+---
+
+## 🏗 Architecture Overview
+
+CliBeats separates presentation on Android from provider complexity via a dedicated Provider Gateway middleware:
 
 ```
 ┌────────────────────────────────────────────────────────┐
-│               Presentation Layer (UI)                  │
-│    Jetpack Compose · Material3 Adaptive · MainLayout   │
+│                 Android Mobile Client                  │
+│   Jetpack Compose (TUI) · Room DB · AndroidX Media3    │
 └──────────────────────────┬─────────────────────────────┘
                            │
-┌──────────────────────────▼─────────────────────────────┐
-│                 Domain Layer (Core)                    │
-│   MusicProvider Contract · Track / Playlist Models     │
-└──────────────────────────▲─────────────────────────────┘
+                           │ HTTPS REST / Range-safe Proxy
+                           ▼
+┌────────────────────────────────────────────────────────┐
+│             Provider Gateway (Railway PaaS)            │
+│  Fastify · Node.js 22 · youtubei.js (ANDROID_VR)       │
+└──────────────────────────┬─────────────────────────────┘
                            │
-┌──────────────────────────┴─────────────────────────────┐
-│                 Data Layer (Storage)                   │
-│   Room Database · DataStore · EncryptedSharedPreferences│
-└────────────────────────────────────────────────────────┘
+                           ▼
+                 Music Source Providers
 ```
-
-- **Platform**: Android (Min SDK 26, Target SDK 34)
-- **UI Framework**: Jetpack Compose (Material3 + Navigation Suite)
-- **Audio Engine**: AndroidX Media3 / ExoPlayer with background foreground service
-- **Database**: Room 2.6 with KSP (Kotlin Symbol Processing) & JSON Schema Export
-- **Security & Persistence**: `EncryptedSharedPreferences` (AES256_GCM via Android Keystore `MasterKey`) + DataStore Preferences
-- **Dependency Injection**: Hilt / Dagger 2.51
-- **Testing & Screenshot Baselines**: JUnit 4, Mockito, Paparazzi screenshot regression suite
-- **Static Analysis & Linting**: Detekt, ktlint, Android Lint
 
 ---
 
-## ⚙️ Building & Running Locally
+## 🚀 Hosting the Gateway on Railway
 
-### Prerequisites
-- JDK 17
-- Android SDK 34 (Android 14)
-- Gradle 8.5+
+The Provider Gateway can be hosted for **free** on [Railway](https://railway.app) with zero cold-start delay:
 
-### Build Commands
+### 1. One-Click Railway Setup
+1. Fork or clone this repository.
+2. Log into [Railway](https://railway.app) and click **New Project** ➔ **Deploy from GitHub repo**.
+3. Select the `clibeats` repository and set the root directory to `gateway`.
+4. Railway will automatically detect `gateway/Dockerfile` and `gateway/railway.toml`.
+5. Set Environment Variables in Railway Dashboard:
+   - `NODE_ENV`: `production`
+   - `PORT`: `8080`
+   - `PROXY_STREAMING`: `true`
+
+### 2. Connect Android App to Railway
+Once deployed, copy your Railway public URL (e.g., `https://clibeats-gateway.up.railway.app/`) and compile the Android release APK:
 
 ```powershell
-# Clone repository
-git clone https://github.com/Omprakash-p06/clibeats.git
-cd clibeats
-
-# Run unit tests
-.\gradlew.bat testDebugUnitTest
-
-# Run Paparazzi screenshot verification
-.\gradlew.bat verifyPaparazziDebug
-
-# Run static analysis & formatting checks
-.\gradlew.bat ktlintCheck
-.\gradlew.bat detekt
-
-# Compile Debug APK
-.\gradlew.bat assembleDebug
+# Build release APK pointing to your Railway Gateway
+./gradlew assembleRelease -PGATEWAY_URL=https://clibeats-gateway.up.railway.app/
 ```
 
 ---
 
-## 📋 Quality Gates & Definition of Done (DoD)
+## 💻 Local Development Setup
 
-Every commit and pull request must pass 10 automated quality criteria before merge:
+### Running Gateway Locally
+```powershell
+cd gateway
+npm install
+npm run dev
+# Gateway runs on http://localhost:8080/
+```
 
-1. `✓ Builds` — Clean Gradle compile with 0 errors.
-2. `✓ Lint` — Android Lint passes with 0 error-level issues.
-3. `✓ Static Analysis` — Detekt passes with 0 critical issues.
-4. `✓ Formatting` — ktlint formatting passes cleanly.
-5. `✓ Unit Tests` — 100% pass rate.
-6. `✓ Screenshot Tests` — Paparazzi snapshot baselines verified.
-7. `✓ Accessibility` — Screen reader labels and 48dp touch targets verified.
-8. `✓ Performance` — Cold start <2s budget.
-9. `✓ ADR` — Architecture Decision Records updated in `docs/adr/`.
-10. `✓ CI` — GitHub Actions workflow green (`.github/workflows/ci.yml`).
+### Building Android App Locally
+```powershell
+# Run Unit Tests
+./gradlew testDebugUnitTest
+
+# Compile Release APK (with local Gateway)
+./gradlew assembleRelease -PGATEWAY_URL=http://192.168.0.106:8080/
+```
 
 ---
 
-## 📜 Architecture Decision Records (ADRs)
+## 📚 Architectural Documentation
 
-- [ADR-000: Architecture Decision Record Template](docs/adr/ADR-000-template.md)
-- [ADR-001: Clean Architecture Layering & Hilt DI Strategy](docs/adr/ADR-001-clean-architecture-hilt.md)
-- [ADR-002: MusicProvider Abstraction Layer](docs/adr/ADR-002-music-provider-abstraction.md)
-- [ADR-003: Encrypted Storage & Local Persistence Strategy](docs/adr/ADR-003-encrypted-storage-local-persistence.md)
+All architectural plans and specs are available in [`docs/architecture/`](docs/architecture/):
+
+- 🗺 **[Master Product Roadmap](docs/architecture/MASTER_ROADMAP.md)**
+- 🔌 **[Provider Strategy & Matrix](docs/architecture/PROVIDER_STRATEGY.md)**
+- ☁️ **[Railway Hosting Strategy](docs/architecture/HOSTING_PLAN_RAILWAY.md)**
+- 📦 **[Portable Library Format Spec (`.clibeats`)](docs/architecture/PORTABLE_LIBRARY_SPEC.md)**
+- 🛡 **[Privacy Model & GDPR Assessment](docs/architecture/PRIVACY_MODEL.md)**
+- 📊 **[Production Operations & Observability](docs/architecture/PRODUCTION_OPERATIONS.md)**
+- 🔧 **[Technical Debt Audit](docs/architecture/TECHNICAL_DEBT.md)**
+- 🎯 **[Execution Sequence & Dependency Graph](docs/architecture/EXECUTION_ORDER.md)**
+- ⚠️ **[Comprehensive Risk Register](docs/architecture/RISK_REGISTER.md)**
+- 🏛 **[Master System Architecture](docs/architecture/FINAL_ARCHITECTURE.md)**
 
 ---
 
 ## 📄 License
 
-Distributed under the MIT License. See `LICENSE` for details.
+Distributed under the MIT License. See [`LICENSE`](LICENSE) for details.

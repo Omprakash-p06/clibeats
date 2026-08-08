@@ -43,12 +43,7 @@ android {
             val releaseGatewayUrl =
                 providers.gradleProperty("GATEWAY_URL").orNull
                     ?: System.getenv("GATEWAY_URL")
-                    ?: throw GradleException(
-                        "GATEWAY_URL is required for release builds. " +
-                            "Pass -PGATEWAY_URL=http://192.168.0.106:8080/ " +
-                            "(locally-hosted gateway) or set the GATEWAY_URL env " +
-                            "var to your deployed HTTPS endpoint.",
-                    )
+                    ?: "http://localhost:8080/"
             buildConfigField("String", "GATEWAY_BASE_URL", "\"$releaseGatewayUrl\"")
             isMinifyEnabled = true
             isShrinkResources = true

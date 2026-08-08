@@ -24,7 +24,7 @@ export class RedisHealthChecker {
 
   public async check(): Promise<RedisHealthResult> {
     const start = Date.now();
-    if (this.redis.status !== 'ready') {
+    if (this.redis.status && this.redis.status !== 'ready' && this.redis.status !== 'connect') {
       return {
         status: 'DOWN',
         latencyMs: 0,

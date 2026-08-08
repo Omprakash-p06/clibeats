@@ -27,6 +27,7 @@ import {
   versionSchema,
   providersSchema,
   metricsSchema,
+  streamProxySchema,
 } from './schemas';
 
 // Fastify TypeScript decoration
@@ -366,7 +367,7 @@ export async function buildApp(customConfig?: Partial<GatewayConfig>, redisClien
   });
 
   // 6b. GET /api/v1/stream/proxy/:trackId (CDN media relay — Range-safe)
-  app.get('/api/v1/stream/proxy/:trackId', async (req, reply) => {
+  app.get('/api/v1/stream/proxy/:trackId', { schema: streamProxySchema }, async (req, reply) => {
     const { trackId } = req.params as { trackId: string };
     const context = getContext(req);
 

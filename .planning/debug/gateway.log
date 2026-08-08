@@ -1,0 +1,1004 @@
+
+> clibeats-provider-gateway@1.0.0 dev
+> ts-node-dev --respawn --transpile-only src/server.ts
+
+[INFO] 20:08:49 ts-node-dev ver. 2.0.0 (using ts-node ver. 10.9.2, typescript ver. 5.9.3)
+{"level":"warn","time":"2026-08-08T14:38:52.548Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T14:38:52.677Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T14:38:52.677Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"warn","time":"2026-08-08T14:38:53.054Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T14:38:53.166Z","service":"clibeats-gateway","traceId":"trace-ico251006","method":"GET","url":"/health","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:38:53.166Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-ico251006","endpoint":"/health","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"warn","time":"2026-08-08T14:38:53.567Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+[YOUTUBEJS][Parser]: InnertubeError: TextBadge not found!
+This is a bug, want to help us fix it? Follow the instructions at https://github.com/LuanRT/YouTube.js/blob/main/docs/updating-the-parser.md or report it at https://github.com/LuanRT/YouTube.js/issues!
+Introspected and JIT generated this class in the meantime:
+class TextBadge extends YTNode {
+  static type = 'TextBadge';
+
+  label: Text;
+  background_color: number;
+  text_color: number;
+  border_color: number;
+
+  constructor(data: RawNode) {
+    super();
+    this.label = new Text(data.label);
+    this.background_color = data.backgroundColor;
+    this.text_color = data.textColor;
+    this.border_color = data.borderColor;
+  }
+}
+
+    at ERROR_HANDLER (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:71:27)
+    at createRuntimeClass (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/generator.js:320:5)
+    at generateRuntimeClass (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/generator.js:371:21)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:401:17)
+    at Module.parseArray (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:444:28)
+    at new MusicResponsiveListItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/classes/MusicResponsiveListItem.js:97:34)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:424:28)
+    at Module.parseArray (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:444:28)
+    at new ItemSection (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/classes/ItemSection.js:18:32)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:424:28) {
+  date: 2026-08-08T14:38:55.256Z,
+  version: '17.2.0',
+  info: undefined
+}
+{"level":"info","time":"2026-08-08T14:38:55.267Z","service":"clibeats-gateway","traceId":"trace-ico251006","statusCode":200,"method":"GET","url":"/health","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:39:32.997Z","service":"clibeats-gateway","traceId":"trace-qgo1aos5r","method":"GET","url":"/api/v1/bootstrap","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:39:33.005Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-qgo1aos5r","endpoint":"/api/v1/bootstrap","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:39:34.363Z","service":"clibeats-gateway","traceId":"trace-qgo1aos5r","statusCode":200,"method":"GET","url":"/api/v1/bootstrap","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:39:34.448Z","service":"clibeats-gateway","traceId":"trace-112pod24k","method":"POST","url":"/api/v1/stream","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:39:34.449Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-112pod24k","endpoint":"/api/v1/stream","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:39:36.412Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-112pod24k","trackId":"rj5wZqReXQE","durationMs":1960,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T14:39:36.413Z","service":"clibeats-gateway","traceId":"trace-112pod24k","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:39:36.429Z","service":"clibeats-gateway","traceId":"trace-a596pltnw","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:39:36.429Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-a596pltnw","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:39:37.303Z","service":"clibeats-gateway","trackId":"rj5wZqReXQE","msg":"proxy stream CDN URL resolved"}
+{"level":"info","time":"2026-08-08T14:39:37.334Z","service":"clibeats-gateway","traceId":"trace-a596pltnw","statusCode":502,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:39:37.459Z","service":"clibeats-gateway","traceId":"trace-kr9b4w02y","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:39:37.459Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-kr9b4w02y","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:39:37.501Z","service":"clibeats-gateway","traceId":"trace-kr9b4w02y","statusCode":206,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:40:54.092Z","service":"clibeats-gateway","traceId":"trace-3rfhoz8i4","method":"POST","url":"/api/v1/stream","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:40:54.092Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-3rfhoz8i4","endpoint":"/api/v1/stream","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:40:54.853Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-3rfhoz8i4","trackId":"rj5wZqReXQE","durationMs":760,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T14:40:54.854Z","service":"clibeats-gateway","traceId":"trace-3rfhoz8i4","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:40:54.874Z","service":"clibeats-gateway","traceId":"trace-ao3o759gb","method":"POST","url":"/api/v1/stream","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:40:54.874Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-ao3o759gb","endpoint":"/api/v1/stream","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:40:56.114Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-ao3o759gb","trackId":"rj5wZqReXQE","durationMs":1239,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T14:40:56.114Z","service":"clibeats-gateway","traceId":"trace-ao3o759gb","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:40:56.128Z","service":"clibeats-gateway","traceId":"trace-j3749eole","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:40:56.128Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-j3749eole","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:40:56.148Z","service":"clibeats-gateway","traceId":"trace-j3749eole","statusCode":206,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+[INFO] 20:11:16 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\app.ts has been modified
+{"level":"warn","time":"2026-08-08T14:41:18.726Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T14:41:18.907Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T14:41:18.907Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"warn","time":"2026-08-08T14:41:19.235Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T14:41:19.748Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+[INFO] 20:11:42 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\app.ts has been modified
+{"level":"warn","time":"2026-08-08T14:41:44.748Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T14:41:44.936Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T14:41:44.936Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"warn","time":"2026-08-08T14:41:45.268Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T14:41:45.783Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+[INFO] 20:12:10 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\app.ts has been modified
+{"level":"warn","time":"2026-08-08T14:42:12.583Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T14:42:12.718Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T14:42:12.719Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"warn","time":"2026-08-08T14:42:13.092Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T14:42:13.604Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T14:42:53.719Z","service":"clibeats-gateway","traceId":"trace-g4ar65p0o","method":"POST","url":"/api/v1/stream","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:42:53.719Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-g4ar65p0o","endpoint":"/api/v1/stream","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+[YOUTUBEJS][Parser]: InnertubeError: TextBadge not found!
+This is a bug, want to help us fix it? Follow the instructions at https://github.com/LuanRT/YouTube.js/blob/main/docs/updating-the-parser.md or report it at https://github.com/LuanRT/YouTube.js/issues!
+Introspected and JIT generated this class in the meantime:
+class TextBadge extends YTNode {
+  static type = 'TextBadge';
+
+  label: Text;
+  background_color: number;
+  text_color: number;
+  border_color: number;
+
+  constructor(data: RawNode) {
+    super();
+    this.label = new Text(data.label);
+    this.background_color = data.backgroundColor;
+    this.text_color = data.textColor;
+    this.border_color = data.borderColor;
+  }
+}
+
+    at ERROR_HANDLER (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:71:27)
+    at createRuntimeClass (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/generator.js:320:5)
+    at generateRuntimeClass (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/generator.js:371:21)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:401:17)
+    at Module.parseArray (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:444:28)
+    at new MusicResponsiveListItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/classes/MusicResponsiveListItem.js:97:34)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:424:28)
+    at Module.parseArray (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:444:28)
+    at new ItemSection (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/classes/ItemSection.js:18:32)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:424:28) {
+  date: 2026-08-08T14:42:56.068Z,
+  version: '17.2.0',
+  info: undefined
+}
+{"level":"info","time":"2026-08-08T14:42:57.333Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-g4ar65p0o","trackId":"rj5wZqReXQE","durationMs":3610,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T14:42:57.336Z","service":"clibeats-gateway","traceId":"trace-g4ar65p0o","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:42:57.382Z","service":"clibeats-gateway","traceId":"trace-ezcvxf9c8","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:42:57.382Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-ezcvxf9c8","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:42:58.554Z","service":"clibeats-gateway","trackId":"rj5wZqReXQE","total":4189679,"msg":"proxy stream CDN URL resolved"}
+{"level":"info","time":"2026-08-08T14:42:58.581Z","service":"clibeats-gateway","traceId":"trace-ezcvxf9c8","statusCode":502,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:43:51.937Z","service":"clibeats-gateway","traceId":"trace-h791s3bnw","method":"POST","url":"/api/v1/stream","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:43:51.940Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-h791s3bnw","endpoint":"/api/v1/stream","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:43:53.690Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-h791s3bnw","trackId":"rj5wZqReXQE","durationMs":1744,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T14:43:53.691Z","service":"clibeats-gateway","traceId":"trace-h791s3bnw","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:43:53.764Z","service":"clibeats-gateway","traceId":"trace-jbdola3j7","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:43:53.765Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-jbdola3j7","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:43:53.791Z","service":"clibeats-gateway","traceId":"trace-jbdola3j7","statusCode":206,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:43:53.819Z","service":"clibeats-gateway","traceId":"trace-zswtwwah4","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:43:53.819Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-zswtwwah4","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:43:53.852Z","service":"clibeats-gateway","traceId":"trace-kfqou15dq","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:43:53.852Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-kfqou15dq","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:43:53.859Z","service":"clibeats-gateway","traceId":"trace-kfqou15dq","statusCode":502,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:43:53.887Z","service":"clibeats-gateway","traceId":"trace-sj5fy0ufz","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:43:53.887Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-sj5fy0ufz","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:43:53.909Z","service":"clibeats-gateway","traceId":"trace-sj5fy0ufz","statusCode":502,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+[INFO] 20:17:35 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\app.ts has been modified
+{"level":"warn","time":"2026-08-08T14:47:37.476Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T14:47:37.635Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T14:47:37.635Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"warn","time":"2026-08-08T14:47:37.989Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T14:47:38.502Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T14:48:07.371Z","service":"clibeats-gateway","traceId":"trace-etsu9dcpa","method":"POST","url":"/api/v1/stream","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:48:07.371Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-etsu9dcpa","endpoint":"/api/v1/stream","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+[YOUTUBEJS][Parser]: InnertubeError: TextBadge not found!
+This is a bug, want to help us fix it? Follow the instructions at https://github.com/LuanRT/YouTube.js/blob/main/docs/updating-the-parser.md or report it at https://github.com/LuanRT/YouTube.js/issues!
+Introspected and JIT generated this class in the meantime:
+class TextBadge extends YTNode {
+  static type = 'TextBadge';
+
+  label: Text;
+  background_color: number;
+  text_color: number;
+  border_color: number;
+
+  constructor(data: RawNode) {
+    super();
+    this.label = new Text(data.label);
+    this.background_color = data.backgroundColor;
+    this.text_color = data.textColor;
+    this.border_color = data.borderColor;
+  }
+}
+
+    at ERROR_HANDLER (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:71:27)
+    at createRuntimeClass (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/generator.js:320:5)
+    at generateRuntimeClass (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/generator.js:371:21)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:401:17)
+    at Module.parseArray (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:444:28)
+    at new MusicResponsiveListItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/classes/MusicResponsiveListItem.js:97:34)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:424:28)
+    at Module.parseArray (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:444:28)
+    at new ItemSection (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/classes/ItemSection.js:18:32)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:424:28) {
+  date: 2026-08-08T14:48:09.321Z,
+  version: '17.2.0',
+  info: undefined
+}
+{"level":"info","time":"2026-08-08T14:48:10.522Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-etsu9dcpa","trackId":"rj5wZqReXQE","durationMs":3148,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T14:48:10.525Z","service":"clibeats-gateway","traceId":"trace-etsu9dcpa","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:48:10.568Z","service":"clibeats-gateway","traceId":"trace-q5ga9blph","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:48:10.568Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-q5ga9blph","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:48:11.694Z","service":"clibeats-gateway","trackId":"rj5wZqReXQE","total":4189679,"url":"https://rr6---sn-5jucgv5qc5oq-cagy.googlevideo.com/videoplayback?expire=1786222089&ei=qUF3at3GC9GPssUPwaybqAs&ip=2406%3A7400%3A108%3A5df1%3A7502%3Ac71e%3Afbc8%3A21b7&id=o-ADnWtB3Ky8uTJ32_PG_M-V5C0XZcsoT7gDXZp4vzqRIv&itag=140&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=730&met=1786200489%2","msg":"proxy stream CDN URL resolved"}
+{"level":"info","time":"2026-08-08T14:48:11.717Z","service":"clibeats-gateway","traceId":"trace-q5ga9blph","statusCode":206,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:49:08.832Z","service":"clibeats-gateway","traceId":"trace-3bct5jyar","method":"POST","url":"/api/v1/stream","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:49:08.832Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-3bct5jyar","endpoint":"/api/v1/stream","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:49:09.804Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-3bct5jyar","trackId":"rj5wZqReXQE","durationMs":971,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T14:49:09.805Z","service":"clibeats-gateway","traceId":"trace-3bct5jyar","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:49:09.834Z","service":"clibeats-gateway","traceId":"trace-uvegyr1kx","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:49:09.834Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-uvegyr1kx","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:49:09.868Z","service":"clibeats-gateway","traceId":"trace-3x58dk5i6","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:49:09.868Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-3x58dk5i6","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:49:09.893Z","service":"clibeats-gateway","traceId":"trace-si3zax909","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:49:09.893Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-si3zax909","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:49:09.908Z","service":"clibeats-gateway","traceId":"trace-zh8peyztm","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:49:09.908Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-zh8peyztm","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:49:09.917Z","service":"clibeats-gateway","traceId":"trace-zh8peyztm","statusCode":502,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:49:09.924Z","service":"clibeats-gateway","traceId":"trace-k9t6pr68p","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:49:09.924Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-k9t6pr68p","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:49:09.932Z","service":"clibeats-gateway","traceId":"trace-k9t6pr68p","statusCode":502,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:49:09.934Z","service":"clibeats-gateway","traceId":"trace-c7g678tyn","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:49:09.934Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-c7g678tyn","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:49:09.955Z","service":"clibeats-gateway","traceId":"trace-c7g678tyn","statusCode":502,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:49:09.956Z","service":"clibeats-gateway","traceId":"trace-tyyb5goih","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:49:09.957Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-tyyb5goih","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:49:09.977Z","service":"clibeats-gateway","traceId":"trace-tyyb5goih","statusCode":502,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:49:36.064Z","service":"clibeats-gateway","traceId":"trace-mf86khydp","method":"POST","url":"/api/v1/stream","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:49:36.067Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-mf86khydp","endpoint":"/api/v1/stream","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:49:37.164Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-mf86khydp","trackId":"rj5wZqReXQE","durationMs":1092,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T14:49:37.165Z","service":"clibeats-gateway","traceId":"trace-mf86khydp","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:49:37.209Z","service":"clibeats-gateway","traceId":"trace-9i2rhzolg","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:49:37.209Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-9i2rhzolg","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:49:37.240Z","service":"clibeats-gateway","traceId":"trace-9i2rhzolg","statusCode":502,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:49:37.263Z","service":"clibeats-gateway","traceId":"trace-d2t7xchig","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:49:37.263Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-d2t7xchig","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:49:37.290Z","service":"clibeats-gateway","traceId":"trace-d2t7xchig","statusCode":206,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:49:37.296Z","service":"clibeats-gateway","traceId":"trace-ruivsdss5","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:49:37.296Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-ruivsdss5","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:49:37.309Z","service":"clibeats-gateway","traceId":"trace-ruivsdss5","statusCode":502,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:49:37.310Z","service":"clibeats-gateway","traceId":"trace-ysh92its5","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:49:37.310Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-ysh92its5","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:49:37.332Z","service":"clibeats-gateway","traceId":"trace-ysh92its5","statusCode":502,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:49:37.333Z","service":"clibeats-gateway","traceId":"trace-ufxfqd5ag","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:49:37.333Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-ufxfqd5ag","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:49:37.363Z","service":"clibeats-gateway","traceId":"trace-ufxfqd5ag","statusCode":502,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:52:43.768Z","service":"clibeats-gateway","traceId":"trace-zpii8jfle","method":"POST","url":"/api/v1/stream","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:52:43.769Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-zpii8jfle","endpoint":"/api/v1/stream","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:52:45.105Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-zpii8jfle","trackId":"rj5wZqReXQE","durationMs":1335,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T14:52:45.106Z","service":"clibeats-gateway","traceId":"trace-zpii8jfle","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:52:45.183Z","service":"clibeats-gateway","traceId":"trace-5rx852j07","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:52:45.183Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-5rx852j07","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:52:45.222Z","service":"clibeats-gateway","traceId":"trace-lyid5kc66","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:52:45.222Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-lyid5kc66","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:52:45.250Z","service":"clibeats-gateway","traceId":"trace-6vecxn7gu","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:52:45.250Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-6vecxn7gu","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+[INFO] 20:22:47 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\app.ts has been modified
+{"level":"warn","time":"2026-08-08T14:52:49.813Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T14:52:49.950Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T14:52:49.950Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"warn","time":"2026-08-08T14:52:50.318Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T14:52:50.826Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T14:55:05.696Z","service":"clibeats-gateway","traceId":"trace-39847yht6","method":"GET","url":"/health","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:55:05.699Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-39847yht6","endpoint":"/health","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+[YOUTUBEJS][Parser]: InnertubeError: TextBadge not found!
+This is a bug, want to help us fix it? Follow the instructions at https://github.com/LuanRT/YouTube.js/blob/main/docs/updating-the-parser.md or report it at https://github.com/LuanRT/YouTube.js/issues!
+Introspected and JIT generated this class in the meantime:
+class TextBadge extends YTNode {
+  static type = 'TextBadge';
+
+  label: Text;
+  background_color: number;
+  text_color: number;
+  border_color: number;
+
+  constructor(data: RawNode) {
+    super();
+    this.label = new Text(data.label);
+    this.background_color = data.backgroundColor;
+    this.text_color = data.textColor;
+    this.border_color = data.borderColor;
+  }
+}
+
+    at ERROR_HANDLER (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:71:27)
+    at createRuntimeClass (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/generator.js:320:5)
+    at generateRuntimeClass (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/generator.js:371:21)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:401:17)
+    at Module.parseArray (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:444:28)
+    at new MusicResponsiveListItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/classes/MusicResponsiveListItem.js:97:34)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:424:28)
+    at Module.parseArray (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:444:28)
+    at new ItemSection (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/classes/ItemSection.js:18:32)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:424:28) {
+  date: 2026-08-08T14:55:08.317Z,
+  version: '17.2.0',
+  info: undefined
+}
+{"level":"info","time":"2026-08-08T14:55:08.333Z","service":"clibeats-gateway","traceId":"trace-39847yht6","statusCode":200,"method":"GET","url":"/health","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:55:08.395Z","service":"clibeats-gateway","traceId":"trace-g3nvxkvyb","method":"GET","url":"/api/v1/bootstrap","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:55:08.395Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-g3nvxkvyb","endpoint":"/api/v1/bootstrap","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:55:09.068Z","service":"clibeats-gateway","traceId":"trace-g3nvxkvyb","statusCode":200,"method":"GET","url":"/api/v1/bootstrap","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:55:09.087Z","service":"clibeats-gateway","traceId":"trace-2xx86n2ty","method":"POST","url":"/api/v1/stream","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:55:09.087Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-2xx86n2ty","endpoint":"/api/v1/stream","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:55:10.897Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-2xx86n2ty","trackId":"lYBUbBu4W08","durationMs":1808,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T14:55:10.898Z","service":"clibeats-gateway","traceId":"trace-2xx86n2ty","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:59:15.881Z","service":"clibeats-gateway","traceId":"trace-lpl3rclgs","method":"GET","url":"/health","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:59:15.881Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-lpl3rclgs","endpoint":"/health","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:59:16.570Z","service":"clibeats-gateway","traceId":"trace-lpl3rclgs","statusCode":200,"method":"GET","url":"/health","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:59:31.413Z","service":"clibeats-gateway","traceId":"trace-k6nl4cgir","method":"GET","url":"/api/v1/search?q=Wonderwall","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:59:31.420Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-k6nl4cgir","endpoint":"/api/v1/search?q=Wonderwall","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:59:31.435Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T14:59:31.436Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-k6nl4cgir","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T14:59:33.415Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T14:59:33.417Z","service":"clibeats-gateway","traceId":"trace-k6nl4cgir","statusCode":200,"method":"GET","url":"/api/v1/search?q=Wonderwall","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:59:43.494Z","service":"clibeats-gateway","traceId":"trace-gbv6rzktz","method":"POST","url":"/api/v1/stream","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:59:43.494Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-gbv6rzktz","endpoint":"/api/v1/stream","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:59:44.809Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-gbv6rzktz","trackId":"rj5wZqReXQE","durationMs":1314,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T14:59:44.810Z","service":"clibeats-gateway","traceId":"trace-gbv6rzktz","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T14:59:54.179Z","service":"clibeats-gateway","traceId":"trace-wvpb5kkuq","method":"POST","url":"/api/v1/stream","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T14:59:54.179Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-wvpb5kkuq","endpoint":"/api/v1/stream","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T14:59:55.533Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-wvpb5kkuq","trackId":"rj5wZqReXQE","durationMs":1353,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T14:59:55.534Z","service":"clibeats-gateway","traceId":"trace-wvpb5kkuq","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:00:26.567Z","service":"clibeats-gateway","traceId":"trace-rhkdi197s","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:00:26.567Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-rhkdi197s","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:00:28.515Z","service":"clibeats-gateway","trackId":"rj5wZqReXQE","total":4189679,"msg":"proxy stream CDN URL resolved"}
+{"level":"info","time":"2026-08-08T15:00:28.675Z","service":"clibeats-gateway","traceId":"trace-rhkdi197s","statusCode":206,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:00:28.778Z","service":"clibeats-gateway","traceId":"trace-omuzrhkxo","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:00:28.778Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-omuzrhkxo","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:00:28.788Z","service":"clibeats-gateway","traceId":"trace-omuzrhkxo","statusCode":502,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:00:28.841Z","service":"clibeats-gateway","traceId":"trace-teudixj3e","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:00:28.842Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-teudixj3e","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:00:28.867Z","service":"clibeats-gateway","traceId":"trace-teudixj3e","statusCode":502,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:00:28.921Z","service":"clibeats-gateway","traceId":"trace-9lz2rkx2u","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:00:28.921Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-9lz2rkx2u","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:00:28.946Z","service":"clibeats-gateway","traceId":"trace-9lz2rkx2u","statusCode":206,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:00:28.998Z","service":"clibeats-gateway","traceId":"trace-27iq5ojjr","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:00:28.998Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-27iq5ojjr","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:00:29.108Z","service":"clibeats-gateway","traceId":"trace-27iq5ojjr","statusCode":206,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:00:29.161Z","service":"clibeats-gateway","traceId":"trace-m9bjha23j","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:00:29.161Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-m9bjha23j","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:00:29.188Z","service":"clibeats-gateway","traceId":"trace-m9bjha23j","statusCode":502,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:00:29.243Z","service":"clibeats-gateway","traceId":"trace-c1gfy6ibo","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:00:29.243Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-c1gfy6ibo","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:00:29.263Z","service":"clibeats-gateway","traceId":"trace-c1gfy6ibo","statusCode":502,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+[INFO] 21:07:19 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\providers\youtube\YouTubeProviderAdapter.ts has been modified
+{"level":"warn","time":"2026-08-08T15:37:21.750Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T15:37:21.931Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T15:37:21.931Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"warn","time":"2026-08-08T15:37:22.261Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T15:37:22.775Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T15:37:51.233Z","service":"clibeats-gateway","traceId":"trace-3hnul8dfi","method":"GET","url":"/health","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:37:51.237Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-3hnul8dfi","endpoint":"/health","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+[YOUTUBEJS][Parser]: InnertubeError: TextBadge not found!
+This is a bug, want to help us fix it? Follow the instructions at https://github.com/LuanRT/YouTube.js/blob/main/docs/updating-the-parser.md or report it at https://github.com/LuanRT/YouTube.js/issues!
+Introspected and JIT generated this class in the meantime:
+class TextBadge extends YTNode {
+  static type = 'TextBadge';
+
+  label: Text;
+  background_color: number;
+  text_color: number;
+  border_color: number;
+
+  constructor(data: RawNode) {
+    super();
+    this.label = new Text(data.label);
+    this.background_color = data.backgroundColor;
+    this.text_color = data.textColor;
+    this.border_color = data.borderColor;
+  }
+}
+
+    at ERROR_HANDLER (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:71:27)
+    at createRuntimeClass (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/generator.js:320:5)
+    at generateRuntimeClass (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/generator.js:371:21)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:401:17)
+    at Module.parseArray (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:444:28)
+    at new MusicResponsiveListItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/classes/MusicResponsiveListItem.js:97:34)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:424:28)
+    at Module.parseArray (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:444:28)
+    at new ItemSection (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/classes/ItemSection.js:18:32)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:424:28) {
+  date: 2026-08-08T15:37:53.603Z,
+  version: '17.2.0',
+  info: undefined
+}
+{"level":"info","time":"2026-08-08T15:37:53.616Z","service":"clibeats-gateway","traceId":"trace-3hnul8dfi","statusCode":200,"method":"GET","url":"/health","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:37:53.645Z","service":"clibeats-gateway","traceId":"trace-xh1qk8r0g","method":"GET","url":"/health","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:37:53.646Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-xh1qk8r0g","endpoint":"/health","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:37:54.337Z","service":"clibeats-gateway","traceId":"trace-xh1qk8r0g","statusCode":200,"method":"GET","url":"/health","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:38:12.474Z","service":"clibeats-gateway","traceId":"trace-vfixfduhc","method":"GET","url":"/version","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:38:12.475Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-vfixfduhc","endpoint":"/version","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:38:12.475Z","service":"clibeats-gateway","traceId":"trace-vfixfduhc","statusCode":200,"method":"GET","url":"/version","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:38:12.505Z","service":"clibeats-gateway","traceId":"trace-rm8x41l5o","method":"GET","url":"/api/v1/bootstrap","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:38:12.505Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-rm8x41l5o","endpoint":"/api/v1/bootstrap","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:38:13.342Z","service":"clibeats-gateway","traceId":"trace-rm8x41l5o","statusCode":200,"method":"GET","url":"/api/v1/bootstrap","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:38:13.361Z","service":"clibeats-gateway","traceId":"trace-makzgndrs","method":"GET","url":"/api/v1/providers","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:38:13.361Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-makzgndrs","endpoint":"/api/v1/providers","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:38:13.362Z","service":"clibeats-gateway","traceId":"trace-makzgndrs","statusCode":200,"method":"GET","url":"/api/v1/providers","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:38:13.377Z","service":"clibeats-gateway","traceId":"trace-xagck1q6x","method":"GET","url":"/api/v1/search?q=Wonderwall","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:38:13.377Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-xagck1q6x","endpoint":"/api/v1/search?q=Wonderwall","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:38:13.378Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T15:38:13.378Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-xagck1q6x","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T15:38:14.410Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T15:38:14.411Z","service":"clibeats-gateway","traceId":"trace-xagck1q6x","statusCode":200,"method":"GET","url":"/api/v1/search?q=Wonderwall","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:38:14.429Z","service":"clibeats-gateway","traceId":"trace-g7v7get4i","method":"GET","url":"/api/v1/search?q=Believer","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:38:14.429Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-g7v7get4i","endpoint":"/api/v1/search?q=Believer","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:38:14.429Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T15:38:14.429Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-g7v7get4i","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T15:38:15.995Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T15:38:15.995Z","service":"clibeats-gateway","traceId":"trace-g7v7get4i","statusCode":200,"method":"GET","url":"/api/v1/search?q=Believer","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:38:25.777Z","service":"clibeats-gateway","traceId":"trace-gwcdtbxed","method":"POST","url":"/api/v1/stream","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:38:25.777Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-gwcdtbxed","endpoint":"/api/v1/stream","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:38:27.919Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-gwcdtbxed","trackId":"rj5wZqReXQE","durationMs":2139,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T15:38:27.920Z","service":"clibeats-gateway","traceId":"trace-gwcdtbxed","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:38:43.538Z","service":"clibeats-gateway","traceId":"trace-t53zv1rwd","method":"POST","url":"/api/v1/stream","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:38:43.538Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-t53zv1rwd","endpoint":"/api/v1/stream","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:38:44.336Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-t53zv1rwd","trackId":"rj5wZqReXQE","durationMs":798,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T15:38:44.337Z","service":"clibeats-gateway","traceId":"trace-t53zv1rwd","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:39:05.068Z","service":"clibeats-gateway","traceId":"trace-8ded5w26o","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:39:05.068Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-8ded5w26o","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:39:05.879Z","service":"clibeats-gateway","trackId":"rj5wZqReXQE","total":4508896,"msg":"proxy stream CDN URL resolved"}
+{"level":"info","time":"2026-08-08T15:39:06.009Z","service":"clibeats-gateway","traceId":"trace-8ded5w26o","statusCode":206,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:39:06.133Z","service":"clibeats-gateway","traceId":"trace-49i9nsk2r","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:39:06.133Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-49i9nsk2r","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:39:06.238Z","service":"clibeats-gateway","traceId":"trace-49i9nsk2r","statusCode":206,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:39:06.295Z","service":"clibeats-gateway","traceId":"trace-dov649u6d","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:39:06.295Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-dov649u6d","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:39:06.360Z","service":"clibeats-gateway","traceId":"trace-dov649u6d","statusCode":206,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:39:06.413Z","service":"clibeats-gateway","traceId":"trace-1aoeblxvw","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:39:06.413Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-1aoeblxvw","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:39:06.511Z","service":"clibeats-gateway","traceId":"trace-1aoeblxvw","statusCode":206,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:39:06.571Z","service":"clibeats-gateway","traceId":"trace-knpvwsoch","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:39:06.572Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-knpvwsoch","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:39:06.966Z","service":"clibeats-gateway","traceId":"trace-knpvwsoch","statusCode":206,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:40:25.458Z","service":"clibeats-gateway","traceId":"trace-rhoi4377s","method":"POST","url":"/api/v1/stream","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:40:25.461Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-rhoi4377s","endpoint":"/api/v1/stream","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:40:26.445Z","service":"clibeats-gateway","eventType":"PROVIDER_FAILED","type":"PROVIDER_FAILED","traceId":"trace-rhoi4377s","providerId":"youtube","error":"This video is unavailable","msg":"Event: PROVIDER_FAILED"}
+{"level":"info","time":"2026-08-08T15:40:26.445Z","service":"clibeats-gateway","eventType":"PROVIDER_FAILOVER","type":"PROVIDER_FAILOVER","traceId":"trace-rhoi4377s","fromProvider":"youtube","toProvider":"mock","msg":"Event: PROVIDER_FAILOVER"}
+{"level":"info","time":"2026-08-08T15:40:26.445Z","service":"clibeats-gateway","eventType":"PROVIDER_FAILED","type":"PROVIDER_FAILED","traceId":"trace-rhoi4377s","providerId":"mock","error":"Track Kx7B-XvmFte not found in MockProvider","msg":"Event: PROVIDER_FAILED"}
+{"level":"info","time":"2026-08-08T15:40:26.446Z","service":"clibeats-gateway","traceId":"trace-rhoi4377s","statusCode":404,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:40:26.485Z","service":"clibeats-gateway","traceId":"trace-32uqyutos","method":"POST","url":"/api/v1/stream","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:40:26.485Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-32uqyutos","endpoint":"/api/v1/stream","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:40:27.476Z","service":"clibeats-gateway","eventType":"PROVIDER_FAILED","type":"PROVIDER_FAILED","traceId":"trace-32uqyutos","providerId":"youtube","error":"This video is unavailable","msg":"Event: PROVIDER_FAILED"}
+{"level":"info","time":"2026-08-08T15:40:27.476Z","service":"clibeats-gateway","eventType":"PROVIDER_FAILOVER","type":"PROVIDER_FAILOVER","traceId":"trace-32uqyutos","fromProvider":"youtube","toProvider":"mock","msg":"Event: PROVIDER_FAILOVER"}
+{"level":"info","time":"2026-08-08T15:40:27.476Z","service":"clibeats-gateway","eventType":"PROVIDER_FAILED","type":"PROVIDER_FAILED","traceId":"trace-32uqyutos","providerId":"mock","error":"Track mRD0-XxMS5k not found in MockProvider","msg":"Event: PROVIDER_FAILED"}
+{"level":"info","time":"2026-08-08T15:40:27.476Z","service":"clibeats-gateway","traceId":"trace-32uqyutos","statusCode":404,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:40:27.478Z","service":"clibeats-gateway","traceId":"trace-1jqpte0pc","method":"POST","url":"/api/v1/stream","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:40:27.478Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-1jqpte0pc","endpoint":"/api/v1/stream","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:40:28.484Z","service":"clibeats-gateway","eventType":"CIRCUIT_TRIPPED","type":"CIRCUIT_TRIPPED","providerId":"youtube","failureCount":3,"msg":"Event: CIRCUIT_TRIPPED"}
+{"level":"info","time":"2026-08-08T15:40:28.484Z","service":"clibeats-gateway","eventType":"PROVIDER_FAILED","type":"PROVIDER_FAILED","traceId":"trace-1jqpte0pc","providerId":"youtube","error":"This video is unavailable","msg":"Event: PROVIDER_FAILED"}
+{"level":"info","time":"2026-08-08T15:40:28.484Z","service":"clibeats-gateway","eventType":"PROVIDER_FAILOVER","type":"PROVIDER_FAILOVER","traceId":"trace-1jqpte0pc","fromProvider":"youtube","toProvider":"mock","msg":"Event: PROVIDER_FAILOVER"}
+{"level":"info","time":"2026-08-08T15:40:28.484Z","service":"clibeats-gateway","eventType":"CIRCUIT_TRIPPED","type":"CIRCUIT_TRIPPED","providerId":"mock","failureCount":3,"msg":"Event: CIRCUIT_TRIPPED"}
+{"level":"info","time":"2026-08-08T15:40:28.484Z","service":"clibeats-gateway","eventType":"PROVIDER_FAILED","type":"PROVIDER_FAILED","traceId":"trace-1jqpte0pc","providerId":"mock","error":"Track UkLvB0aOS-U not found in MockProvider","msg":"Event: PROVIDER_FAILED"}
+{"level":"info","time":"2026-08-08T15:40:28.484Z","service":"clibeats-gateway","traceId":"trace-1jqpte0pc","statusCode":404,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:40:28.486Z","service":"clibeats-gateway","traceId":"trace-hyvre70qu","method":"POST","url":"/api/v1/stream","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:40:28.486Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-hyvre70qu","endpoint":"/api/v1/stream","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:40:28.487Z","service":"clibeats-gateway","traceId":"trace-hyvre70qu","statusCode":500,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:40:45.906Z","service":"clibeats-gateway","traceId":"trace-515kjawq0","method":"GET","url":"/api/v1/search?q=Believer","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:40:45.906Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-515kjawq0","endpoint":"/api/v1/search?q=Believer","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:40:45.906Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T15:40:45.906Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-515kjawq0","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T15:40:45.906Z","service":"clibeats-gateway","traceId":"trace-515kjawq0","statusCode":500,"method":"GET","url":"/api/v1/search?q=Believer","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:40:45.925Z","service":"clibeats-gateway","traceId":"trace-9mabe9728","method":"GET","url":"/api/v1/search?q=Heat%20Waves","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:40:45.925Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-9mabe9728","endpoint":"/api/v1/search?q=Heat%20Waves","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:40:45.925Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T15:40:45.925Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-9mabe9728","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T15:40:45.925Z","service":"clibeats-gateway","traceId":"trace-9mabe9728","statusCode":500,"method":"GET","url":"/api/v1/search?q=Heat%20Waves","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:40:45.926Z","service":"clibeats-gateway","traceId":"trace-dxksrvb03","method":"GET","url":"/api/v1/search?q=Tum%20Hi%20Ho","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:40:45.926Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-dxksrvb03","endpoint":"/api/v1/search?q=Tum%20Hi%20Ho","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:40:45.927Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T15:40:45.927Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-dxksrvb03","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T15:40:45.927Z","service":"clibeats-gateway","traceId":"trace-dxksrvb03","statusCode":500,"method":"GET","url":"/api/v1/search?q=Tum%20Hi%20Ho","msg":"request completed"}
+{"level":"info","time":"2026-08-08T15:40:45.928Z","service":"clibeats-gateway","traceId":"trace-l6yfdgefi","method":"GET","url":"/api/v1/search?q=Never%20Gonna%20Give%20You%20Up","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T15:40:45.928Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-l6yfdgefi","endpoint":"/api/v1/search?q=Never%20Gonna%20Give%20You%20Up","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T15:40:45.928Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T15:40:45.928Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-l6yfdgefi","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T15:40:45.928Z","service":"clibeats-gateway","traceId":"trace-l6yfdgefi","statusCode":500,"method":"GET","url":"/api/v1/search?q=Never%20Gonna%20Give%20You%20Up","msg":"request completed"}
+[INFO] 22:40:52 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\app.ts has been modified
+{"level":"warn","time":"2026-08-08T17:10:55.169Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T17:10:55.352Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T17:10:55.352Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"warn","time":"2026-08-08T17:10:55.684Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T17:10:56.195Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T17:20:11.803Z","service":"clibeats-gateway","traceId":"trace-5oxwc1quw","method":"GET","url":"/health","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:20:11.809Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-5oxwc1quw","endpoint":"/health","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+[YOUTUBEJS][Parser]: InnertubeError: TextBadge not found!
+This is a bug, want to help us fix it? Follow the instructions at https://github.com/LuanRT/YouTube.js/blob/main/docs/updating-the-parser.md or report it at https://github.com/LuanRT/YouTube.js/issues!
+Introspected and JIT generated this class in the meantime:
+class TextBadge extends YTNode {
+  static type = 'TextBadge';
+
+  label: Text;
+  background_color: number;
+  text_color: number;
+  border_color: number;
+
+  constructor(data: RawNode) {
+    super();
+    this.label = new Text(data.label);
+    this.background_color = data.backgroundColor;
+    this.text_color = data.textColor;
+    this.border_color = data.borderColor;
+  }
+}
+
+    at ERROR_HANDLER (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:71:27)
+    at createRuntimeClass (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/generator.js:320:5)
+    at generateRuntimeClass (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/generator.js:371:21)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:401:17)
+    at Module.parseArray (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:444:28)
+    at new MusicResponsiveListItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/classes/MusicResponsiveListItem.js:97:34)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:424:28)
+    at Module.parseArray (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:444:28)
+    at new ItemSection (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/classes/ItemSection.js:18:32)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:424:28) {
+  date: 2026-08-08T17:20:13.941Z,
+  version: '17.2.0',
+  info: undefined
+}
+{"level":"info","time":"2026-08-08T17:20:13.961Z","service":"clibeats-gateway","traceId":"trace-5oxwc1quw","statusCode":200,"method":"GET","url":"/health","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:20:13.966Z","service":"clibeats-gateway","traceId":"trace-0wws0i9k0","method":"GET","url":"/api/v1/bootstrap","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:20:13.967Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-0wws0i9k0","endpoint":"/api/v1/bootstrap","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:20:14.465Z","service":"clibeats-gateway","traceId":"trace-0wws0i9k0","statusCode":200,"method":"GET","url":"/api/v1/bootstrap","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:20:14.467Z","service":"clibeats-gateway","traceId":"trace-uc47d7a37","method":"GET","url":"/api/v1/providers","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:20:14.467Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-uc47d7a37","endpoint":"/api/v1/providers","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:20:14.468Z","service":"clibeats-gateway","traceId":"trace-uc47d7a37","statusCode":200,"method":"GET","url":"/api/v1/providers","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:20:14.469Z","service":"clibeats-gateway","traceId":"trace-4jr0jp7bd","method":"GET","url":"/api/v1/search?q=Wonderwall","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:20:14.469Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-4jr0jp7bd","endpoint":"/api/v1/search?q=Wonderwall","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:20:14.470Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:20:14.470Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-4jr0jp7bd","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:20:15.408Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:20:15.410Z","service":"clibeats-gateway","traceId":"trace-4jr0jp7bd","statusCode":200,"method":"GET","url":"/api/v1/search?q=Wonderwall","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:20:15.411Z","service":"clibeats-gateway","traceId":"trace-0w6q1c4zb","method":"GET","url":"/api/v1/search?q=Believer","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:20:15.411Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-0w6q1c4zb","endpoint":"/api/v1/search?q=Believer","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:20:15.412Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:20:15.412Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-0w6q1c4zb","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:20:16.429Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:20:16.430Z","service":"clibeats-gateway","traceId":"trace-0w6q1c4zb","statusCode":200,"method":"GET","url":"/api/v1/search?q=Believer","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:20:16.432Z","service":"clibeats-gateway","traceId":"trace-mff468uhh","method":"GET","url":"/api/v1/search?q=Heat%20Waves","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:20:16.432Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-mff468uhh","endpoint":"/api/v1/search?q=Heat%20Waves","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:20:16.433Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:20:16.433Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-mff468uhh","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:20:17.315Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:20:17.315Z","service":"clibeats-gateway","traceId":"trace-mff468uhh","statusCode":200,"method":"GET","url":"/api/v1/search?q=Heat%20Waves","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:20:17.317Z","service":"clibeats-gateway","traceId":"trace-ejg1qfj7w","method":"GET","url":"/api/v1/search?q=Tum%20Hi%20Ho","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:20:17.317Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-ejg1qfj7w","endpoint":"/api/v1/search?q=Tum%20Hi%20Ho","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:20:17.318Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:20:17.318Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-ejg1qfj7w","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:20:18.245Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:20:18.246Z","service":"clibeats-gateway","traceId":"trace-ejg1qfj7w","statusCode":200,"method":"GET","url":"/api/v1/search?q=Tum%20Hi%20Ho","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:20:18.248Z","service":"clibeats-gateway","traceId":"trace-sqml6nzga","method":"POST","url":"/api/v1/stream","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:20:18.248Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-sqml6nzga","endpoint":"/api/v1/stream","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:20:20.005Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-sqml6nzga","trackId":"rj5wZqReXQE","durationMs":1754,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T17:20:20.006Z","service":"clibeats-gateway","traceId":"trace-sqml6nzga","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:20:28.017Z","service":"clibeats-gateway","traceId":"trace-8dl3wmjbx","method":"POST","url":"/api/v1/stream","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:20:28.017Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-8dl3wmjbx","endpoint":"/api/v1/stream","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:20:28.802Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-8dl3wmjbx","trackId":"rj5wZqReXQE","durationMs":785,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T17:20:28.803Z","service":"clibeats-gateway","traceId":"trace-8dl3wmjbx","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:20:35.994Z","service":"clibeats-gateway","traceId":"trace-dqorxutwk","method":"POST","url":"/api/v1/stream","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:20:35.994Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-dqorxutwk","endpoint":"/api/v1/stream","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:20:36.629Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-dqorxutwk","trackId":"rj5wZqReXQE","durationMs":635,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T17:20:36.630Z","service":"clibeats-gateway","traceId":"trace-dqorxutwk","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:25:31.442Z","service":"clibeats-gateway","traceId":"trace-rp1k6u4el","method":"GET","url":"/health","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:25:31.444Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-rp1k6u4el","endpoint":"/health","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:25:32.008Z","service":"clibeats-gateway","traceId":"trace-rp1k6u4el","statusCode":200,"method":"GET","url":"/health","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:25:32.014Z","service":"clibeats-gateway","traceId":"trace-pxwaz5itw","method":"GET","url":"/api/v1/bootstrap","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:25:32.014Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-pxwaz5itw","endpoint":"/api/v1/bootstrap","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:25:32.478Z","service":"clibeats-gateway","traceId":"trace-pxwaz5itw","statusCode":200,"method":"GET","url":"/api/v1/bootstrap","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:25:32.480Z","service":"clibeats-gateway","traceId":"trace-w6l094gd5","method":"GET","url":"/api/v1/providers","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:25:32.480Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-w6l094gd5","endpoint":"/api/v1/providers","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:25:32.481Z","service":"clibeats-gateway","traceId":"trace-w6l094gd5","statusCode":200,"method":"GET","url":"/api/v1/providers","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:25:32.482Z","service":"clibeats-gateway","traceId":"trace-8exeh8ufq","method":"GET","url":"/api/v1/search?q=Wonderwall","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:25:32.482Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-8exeh8ufq","endpoint":"/api/v1/search?q=Wonderwall","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:25:32.483Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:25:32.483Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-8exeh8ufq","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:25:33.288Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:25:33.288Z","service":"clibeats-gateway","traceId":"trace-8exeh8ufq","statusCode":200,"method":"GET","url":"/api/v1/search?q=Wonderwall","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:25:33.290Z","service":"clibeats-gateway","traceId":"trace-doqw7ll22","method":"GET","url":"/api/v1/search?q=Believer","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:25:33.290Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-doqw7ll22","endpoint":"/api/v1/search?q=Believer","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:25:33.290Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:25:33.290Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-doqw7ll22","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:25:34.182Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:25:34.183Z","service":"clibeats-gateway","traceId":"trace-doqw7ll22","statusCode":200,"method":"GET","url":"/api/v1/search?q=Believer","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:25:34.185Z","service":"clibeats-gateway","traceId":"trace-qoyuusgsr","method":"GET","url":"/api/v1/search?q=Heat%20Waves","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:25:34.185Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-qoyuusgsr","endpoint":"/api/v1/search?q=Heat%20Waves","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:25:34.185Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:25:34.185Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-qoyuusgsr","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:25:35.096Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:25:35.097Z","service":"clibeats-gateway","traceId":"trace-qoyuusgsr","statusCode":200,"method":"GET","url":"/api/v1/search?q=Heat%20Waves","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:25:35.100Z","service":"clibeats-gateway","traceId":"trace-4tjzotzha","method":"GET","url":"/api/v1/search?q=Tum%20Hi%20Ho","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:25:35.100Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-4tjzotzha","endpoint":"/api/v1/search?q=Tum%20Hi%20Ho","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:25:35.100Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:25:35.100Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-4tjzotzha","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:25:36.008Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:25:36.009Z","service":"clibeats-gateway","traceId":"trace-4tjzotzha","statusCode":200,"method":"GET","url":"/api/v1/search?q=Tum%20Hi%20Ho","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:25:36.011Z","service":"clibeats-gateway","traceId":"trace-k14333jif","method":"POST","url":"/api/v1/stream","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:25:36.011Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-k14333jif","endpoint":"/api/v1/stream","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:25:36.623Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-k14333jif","trackId":"rj5wZqReXQE","durationMs":611,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T17:25:36.623Z","service":"clibeats-gateway","traceId":"trace-k14333jif","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:27:06.126Z","service":"clibeats-gateway","traceId":"trace-8jy8om6xu","method":"GET","url":"/api/v1/search?q=Trending%20Hits&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:27:06.129Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-8jy8om6xu","endpoint":"/api/v1/search?q=Trending%20Hits&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:27:06.135Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:06.135Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-8jy8om6xu","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:27:07.151Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:07.152Z","service":"clibeats-gateway","traceId":"trace-8jy8om6xu","statusCode":200,"method":"GET","url":"/api/v1/search?q=Trending%20Hits&filterSongs=true","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:27:19.728Z","service":"clibeats-gateway","traceId":"trace-0buhrk3hz","method":"GET","url":"/api/v1/search?q=Trending%20Hits&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:27:19.728Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-0buhrk3hz","endpoint":"/api/v1/search?q=Trending%20Hits&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:27:19.728Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:19.728Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-0buhrk3hz","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:27:20.590Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:20.590Z","service":"clibeats-gateway","traceId":"trace-0buhrk3hz","statusCode":200,"method":"GET","url":"/api/v1/search?q=Trending%20Hits&filterSongs=true","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:27:28.949Z","service":"clibeats-gateway","traceId":"trace-931cjdtxg","method":"GET","url":"/api/v1/search?q=Trending%20Hits&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:27:28.949Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-931cjdtxg","endpoint":"/api/v1/search?q=Trending%20Hits&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:27:28.949Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:28.949Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-931cjdtxg","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:27:29.928Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:29.928Z","service":"clibeats-gateway","traceId":"trace-931cjdtxg","statusCode":200,"method":"GET","url":"/api/v1/search?q=Trending%20Hits&filterSongs=true","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:27:31.009Z","service":"clibeats-gateway","traceId":"trace-de6l1kt1k","method":"GET","url":"/api/v1/search?q=Wo&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:27:31.009Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-de6l1kt1k","endpoint":"/api/v1/search?q=Wo&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:27:31.009Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:31.010Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-de6l1kt1k","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:27:31.979Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:32.376Z","service":"clibeats-gateway","traceId":"trace-ywt0afnv9","method":"GET","url":"/api/v1/search?q=Won&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:27:32.376Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-ywt0afnv9","endpoint":"/api/v1/search?q=Won&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:27:32.376Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:32.376Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-ywt0afnv9","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:27:33.275Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:33.404Z","service":"clibeats-gateway","traceId":"trace-xopgi74tf","method":"GET","url":"/api/v1/search?q=Wonde&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:27:33.405Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-xopgi74tf","endpoint":"/api/v1/search?q=Wonde&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:27:33.405Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:33.405Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-xopgi74tf","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:27:34.334Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:34.335Z","service":"clibeats-gateway","traceId":"trace-xopgi74tf","statusCode":200,"method":"GET","url":"/api/v1/search?q=Wonde&filterSongs=true","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:27:34.887Z","service":"clibeats-gateway","traceId":"trace-y3k6jfdrx","method":"GET","url":"/api/v1/search?q=Wonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:27:34.887Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-y3k6jfdrx","endpoint":"/api/v1/search?q=Wonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:27:34.887Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:34.887Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-y3k6jfdrx","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:27:35.773Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:35.774Z","service":"clibeats-gateway","traceId":"trace-y3k6jfdrx","statusCode":200,"method":"GET","url":"/api/v1/search?q=Wonderwall&filterSongs=true","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:27:47.387Z","service":"clibeats-gateway","traceId":"trace-5v50o3eo6","method":"GET","url":"/api/v1/search?q=WonderwallW&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:27:47.387Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-5v50o3eo6","endpoint":"/api/v1/search?q=WonderwallW&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:27:47.388Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:47.388Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-5v50o3eo6","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:27:48.321Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:48.649Z","service":"clibeats-gateway","traceId":"trace-hgp1nekv6","method":"GET","url":"/api/v1/search?q=WonderwallWon&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:27:48.649Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-hgp1nekv6","endpoint":"/api/v1/search?q=WonderwallWon&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:27:48.649Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:48.649Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-hgp1nekv6","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:27:49.414Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:49.415Z","service":"clibeats-gateway","traceId":"trace-hgp1nekv6","statusCode":200,"method":"GET","url":"/api/v1/search?q=WonderwallWon&filterSongs=true","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:27:49.717Z","service":"clibeats-gateway","traceId":"trace-pv4jfscoy","method":"GET","url":"/api/v1/search?q=WonderwallWonderwal&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:27:49.717Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-pv4jfscoy","endpoint":"/api/v1/search?q=WonderwallWonderwal&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:27:49.718Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:49.718Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-pv4jfscoy","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:27:50.572Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:50.656Z","service":"clibeats-gateway","traceId":"trace-wzkwqvo5r","method":"GET","url":"/api/v1/search?q=WonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:27:50.656Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-wzkwqvo5r","endpoint":"/api/v1/search?q=WonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:27:50.656Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:50.656Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-wzkwqvo5r","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:27:51.554Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:27:51.555Z","service":"clibeats-gateway","traceId":"trace-wzkwqvo5r","statusCode":200,"method":"GET","url":"/api/v1/search?q=WonderwallWonderwall&filterSongs=true","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:29:06.650Z","service":"clibeats-gateway","traceId":"trace-au1ecdg00","method":"POST","url":"/api/v1/stream","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:29:06.654Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-au1ecdg00","endpoint":"/api/v1/stream","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:29:07.355Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-au1ecdg00","trackId":"FVdjZYfDuLE","durationMs":694,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T17:29:07.356Z","service":"clibeats-gateway","traceId":"trace-au1ecdg00","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+[INFO] 23:00:01 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\config\config.ts has been modified
+{"level":"warn","time":"2026-08-08T17:30:04.470Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"error","time":"2026-08-08T17:30:04.756Z","service":"clibeats-gateway","err":{"type":"Error","message":"listen EADDRINUSE: address already in use 0.0.0.0:8080","stack":"Error: listen EADDRINUSE: address already in use 0.0.0.0:8080\n    at Server.setupListenHandle [as _listen2] (node:net:1940:16)\n    at listenInCluster (node:net:1997:12)\n    at node:net:2206:7\n    at processTicksAndRejections (node:internal/process/task_queues:90:21)","code":"EADDRINUSE","errno":-4091,"syscall":"listen","address":"0.0.0.0","port":8080},"msg":"Failed to start gateway server"}
+[INFO] 23:15:16 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\app.ts has been modified
+{"level":"warn","time":"2026-08-08T17:45:20.406Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T17:45:20.635Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T17:45:20.635Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"warn","time":"2026-08-08T17:45:20.914Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T17:45:21.431Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+[INFO] 23:15:24 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\app.ts has been modified
+{"level":"warn","time":"2026-08-08T17:45:27.785Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T17:45:28.087Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T17:45:28.087Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"warn","time":"2026-08-08T17:45:28.319Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T17:45:28.829Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+[INFO] 23:15:33 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\app.ts has been modified
+{"level":"warn","time":"2026-08-08T17:45:36.384Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T17:45:36.543Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T17:45:36.543Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"warn","time":"2026-08-08T17:45:36.894Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T17:45:37.407Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T17:46:23.504Z","service":"clibeats-gateway","traceId":"trace-liklyr8fa","method":"GET","url":"/health","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:23.506Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-liklyr8fa","endpoint":"/health","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+[YOUTUBEJS][Parser]: InnertubeError: TextBadge not found!
+This is a bug, want to help us fix it? Follow the instructions at https://github.com/LuanRT/YouTube.js/blob/main/docs/updating-the-parser.md or report it at https://github.com/LuanRT/YouTube.js/issues!
+Introspected and JIT generated this class in the meantime:
+class TextBadge extends YTNode {
+  static type = 'TextBadge';
+
+  label: Text;
+  background_color: number;
+  text_color: number;
+  border_color: number;
+
+  constructor(data: RawNode) {
+    super();
+    this.label = new Text(data.label);
+    this.background_color = data.backgroundColor;
+    this.text_color = data.textColor;
+    this.border_color = data.borderColor;
+  }
+}
+
+    at ERROR_HANDLER (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:71:27)
+    at createRuntimeClass (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/generator.js:320:5)
+    at generateRuntimeClass (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/generator.js:371:21)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:401:17)
+    at Module.parseArray (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:444:28)
+    at new MusicResponsiveListItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/classes/MusicResponsiveListItem.js:97:34)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:424:28)
+    at Module.parseArray (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:444:28)
+    at new ItemSection (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/classes/ItemSection.js:18:32)
+    at parseItem (file:///C:/Users/OM%20Prakash/Documents/clibeats/gateway/node_modules/youtubei.js/dist/src/parser/parser.js:424:28) {
+  date: 2026-08-08T17:46:26.280Z,
+  version: '17.2.0',
+  info: undefined
+}
+{"level":"info","time":"2026-08-08T17:46:26.295Z","service":"clibeats-gateway","traceId":"trace-liklyr8fa","statusCode":200,"method":"GET","url":"/health","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:26.299Z","service":"clibeats-gateway","traceId":"trace-rmzhdy3ts","method":"GET","url":"/version","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:26.299Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-rmzhdy3ts","endpoint":"/version","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:26.300Z","service":"clibeats-gateway","traceId":"trace-rmzhdy3ts","statusCode":200,"method":"GET","url":"/version","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:26.301Z","service":"clibeats-gateway","traceId":"trace-27tfxghzp","method":"GET","url":"/api/v1/bootstrap","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:26.301Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-27tfxghzp","endpoint":"/api/v1/bootstrap","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:26.864Z","service":"clibeats-gateway","traceId":"trace-27tfxghzp","statusCode":200,"method":"GET","url":"/api/v1/bootstrap","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:26.866Z","service":"clibeats-gateway","traceId":"trace-miebnygfu","method":"GET","url":"/api/v1/providers","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:26.866Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-miebnygfu","endpoint":"/api/v1/providers","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:26.867Z","service":"clibeats-gateway","traceId":"trace-miebnygfu","statusCode":200,"method":"GET","url":"/api/v1/providers","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:26.869Z","service":"clibeats-gateway","traceId":"trace-uxoyeoggr","method":"GET","url":"/api/v1/search?q=Wonderwall","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:26.869Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-uxoyeoggr","endpoint":"/api/v1/search?q=Wonderwall","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:26.871Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:46:26.871Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-uxoyeoggr","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:46:27.720Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:46:27.721Z","service":"clibeats-gateway","traceId":"trace-uxoyeoggr","statusCode":200,"method":"GET","url":"/api/v1/search?q=Wonderwall","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:27.722Z","service":"clibeats-gateway","traceId":"trace-oh9tqyjqo","method":"GET","url":"/api/v1/search?q=Believer","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:27.723Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-oh9tqyjqo","endpoint":"/api/v1/search?q=Believer","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:27.723Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:46:27.723Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-oh9tqyjqo","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:46:28.646Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:46:28.647Z","service":"clibeats-gateway","traceId":"trace-oh9tqyjqo","statusCode":200,"method":"GET","url":"/api/v1/search?q=Believer","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:28.649Z","service":"clibeats-gateway","traceId":"trace-a5ropbc9t","method":"GET","url":"/api/v1/search?q=Heat%20Waves","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:28.649Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-a5ropbc9t","endpoint":"/api/v1/search?q=Heat%20Waves","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:28.649Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:46:28.649Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-a5ropbc9t","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:46:29.550Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:46:29.551Z","service":"clibeats-gateway","traceId":"trace-a5ropbc9t","statusCode":200,"method":"GET","url":"/api/v1/search?q=Heat%20Waves","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:29.553Z","service":"clibeats-gateway","traceId":"trace-mcb6dlkuh","method":"GET","url":"/api/v1/search?q=Tum%20Hi%20Ho","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:29.554Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-mcb6dlkuh","endpoint":"/api/v1/search?q=Tum%20Hi%20Ho","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:29.554Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:46:29.554Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-mcb6dlkuh","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:46:30.447Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:46:30.449Z","service":"clibeats-gateway","traceId":"trace-mcb6dlkuh","statusCode":200,"method":"GET","url":"/api/v1/search?q=Tum%20Hi%20Ho","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:30.454Z","service":"clibeats-gateway","traceId":"trace-s8zo6rrvs","method":"GET","url":"/api/v1/search?q=Never%20Gonna%20Give%20You%20Up","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:30.454Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-s8zo6rrvs","endpoint":"/api/v1/search?q=Never%20Gonna%20Give%20You%20Up","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:30.455Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:46:30.455Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-s8zo6rrvs","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:46:31.419Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:46:31.421Z","service":"clibeats-gateway","traceId":"trace-s8zo6rrvs","statusCode":200,"method":"GET","url":"/api/v1/search?q=Never%20Gonna%20Give%20You%20Up","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:31.424Z","service":"clibeats-gateway","traceId":"trace-1nmxuhayb","method":"POST","url":"/api/v1/stream","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:31.424Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-1nmxuhayb","endpoint":"/api/v1/stream","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:33.421Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-1nmxuhayb","trackId":"rj5wZqReXQE","durationMs":1993,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T17:46:33.422Z","service":"clibeats-gateway","traceId":"trace-1nmxuhayb","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:33.426Z","service":"clibeats-gateway","traceId":"trace-sldbt5t4g","method":"POST","url":"/api/v1/stream","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:33.426Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-sldbt5t4g","endpoint":"/api/v1/stream","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:34.074Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-sldbt5t4g","trackId":"rj5wZqReXQE","durationMs":647,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T17:46:34.075Z","service":"clibeats-gateway","traceId":"trace-sldbt5t4g","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:34.076Z","service":"clibeats-gateway","traceId":"trace-jka5dpigb","method":"HEAD","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:34.076Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-jka5dpigb","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:34.698Z","service":"clibeats-gateway","trackId":"rj5wZqReXQE","total":4508896,"msg":"proxy stream CDN URL resolved"}
+{"level":"info","time":"2026-08-08T17:46:34.723Z","service":"clibeats-gateway","traceId":"trace-jka5dpigb","statusCode":200,"method":"HEAD","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:34.742Z","service":"clibeats-gateway","traceId":"trace-svs7esqcb","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:34.742Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-svs7esqcb","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:34.752Z","service":"clibeats-gateway","traceId":"trace-svs7esqcb","statusCode":206,"method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:34.753Z","service":"clibeats-gateway","traceId":"trace-izo3j5jjg","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:34.753Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-izo3j5jjg","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:34.770Z","service":"clibeats-gateway","traceId":"trace-r8f6f3f5p","method":"GET","url":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:34.770Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-r8f6f3f5p","endpoint":"/api/v1/stream/proxy/rj5wZqReXQE","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:34.785Z","service":"clibeats-gateway","traceId":"trace-l2kosmsi3","method":"POST","url":"/api/v1/stream","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:34.785Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-l2kosmsi3","endpoint":"/api/v1/stream","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:35.356Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-l2kosmsi3","trackId":"Kx7B-XvmFtE","durationMs":571,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T17:46:35.357Z","service":"clibeats-gateway","traceId":"trace-l2kosmsi3","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:35.358Z","service":"clibeats-gateway","traceId":"trace-x0sqqlqa5","method":"HEAD","url":"/api/v1/stream/proxy/Kx7B-XvmFtE","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:35.358Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-x0sqqlqa5","endpoint":"/api/v1/stream/proxy/Kx7B-XvmFtE","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:35.905Z","service":"clibeats-gateway","trackId":"Kx7B-XvmFtE","total":3404380,"msg":"proxy stream CDN URL resolved"}
+{"level":"info","time":"2026-08-08T17:46:35.933Z","service":"clibeats-gateway","traceId":"trace-x0sqqlqa5","statusCode":200,"method":"HEAD","url":"/api/v1/stream/proxy/Kx7B-XvmFtE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:35.936Z","service":"clibeats-gateway","traceId":"trace-9qyigy81q","method":"GET","url":"/api/v1/stream/proxy/Kx7B-XvmFtE","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:35.937Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-9qyigy81q","endpoint":"/api/v1/stream/proxy/Kx7B-XvmFtE","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:35.944Z","service":"clibeats-gateway","traceId":"trace-9qyigy81q","statusCode":206,"method":"GET","url":"/api/v1/stream/proxy/Kx7B-XvmFtE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:35.945Z","service":"clibeats-gateway","traceId":"trace-0fyvclpov","method":"GET","url":"/api/v1/stream/proxy/Kx7B-XvmFtE","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:35.945Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-0fyvclpov","endpoint":"/api/v1/stream/proxy/Kx7B-XvmFtE","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:35.960Z","service":"clibeats-gateway","traceId":"trace-7li0o619n","method":"GET","url":"/api/v1/stream/proxy/Kx7B-XvmFtE","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:35.960Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-7li0o619n","endpoint":"/api/v1/stream/proxy/Kx7B-XvmFtE","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:35.971Z","service":"clibeats-gateway","traceId":"trace-l5y7w4s0w","method":"POST","url":"/api/v1/stream","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:35.972Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-l5y7w4s0w","endpoint":"/api/v1/stream","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:36.616Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-l5y7w4s0w","trackId":"XDjB9E3YtUE","durationMs":644,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T17:46:36.617Z","service":"clibeats-gateway","traceId":"trace-l5y7w4s0w","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:36.617Z","service":"clibeats-gateway","traceId":"trace-rkr0l8oyl","method":"HEAD","url":"/api/v1/stream/proxy/XDjB9E3YtUE","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:36.617Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-rkr0l8oyl","endpoint":"/api/v1/stream/proxy/XDjB9E3YtUE","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:37.203Z","service":"clibeats-gateway","trackId":"XDjB9E3YtUE","total":4101620,"msg":"proxy stream CDN URL resolved"}
+{"level":"info","time":"2026-08-08T17:46:37.241Z","service":"clibeats-gateway","traceId":"trace-rkr0l8oyl","statusCode":200,"method":"HEAD","url":"/api/v1/stream/proxy/XDjB9E3YtUE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:37.244Z","service":"clibeats-gateway","traceId":"trace-facy3bqfk","method":"GET","url":"/api/v1/stream/proxy/XDjB9E3YtUE","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:37.244Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-facy3bqfk","endpoint":"/api/v1/stream/proxy/XDjB9E3YtUE","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:37.252Z","service":"clibeats-gateway","traceId":"trace-facy3bqfk","statusCode":206,"method":"GET","url":"/api/v1/stream/proxy/XDjB9E3YtUE","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:37.254Z","service":"clibeats-gateway","traceId":"trace-crpt7vmh1","method":"GET","url":"/api/v1/stream/proxy/XDjB9E3YtUE","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:37.254Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-crpt7vmh1","endpoint":"/api/v1/stream/proxy/XDjB9E3YtUE","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:37.275Z","service":"clibeats-gateway","traceId":"trace-h6354vk9f","method":"GET","url":"/api/v1/stream/proxy/XDjB9E3YtUE","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:37.275Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-h6354vk9f","endpoint":"/api/v1/stream/proxy/XDjB9E3YtUE","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:37.293Z","service":"clibeats-gateway","traceId":"trace-ynw4uiqcr","method":"POST","url":"/api/v1/stream","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:37.293Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-ynw4uiqcr","endpoint":"/api/v1/stream","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:37.899Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-ynw4uiqcr","trackId":"fsiPzT50ZiM","durationMs":605,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T17:46:37.899Z","service":"clibeats-gateway","traceId":"trace-ynw4uiqcr","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:37.900Z","service":"clibeats-gateway","traceId":"trace-49nax8p9v","method":"HEAD","url":"/api/v1/stream/proxy/fsiPzT50ZiM","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:37.900Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-49nax8p9v","endpoint":"/api/v1/stream/proxy/fsiPzT50ZiM","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:38.471Z","service":"clibeats-gateway","trackId":"fsiPzT50ZiM","total":4781232,"msg":"proxy stream CDN URL resolved"}
+{"level":"info","time":"2026-08-08T17:46:38.494Z","service":"clibeats-gateway","traceId":"trace-49nax8p9v","statusCode":200,"method":"HEAD","url":"/api/v1/stream/proxy/fsiPzT50ZiM","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:38.496Z","service":"clibeats-gateway","traceId":"trace-2ybvqcrw0","method":"GET","url":"/api/v1/stream/proxy/fsiPzT50ZiM","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:38.496Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-2ybvqcrw0","endpoint":"/api/v1/stream/proxy/fsiPzT50ZiM","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:38.506Z","service":"clibeats-gateway","traceId":"trace-2ybvqcrw0","statusCode":206,"method":"GET","url":"/api/v1/stream/proxy/fsiPzT50ZiM","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:38.510Z","service":"clibeats-gateway","traceId":"trace-j6tvg04rz","method":"GET","url":"/api/v1/stream/proxy/fsiPzT50ZiM","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:38.510Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-j6tvg04rz","endpoint":"/api/v1/stream/proxy/fsiPzT50ZiM","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:38.521Z","service":"clibeats-gateway","traceId":"trace-94knux9dq","method":"GET","url":"/api/v1/stream/proxy/fsiPzT50ZiM","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:38.521Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-94knux9dq","endpoint":"/api/v1/stream/proxy/fsiPzT50ZiM","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:38.537Z","service":"clibeats-gateway","traceId":"trace-xmz95jax8","method":"POST","url":"/api/v1/stream","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:38.538Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-xmz95jax8","endpoint":"/api/v1/stream","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:39.109Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-xmz95jax8","trackId":"lYBUbBu4W08","durationMs":571,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T17:46:39.109Z","service":"clibeats-gateway","traceId":"trace-xmz95jax8","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:39.110Z","service":"clibeats-gateway","traceId":"trace-b282rxhkf","method":"HEAD","url":"/api/v1/stream/proxy/lYBUbBu4W08","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:39.110Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-b282rxhkf","endpoint":"/api/v1/stream/proxy/lYBUbBu4W08","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:39.672Z","service":"clibeats-gateway","trackId":"lYBUbBu4W08","total":3458986,"msg":"proxy stream CDN URL resolved"}
+{"level":"info","time":"2026-08-08T17:46:39.682Z","service":"clibeats-gateway","traceId":"trace-b282rxhkf","statusCode":200,"method":"HEAD","url":"/api/v1/stream/proxy/lYBUbBu4W08","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:39.688Z","service":"clibeats-gateway","traceId":"trace-yc850sif5","method":"GET","url":"/api/v1/stream/proxy/lYBUbBu4W08","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:39.688Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-yc850sif5","endpoint":"/api/v1/stream/proxy/lYBUbBu4W08","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:39.695Z","service":"clibeats-gateway","traceId":"trace-yc850sif5","statusCode":206,"method":"GET","url":"/api/v1/stream/proxy/lYBUbBu4W08","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:46:39.696Z","service":"clibeats-gateway","traceId":"trace-9uutp5rjd","method":"GET","url":"/api/v1/stream/proxy/lYBUbBu4W08","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:39.697Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-9uutp5rjd","endpoint":"/api/v1/stream/proxy/lYBUbBu4W08","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:39.713Z","service":"clibeats-gateway","traceId":"trace-z8glsw6kj","method":"GET","url":"/api/v1/stream/proxy/lYBUbBu4W08","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:39.713Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-z8glsw6kj","endpoint":"/api/v1/stream/proxy/lYBUbBu4W08","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:59.177Z","service":"clibeats-gateway","traceId":"trace-y7bt4npah","method":"GET","url":"/api/v1/search?q=Wonderwall","clientIp":"127.0.0.1","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:46:59.177Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-y7bt4npah","endpoint":"/api/v1/search?q=Wonderwall","clientIp":"127.0.0.1","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:46:59.177Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:46:59.177Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-y7bt4npah","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:47:00.084Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:47:00.085Z","service":"clibeats-gateway","traceId":"trace-y7bt4npah","statusCode":200,"method":"GET","url":"/api/v1/search?q=Wonderwall","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:55:29.821Z","service":"clibeats-gateway","traceId":"trace-jvbvisd0n","method":"GET","url":"/api/v1/search?q=Trending%20Hits&filterSongs=true","clientIp":"192.168.0.100","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:55:29.825Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-jvbvisd0n","endpoint":"/api/v1/search?q=Trending%20Hits&filterSongs=true","clientIp":"192.168.0.100","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:55:29.828Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:55:29.828Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-jvbvisd0n","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:55:30.814Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:55:30.815Z","service":"clibeats-gateway","traceId":"trace-jvbvisd0n","statusCode":200,"method":"GET","url":"/api/v1/search?q=Trending%20Hits&filterSongs=true","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:55:32.555Z","service":"clibeats-gateway","traceId":"trace-bojhyb84l","method":"POST","url":"/api/v1/stream","clientIp":"192.168.0.100","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:55:32.555Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-bojhyb84l","endpoint":"/api/v1/stream","clientIp":"192.168.0.100","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:55:33.151Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-bojhyb84l","trackId":"3_g2un5M350","durationMs":594,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T17:55:33.151Z","service":"clibeats-gateway","traceId":"trace-bojhyb84l","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:55:33.218Z","service":"clibeats-gateway","traceId":"trace-buv9zbb7v","method":"GET","url":"/api/v1/stream/proxy/3_g2un5M350","clientIp":"192.168.0.100","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:55:33.218Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-buv9zbb7v","endpoint":"/api/v1/stream/proxy/3_g2un5M350","clientIp":"192.168.0.100","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:55:33.892Z","service":"clibeats-gateway","trackId":"3_g2un5M350","total":4218105,"msg":"proxy stream CDN URL resolved"}
+{"level":"info","time":"2026-08-08T17:55:42.358Z","service":"clibeats-gateway","traceId":"trace-75leyawpu","method":"GET","url":"/api/v1/stream/proxy/3_g2un5M350","clientIp":"192.168.0.100","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:55:42.358Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-75leyawpu","endpoint":"/api/v1/stream/proxy/3_g2un5M350","clientIp":"192.168.0.100","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:55:44.935Z","service":"clibeats-gateway","traceId":"trace-0mtfflyqw","method":"GET","url":"/api/v1/search?q=WonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:55:44.935Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-0mtfflyqw","endpoint":"/api/v1/search?q=WonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:55:44.935Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:55:44.935Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-0mtfflyqw","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:55:45.797Z","service":"clibeats-gateway","traceId":"trace-75leyawpu","statusCode":200,"method":"GET","url":"/api/v1/stream/proxy/3_g2un5M350","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:55:45.835Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:55:45.836Z","service":"clibeats-gateway","traceId":"trace-0mtfflyqw","statusCode":200,"method":"GET","url":"/api/v1/search?q=WonderwallWonderwall&filterSongs=true","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:55:47.921Z","service":"clibeats-gateway","traceId":"trace-upx3c621c","method":"GET","url":"/api/v1/search?q=WWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:55:47.921Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-upx3c621c","endpoint":"/api/v1/search?q=WWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:55:47.922Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:55:47.922Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-upx3c621c","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:55:48.845Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:55:48.847Z","service":"clibeats-gateway","traceId":"trace-upx3c621c","statusCode":200,"method":"GET","url":"/api/v1/search?q=WWonderwallWonderwall&filterSongs=true","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:55:50.305Z","service":"clibeats-gateway","traceId":"trace-6pwvst1ov","method":"GET","url":"/api/v1/search?q=WoWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:55:50.305Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-6pwvst1ov","endpoint":"/api/v1/search?q=WoWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:55:50.306Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:55:50.306Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-6pwvst1ov","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:55:51.139Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:55:51.140Z","service":"clibeats-gateway","traceId":"trace-6pwvst1ov","statusCode":200,"method":"GET","url":"/api/v1/search?q=WoWonderwallWonderwall&filterSongs=true","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:55:51.616Z","service":"clibeats-gateway","traceId":"trace-eqggwohw6","method":"GET","url":"/api/v1/search?q=WondWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:55:51.616Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-eqggwohw6","endpoint":"/api/v1/search?q=WondWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:55:51.616Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:55:51.616Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-eqggwohw6","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:55:52.370Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:55:52.860Z","service":"clibeats-gateway","traceId":"trace-e2z5hm6ra","method":"GET","url":"/api/v1/search?q=WondeWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:55:52.860Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-e2z5hm6ra","endpoint":"/api/v1/search?q=WondeWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:55:52.860Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:55:52.860Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-e2z5hm6ra","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:55:53.633Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:55:53.892Z","service":"clibeats-gateway","traceId":"trace-c8cexnptm","method":"GET","url":"/api/v1/search?q=WonderWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:55:53.892Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-c8cexnptm","endpoint":"/api/v1/search?q=WonderWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:55:53.892Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:55:53.892Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-c8cexnptm","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:55:54.347Z","service":"clibeats-gateway","traceId":"trace-nntcudd6e","method":"GET","url":"/api/v1/search?q=WonderwaWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:55:54.347Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-nntcudd6e","endpoint":"/api/v1/search?q=WonderwaWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:55:54.347Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:55:54.347Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-nntcudd6e","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:55:54.697Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:55:55.075Z","service":"clibeats-gateway","traceId":"trace-mpl0yl1im","method":"GET","url":"/api/v1/search?q=WonderwalWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:55:55.075Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-mpl0yl1im","endpoint":"/api/v1/search?q=WonderwalWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:55:55.076Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:55:55.076Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-mpl0yl1im","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:55:55.228Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:55:55.881Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:55:55.984Z","service":"clibeats-gateway","traceId":"trace-al68tnx9g","method":"GET","url":"/api/v1/search?q=WonderwallWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:55:55.984Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-al68tnx9g","endpoint":"/api/v1/search?q=WonderwallWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:55:55.984Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:55:55.984Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-al68tnx9g","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:55:56.901Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:55:56.902Z","service":"clibeats-gateway","traceId":"trace-al68tnx9g","statusCode":200,"method":"GET","url":"/api/v1/search?q=WonderwallWonderwallWonderwall&filterSongs=true","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:56:00.756Z","service":"clibeats-gateway","traceId":"trace-pye9hxh8j","method":"POST","url":"/api/v1/stream","clientIp":"192.168.0.100","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:56:00.756Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-pye9hxh8j","endpoint":"/api/v1/stream","clientIp":"192.168.0.100","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:56:01.292Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-pye9hxh8j","trackId":"zAiIgYOH4Ys","durationMs":536,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T17:56:01.293Z","service":"clibeats-gateway","traceId":"trace-pye9hxh8j","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:56:01.369Z","service":"clibeats-gateway","traceId":"trace-0nmcoucl7","method":"GET","url":"/api/v1/stream/proxy/zAiIgYOH4Ys","clientIp":"192.168.0.100","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:56:01.369Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-0nmcoucl7","endpoint":"/api/v1/stream/proxy/zAiIgYOH4Ys","clientIp":"192.168.0.100","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:56:01.978Z","service":"clibeats-gateway","trackId":"zAiIgYOH4Ys","total":4744225,"msg":"proxy stream CDN URL resolved"}
+{"level":"info","time":"2026-08-08T17:56:06.257Z","service":"clibeats-gateway","traceId":"trace-xjj2xjpz9","method":"POST","url":"/api/v1/stream","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:56:06.257Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-xjj2xjpz9","endpoint":"/api/v1/stream","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:56:06.895Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-xjj2xjpz9","trackId":"0s1N2XcHZw8","durationMs":637,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T17:56:06.896Z","service":"clibeats-gateway","traceId":"trace-xjj2xjpz9","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:56:07.411Z","service":"clibeats-gateway","traceId":"trace-4fx43c1yr","method":"GET","url":"/api/v1/stream/proxy/0s1N2XcHZw8","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:56:07.411Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-4fx43c1yr","endpoint":"/api/v1/stream/proxy/0s1N2XcHZw8","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:56:08.598Z","service":"clibeats-gateway","trackId":"0s1N2XcHZw8","total":5639291,"msg":"proxy stream CDN URL resolved"}
+{"level":"info","time":"2026-08-08T17:57:11.144Z","service":"clibeats-gateway","traceId":"trace-0i0hj0xkw","method":"GET","url":"/api/v1/search?q=WonderwallWWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:57:11.144Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-0i0hj0xkw","endpoint":"/api/v1/search?q=WonderwallWWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:57:11.145Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:57:11.145Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-0i0hj0xkw","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:57:11.968Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:57:11.969Z","service":"clibeats-gateway","traceId":"trace-0i0hj0xkw","statusCode":200,"method":"GET","url":"/api/v1/search?q=WonderwallWWonderwallWonderwall&filterSongs=true","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:57:13.871Z","service":"clibeats-gateway","traceId":"trace-vy4qycamm","method":"GET","url":"/api/v1/search?q=WonderwallWoWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:57:13.871Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-vy4qycamm","endpoint":"/api/v1/search?q=WonderwallWoWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:57:13.871Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:57:13.871Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-vy4qycamm","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:57:14.636Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:57:14.636Z","service":"clibeats-gateway","traceId":"trace-vy4qycamm","statusCode":200,"method":"GET","url":"/api/v1/search?q=WonderwallWoWonderwallWonderwall&filterSongs=true","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:57:14.891Z","service":"clibeats-gateway","traceId":"trace-of8yolor8","method":"GET","url":"/api/v1/search?q=WonderwallWonWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:57:14.891Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-of8yolor8","endpoint":"/api/v1/search?q=WonderwallWonWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:57:14.891Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:57:14.891Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-of8yolor8","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:57:15.612Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:57:16.111Z","service":"clibeats-gateway","traceId":"trace-8at8h27tl","method":"GET","url":"/api/v1/search?q=WonderwallWondWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:57:16.111Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-8at8h27tl","endpoint":"/api/v1/search?q=WonderwallWondWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:57:16.111Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:57:16.111Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-8at8h27tl","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:57:16.941Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:57:17.187Z","service":"clibeats-gateway","traceId":"trace-ih8ltdc5x","method":"GET","url":"/api/v1/search?q=WonderwallWondeWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:57:17.187Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-ih8ltdc5x","endpoint":"/api/v1/search?q=WonderwallWondeWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:57:17.187Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:57:17.187Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-ih8ltdc5x","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:57:18.034Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:57:18.679Z","service":"clibeats-gateway","traceId":"trace-y1ykog7fy","method":"GET","url":"/api/v1/search?q=WonderwallWonderWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:57:18.679Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-y1ykog7fy","endpoint":"/api/v1/search?q=WonderwallWonderWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:57:18.679Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:57:18.679Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-y1ykog7fy","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:57:19.435Z","service":"clibeats-gateway","traceId":"trace-igsb4jmkk","method":"GET","url":"/api/v1/search?q=WonderwallWonderwWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:57:19.435Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-igsb4jmkk","endpoint":"/api/v1/search?q=WonderwallWonderwWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:57:19.435Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:57:19.435Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-igsb4jmkk","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:57:19.448Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:57:20.228Z","service":"clibeats-gateway","traceId":"trace-h4f41mhbk","method":"GET","url":"/api/v1/search?q=WonderwallWonderwaWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:57:20.228Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-h4f41mhbk","endpoint":"/api/v1/search?q=WonderwallWonderwaWonderwallWonderwall&filterSongs=true","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:57:20.229Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"get","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:57:20.229Z","service":"clibeats-gateway","eventType":"CACHE_CHECKED","type":"CACHE_CHECKED","traceId":"trace-h4f41mhbk","namespace":"search","hit":false,"msg":"Event: CACHE_CHECKED"}
+{"level":"info","time":"2026-08-08T17:57:20.389Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:57:21.005Z","service":"clibeats-gateway","eventType":"CACHE_ERROR","type":"CACHE_ERROR","traceId":"internal","namespace":"search","operation":"set","msg":"Event: CACHE_ERROR"}
+{"level":"info","time":"2026-08-08T17:57:21.005Z","service":"clibeats-gateway","traceId":"trace-h4f41mhbk","statusCode":200,"method":"GET","url":"/api/v1/search?q=WonderwallWonderwaWonderwallWonderwall&filterSongs=true","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:57:31.482Z","service":"clibeats-gateway","traceId":"trace-1eat45pk6","method":"POST","url":"/api/v1/stream","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:57:31.482Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-1eat45pk6","endpoint":"/api/v1/stream","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:57:32.095Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-1eat45pk6","trackId":"2AwgAisWCAU","durationMs":612,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T17:57:32.096Z","service":"clibeats-gateway","traceId":"trace-1eat45pk6","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:57:33.123Z","service":"clibeats-gateway","traceId":"trace-3bxtwykvp","method":"GET","url":"/api/v1/stream/proxy/2AwgAisWCAU","clientIp":"192.168.0.106","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:57:33.123Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-3bxtwykvp","endpoint":"/api/v1/stream/proxy/2AwgAisWCAU","clientIp":"192.168.0.106","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:57:33.815Z","service":"clibeats-gateway","trackId":"2AwgAisWCAU","total":4294474,"msg":"proxy stream CDN URL resolved"}
+{"level":"info","time":"2026-08-08T17:57:34.546Z","service":"clibeats-gateway","traceId":"trace-3bxtwykvp","statusCode":200,"method":"GET","url":"/api/v1/stream/proxy/2AwgAisWCAU","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:58:00.140Z","service":"clibeats-gateway","traceId":"trace-r0niq083b","method":"POST","url":"/api/v1/stream","clientIp":"192.168.0.100","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:58:00.140Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-r0niq083b","endpoint":"/api/v1/stream","clientIp":"192.168.0.100","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:58:00.787Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-r0niq083b","trackId":"E8zOp4Kqcls","durationMs":645,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T17:58:00.787Z","service":"clibeats-gateway","traceId":"trace-r0niq083b","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T17:58:00.869Z","service":"clibeats-gateway","traceId":"trace-carn1dpft","method":"GET","url":"/api/v1/stream/proxy/E8zOp4Kqcls","clientIp":"192.168.0.100","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T17:58:00.869Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-carn1dpft","endpoint":"/api/v1/stream/proxy/E8zOp4Kqcls","clientIp":"192.168.0.100","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T17:58:01.486Z","service":"clibeats-gateway","trackId":"E8zOp4Kqcls","total":5153000,"msg":"proxy stream CDN URL resolved"}
+{"level":"info","time":"2026-08-08T18:01:25.615Z","service":"clibeats-gateway","traceId":"trace-b7xcgnp54","method":"POST","url":"/api/v1/stream","clientIp":"192.168.0.100","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T18:01:25.618Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-b7xcgnp54","endpoint":"/api/v1/stream","clientIp":"192.168.0.100","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T18:01:26.359Z","service":"clibeats-gateway","eventType":"STREAM_RESOLVED","type":"STREAM_RESOLVED","traceId":"trace-b7xcgnp54","trackId":"ndHnHIgQxys","durationMs":736,"msg":"Event: STREAM_RESOLVED"}
+{"level":"info","time":"2026-08-08T18:01:26.361Z","service":"clibeats-gateway","traceId":"trace-b7xcgnp54","statusCode":200,"method":"POST","url":"/api/v1/stream","msg":"request completed"}
+{"level":"info","time":"2026-08-08T18:01:26.401Z","service":"clibeats-gateway","traceId":"trace-xhfvew081","method":"GET","url":"/api/v1/stream/proxy/ndHnHIgQxys","clientIp":"192.168.0.100","msg":"incoming request"}
+{"level":"info","time":"2026-08-08T18:01:26.401Z","service":"clibeats-gateway","eventType":"REQUEST_RECEIVED","type":"REQUEST_RECEIVED","traceId":"trace-xhfvew081","endpoint":"/api/v1/stream/proxy/ndHnHIgQxys","clientIp":"192.168.0.100","msg":"Event: REQUEST_RECEIVED"}
+{"level":"info","time":"2026-08-08T18:01:26.969Z","service":"clibeats-gateway","trackId":"ndHnHIgQxys","total":2351543,"msg":"proxy stream CDN URL resolved"}
+{"level":"info","time":"2026-08-08T18:01:27.337Z","service":"clibeats-gateway","traceId":"trace-xhfvew081","statusCode":200,"method":"GET","url":"/api/v1/stream/proxy/ndHnHIgQxys","msg":"request completed"}
+[INFO] 23:32:23 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\config\config.ts has been modified
+[ioredis] Unhandled error event: AggregateError: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+{"level":"error","time":"2026-08-08T18:02:25.817Z","service":"clibeats-gateway","err":{"type":"Error","message":"listen EADDRINUSE: address already in use 0.0.0.0:8080","stack":"Error: listen EADDRINUSE: address already in use 0.0.0.0:8080\n    at Server.setupListenHandle [as _listen2] (node:net:1940:16)\n    at listenInCluster (node:net:1997:12)\n    at node:net:2206:7\n    at processTicksAndRejections (node:internal/process/task_queues:90:21)","code":"EADDRINUSE","errno":-4091,"syscall":"listen","address":"0.0.0.0","port":8080},"msg":"Failed to start gateway server"}
+[INFO] 00:29:52 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\schemas.ts has been modified
+{"level":"warn","time":"2026-08-08T18:59:55.539Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"error","time":"2026-08-08T18:59:55.709Z","service":"clibeats-gateway","err":{"type":"Error","message":"listen EADDRINUSE: address already in use 0.0.0.0:8080","stack":"Error: listen EADDRINUSE: address already in use 0.0.0.0:8080\n    at Server.setupListenHandle [as _listen2] (node:net:1940:16)\n    at listenInCluster (node:net:1997:12)\n    at node:net:2206:7\n    at processTicksAndRejections (node:internal/process/task_queues:90:21)","code":"EADDRINUSE","errno":-4091,"syscall":"listen","address":"0.0.0.0","port":8080},"msg":"Failed to start gateway server"}
+[INFO] 00:29:58 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\app.ts has been modified
+{"level":"warn","time":"2026-08-08T19:00:00.505Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"info","time":"2026-08-08T19:00:00.626Z","service":"clibeats-gateway","msg":"CliBeats Provider Gateway running on http://0.0.0.0:8080"}
+{"level":"info","time":"2026-08-08T19:00:00.626Z","service":"clibeats-gateway","msg":"OpenAPI Swagger documentation available on http://0.0.0.0:8080/documentation"}
+{"level":"warn","time":"2026-08-08T19:00:01.019Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"warn","time":"2026-08-08T19:00:01.534Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+[INFO] 00:31:09 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\app.ts has been modified
+{"level":"warn","time":"2026-08-08T19:01:11.919Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"error","time":"2026-08-08T19:01:12.064Z","service":"clibeats-gateway","err":{"type":"Error","message":"listen EADDRINUSE: address already in use 0.0.0.0:8080","stack":"Error: listen EADDRINUSE: address already in use 0.0.0.0:8080\n    at Server.setupListenHandle [as _listen2] (node:net:1940:16)\n    at listenInCluster (node:net:1997:12)\n    at node:net:2206:7\n    at processTicksAndRejections (node:internal/process/task_queues:90:21)","code":"EADDRINUSE","errno":-4091,"syscall":"listen","address":"0.0.0.0","port":8080},"msg":"Failed to start gateway server"}
+[INFO] 00:31:36 Restarting: C:\Users\OM Prakash\Documents\clibeats\gateway\src\core\health\RedisHealthChecker.ts has been modified
+{"level":"warn","time":"2026-08-08T19:01:39.627Z","service":"clibeats-gateway","error":"","msg":"Redis connection warning (degrading to cache-miss)"}
+{"level":"error","time":"2026-08-08T19:01:39.785Z","service":"clibeats-gateway","err":{"type":"Error","message":"listen EADDRINUSE: address already in use 0.0.0.0:8080","stack":"Error: listen EADDRINUSE: address already in use 0.0.0.0:8080\n    at Server.setupListenHandle [as _listen2] (node:net:1940:16)\n    at listenInCluster (node:net:1997:12)\n    at node:net:2206:7\n    at processTicksAndRejections (node:internal/process/task_queues:90:21)","code":"EADDRINUSE","errno":-4091,"syscall":"listen","address":"0.0.0.0","port":8080},"msg":"Failed to start gateway server"}

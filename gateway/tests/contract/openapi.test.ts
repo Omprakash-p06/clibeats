@@ -33,6 +33,7 @@ describe('OpenAPI Contract Tests (schema-driven)', () => {
       '/api/v1/providers',
       '/api/v1/search',
       '/api/v1/stream',
+      '/api/v1/stream/proxy/{trackId}',
       '/health',
       '/metrics',
       '/version',

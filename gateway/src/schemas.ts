@@ -350,3 +350,21 @@ export const providersSchema = {
     },
   },
 };
+
+export const streamProxySchema = {
+  tags: ['Playback'],
+  description: 'Proxy and relay audio stream bytes from upstream CDN with Range header support.',
+  summary: 'Proxy audio stream',
+  params: {
+    type: 'object',
+    properties: { trackId: { type: 'string' } },
+    required: ['trackId'],
+  },
+  response: {
+    200: { type: 'string', description: 'Audio stream binary chunk' },
+    206: { type: 'string', description: 'Partial content audio stream chunk' },
+    404: ErrorResponseSchema,
+    502: ErrorResponseSchema,
+  },
+};
+
