@@ -1,266 +1,193 @@
 # Codebase Structure
 
-**Analysis Date:** 2026-08-08
+**Analysis Date:** 2026-08-09
 
 ## Directory Layout
 
 ```
-clibeats/                          # git repo root = BOTH codebases
-├── app/                           # Android client (Kotlin, Compose, Hilt, Media3, Room)
-├── gateway/                       # Provider gateway (Node.js, TypeScript, Fastify)
-├── config/                        # Shared tooling config (detekt, etc.)
-├── docs/                          # Project documentation / ADRs
-├── scripts/                       # Root-level helper scripts
-├── gradle/                        # Gradle wrapper + version catalog (libs.versions.toml)
-├── gradlew, gradlew.bat, settings.gradle.kts, build.gradle.kts, gradle.properties
-├── logo/                          # Branding assets
-├── .github/workflows/ci.yml      # CI pipeline
-├── .planning/                    # GSD workspace (phases, codebase docs)
-└── README.md
+clibeats/
+├── app/                          # Android application module
+│   ├── build.gradle.kts          # App build config (SDK, flavors, deps, quality tools)
+│   ├── proguard-rules.pro        # R8/ProGuard keep rules
+│   ├── schemas/                  # Exported Room DB schemas (v1.json)
+│   └── src/
+│       ├── main/
+│       │   ├── AndroidManifest.xml
+│       │   ├── java/com/clibeats/   # All Kotlin source (see below)
+│       │   └── res/                # XML resources (network config, extraction rules)
+│       ├── test/java/com/clibeats/  # JVM unit + Paparazzi screenshot tests
+│       └── androidTest/java/com/clibeats/  # Instrumented Room DAO tests
+├── gateway/                      # Provider gateway service (TypeScript)
+│   ├── src/                      # Source (app, config, core, providers, types, schemas)
+│   ├── tests/                    # Vitest suites (unit/integration/contract/property/load)
+│   ├── scripts/                  # OpenAPI generate/validate, phase validation
+│   ├── config/gateway.yaml       # Gateway runtime config
+│   ├── Dockerfile                # node:22-alpine multi-stage build
+│   ├── render.yaml               # Render.com deployment config
+│   ├── docker-compose.yml        # Local gateway + redis
+│   ├── package.json / tsconfig.json / vitest.config.ts
+│   └── *.mjs                     # Ad-hoc PO-token diagnostics scripts
+├── config/detekt/detekt.yml      # Detekt rules (clean-architecture enforcement)
+├── gradle/                       # Version catalog (libs.versions.toml) + wrapper
+├── docs/                         # ADRs, architecture, release notes, user guide
+├── .planning/                    # GSD planning docs, codebase map, debug sessions
+├── .github/workflows/ci.yml      # GitHub Actions CI
+└── settings.gradle.kts, build.gradle.kts, gradle.properties
 ```
 
 ## Directory Purposes
 
-### Root
+**`app/src/main/java/com/clibeats/` (Android package root):**
+- Purpose: All Android application code, organized by Clean Architecture layer + cross-cutting concerns
+- Contains:
+  - `CLIBeatsApp.kt` — `@HiltAndroidApp` Application class
+  - `MainActivity.kt` — single Compose activity with destination switching
+  - `core/logging/StructuredLogger.kt` — logging abstraction for telemetry
+  - `data/` — gateway client, Room local DB (entities/DAOs/mappers), disk cache, downloads, preferences, network monitor, repository impls
+  - `di/` — Hilt modules (`AppModule`, `DatabaseModule`, `NetworkModule`, `PlaybackModule`, `ProviderModule`, `RepositoryModule`, `StorageModule`, `CacheModule`, `DownloadModule`, `ImageLoaderModule`, `TelemetryModule`)
+  - `domain/` — pure models, `MusicProvider`, repository interfaces, `QueueManager`
+  - `playback/` — `PlayerAdapter` (ExoPlayer wrapper), `service/PlaybackService` (MediaSessionService)
+  - `presentation/` — Compose screens + ViewModels, theme, shared components
+  - `telemetry/` — `AnalyticsEvent`, `CrashReporter`, `TelemetryTracker` interfaces + Timber implementations (ADR-010)
 
-| Path | Purpose |
-|------|---------|
-| `app/` | Single-module Android Gradle project (`:app`) |
-| `gateway/` | Standalone npm project with its own `package.json`, `tsconfig.json`, `vitest.config.ts`, `Dockerfile`, `docker-compose.yml` |
-| `settings.gradle.kts` | Declares only `:app` module; rootProject `CLIBeats` |
-| `config/` | Shared static-analysis config, e.g. `config/detekt/detekt.yml` |
+**`app/src/test/` and `app/src/androidTest/`:**
+- Purpose: JVM unit/screenshot tests and instrumented tests respectively
+- Key files: `.../integration/PlaybackIntegrationTest.kt`, `.../theme/*ScreenshotTest.kt`, `.../data/local/dao/*DaoTest.kt` (androidTest)
 
-## Android App Tree (`app/`)
+**`gateway/src/` (TypeScript package root):**
+- Purpose: Gateway service split into types → core → providers → API
+- Contains:
+  - `app.ts` — Fastify app factory: routes, hooks, DI decoration, error handler, Redis + CDN probe caching
+  - `server.ts` — process entry point (listen + graceful shutdown)
+  - `schemas.ts` — JSON Schema objects per route (also feeds OpenAPI)
+  - `config/config.ts` — YAML/env config loading (`GatewayConfig` interface)
+  - `core/cache/` — `CacheManager` + segregated caches (`SearchCache`, `AlbumCache`, `ArtistCache`, `PlaylistCache`, `SessionCache`, `ArtworkCache`, `HealthCache`) over a shared `RedisCacheBase`
+  - `core/circuit/CircuitBreaker.ts` — CLOSED/OPEN/HALF_OPEN state machine
+  - `core/events/EventBus.ts` — internal pub/sub feeding logs + metrics
+  - `core/health/RedisHealthChecker.ts` — Redis ping check
+  - `core/logging/logger.ts` — pino singleton
+  - `core/metrics/metrics.ts` — Prometheus registry + EventBus wiring
+  - `core/registry/ProviderRegistry.ts` — adapter map
+  - `core/selection/ProviderSelectionEngine.ts` — scoring, selection, failover
+  - `providers/youtube/` — `YouTubeProviderAdapter.ts`, `media.ts` (raw response parsing), `poToken/mint.ts` (BotGuard/WAA), `ProviderTokenService.ts` (token lifecycle)
+  - `providers/mock/MockProviderAdapter.ts` — seeded dataset + 8 failure states
+  - `providers/registerProviders.ts` — config-driven adapter registration
+  - `types/` — `adapter.ts`, `capabilities.ts`, `context.ts`, `domain.ts`, `error.ts`
 
-```
-app/
-├── build.gradle.kts            # Android config: compileSdk 34, minSdk 26, Compose, Hilt,
-│                               # Room (KSP), detekt/ktlint, Paparazzi; GATEWAY_BASE_URL build field
-├── proguard-rules.pro
-├── schemas/                    # Room schema exports (com.clibeats.data.local.CliBeatsDatabase/1.json)
-└── src/
-    ├── main/
-    │   ├── AndroidManifest.xml    # MainActivity + PlaybackService (foreground mediaPlayback)
-    │   ├── res/                   # values/, mipmap-*/ icons, font/, xml/ (bg data extraction rules)
-    │   └── java/com/clibeats/
-    │       ├── CLIBeatsApp.kt                  # @HiltAndroidApp
-    │       ├── MainActivity.kt                 # Single-activity Compose root + nav state
-    │       ├── core/logging/
-    │       │   └── StructuredLogger.kt         # PlaybackEvent sealed events + log helper
-    │       ├── data/
-    │       │   ├── cache/
-    │       │   │   └── CacheManager.kt         # audio_cache/ file cache + Room-backed index (500MB LRU)
-    │       │   ├── download/
-    │       │   │   ├── TrackDownloadManager.kt # OkHttp streaming downloads → StateFlow<Map<String,DownloadStatus>>
-    │       │   │   └── DownloadStatus.kt       # Idle/Downloading/Completed/Failed
-    │       │   ├── gateway/
-    │       │   │   ├── GatewayMusicProvider.kt # MusicProvider impl → gateway REST
-    │       │   │   ├── api/
-    │       │   │   │   └── GatewayApi.kt       # Retrofit interface (search/stream/album/artist/playlist)
-    │       │   │   ├── dto/
-    │       │   │   │   └── GatewayDtos.kt      # kotlinx-serializable DTOs incl. error envelope
-    │       │   │   └── mapper/
-    │       │   │       ├── GatewayMapper.kt    # DTO → domain
-    │       │   │       └── GatewayErrorMapper.kt # HTTP error → user message
-    │       │   ├── network/
-    │       │   │   └── NetworkMonitor.kt       # Connectivity callback → StateFlow<Boolean>
-    │       │   ├── preferences/
-    │       │   │   └── AppPreferences.kt       # DataStore (settings) + EncryptedSharedPreferences (auth)
-    │       │   ├── local/
-    │       │   │   ├── CliBeatsDatabase.kt     # Room @Database (6 entities, v1)
-    │       │   │   ├── CliBeatsTypeConverters.kt
-    │       │   │   ├── dao/                    # SongDao, PlaylistDao, HistoryDao, CacheIndexDao, QueueDao
-    │       │   │   ├── entity/                 # SongEntity, PlaylistEntity, PlaylistSongCrossRef,
-    │       │   │   │                              CacheIndexEntity, HistoryEntity, QueueEntity
-    │       │   │   └── mapper/                 # SongMapper.kt, PlaylistMapper.kt (entity ↔ domain)
-    │       │   └── repository/
-    │       │       ├── SongRepositoryImpl.kt, PlaylistRepositoryImpl.kt, HistoryRepositoryImpl.kt
-    │       │       └── PlaybackRepositoryImpl.kt   # Bridges PlayerAdapter + MusicProvider + QueueManager
-    │       ├── di/                            # Hilt modules (all @InstallIn(SingletonComponent))
-    │       │   ├── AppModule.kt                 # (empty placeholder)
-    │       │   ├── DatabaseModule.kt            # Room db + DAOs
-    │       │   ├── RepositoryModule.kt          # @Binds domain repository interfaces
-    │       │   ├── ProviderModule.kt            # @Binds MusicProvider → GatewayMusicProvider
-    │       │   ├── PlaybackModule.kt            # ExoPlayer + AudioAttributes
-    │       │   ├── NetworkModule.kt             # Json, OkHttp (@Named gateway), Retrofit, GatewayApi, NetworkMonitor
-    │       │   ├── CacheModule.kt               # CacheManager
-    │       │   ├── DownloadModule.kt            # TrackDownloadManager
-    │       │   ├── ImageLoaderModule.kt         # Coil ImageLoader (mem 25% / disk 2%)
-    │       │   ├── StorageModule.kt             # DataStore + EncryptedSharedPreferences
-    │       │   └── TelemetryModule.kt
-    │       ├── domain/
-    │       │   ├── model/                     # Track, Album, Artist, Playlist, PlaybackState, RepeatMode
-    │       │   ├── provider/
-    │       │   │   ├── MusicProvider.kt        # search/getTrack/stream/playlists/queue
-    │       │   │   └── ProviderResult.kt       # sealed Success/Error/Loading
-    │       │   ├── playback/
-    │       │   │   └── QueueManager.kt         # in-memory queue + advance logic
-    │       │   └── repository/                 # Song, Playlist, History, Playback repository interfaces
-    │       ├── playback/
-    │       │   ├── PlayerAdapter.kt            # ExoPlayer wrapper: queue, transport, PlaybackState flow
-    │       │   └── service/
-    │       │       └── PlaybackService.kt      # MediaSessionService (foreground media playback)
-    │       ├── presentation/
-    │       │   ├── component/                  # TUI primitives: PlayerBar, SongTableRow, TuiBlock, TuiTabBar
-    │       │   ├── home/                       # HomeScreen.kt
-    │       │   ├── search/                     # SearchScreen + SearchViewModel + SearchUiState
-    │       │   ├── library/                    # LibraryScreen + LibraryViewModel + LibraryUiState
-    │       │   ├── playlist/                   # PlaylistScreen + PlaylistViewModel + PlaylistUiState
-    │       │   ├── queue/                      # QueueScreen + QueueViewModel + QueueUiState
-    │       │   ├── player/                     # PlayerViewModel (+ playbackState observed by player bar)
-    │       │   ├── settings/                   # SettingsScreen + SettingsViewModel + SettingsUiState
-    │       │   ├── more/                       # MoreScreen.kt
-    │       │   ├── layout/
-    │       │   │   ├── MainLayout.kt           # NavigationSuiteScaffold shell + PlayerBar slot
-    │       │   │   └── NavDestination.kt       # sealed destinations + mainTabs (Home/Search/Library/More)
-    │       │   └── theme/                      # CliBeatsTheme/Colors/Typography/Shapes
-    │       └── telemetry/                      # TelemetryTracker, CrashReporter, Timber impls, AnalyticsEvent
-    ├── androidTest/java/com/clibeats/
-    │   └── data/local/dao/                     # Room DAO instrumentation tests (SongDaoTest, ...)
-    └── test/
-        ├── java/com/clibeats/                  # JVM unit tests, mirroring main package layout
-        │   ├── data/, domain/, presentation/, playback/, integration/, telemetry/, theme/, license/
-        └── snapshots/                          # Paparazzi layout snapshots (images/, videos/)
-```
+**`gateway/tests/`:**
+- Purpose: Vitest suites organized by level
+- Contains: `unit/` (core, mock-provider, provider-token-service, redis-cache-resilience, redis-health, youtube-adapter, youtube-adapter-token), `integration/` (api, failover, health, metrics), `contract/openapi.test.ts`, `property/search-property.test.ts`, `architecture/layers.test.ts`, `load/load-test.ts`
 
-## Gateway Tree (`gateway/`)
+**`gateway/scripts/`:**
+- Purpose: Tooling scripts
+- Contains: `generate-openapi.ts`, `validate-openapi.ts`, `validate-phase-a-gateway.ts`
 
-```
-gateway/
-├── package.json                 # scripts: build, start, dev, test, test:coverage, ci, openapi:*
-├── tsconfig.json                 # ES2022 / CommonJS, strict, outDir dist/
-├── vitest.config.ts             # test env node; coverage thresholds 70%; include tests/**/*.test.ts
-├── vitest.config.ts             # node env
-├── openapi.json                  # generated OpenAPI spec (swagger)
-├── Dockerfile, docker-compose.yml
-├── config/
-│   └── gateway.yaml              # YAML config: server, providers (mock/youtube), cache TTLs, stream, health
-├── scripts/
-│   ├── generate-openapi.ts       # regenerates openapi.json from app routes
-│   └── validate-openapi.ts       # spec validation (CI)
-├── coverage/                     # vitest coverage output
-├── dist/                         # tsc build output (runtime entry dist/server.js)
-└── src/
-    ├── server.ts                 # bootstrap: buildApp(), listen, SIGTERM/SIGINT shutdown
-    ├── app.ts                    # Fastify factory: plugins, decorations, hooks, 9 routes, error handler
-    ├── schemas.ts                # Fastify JSON-schema definitions (TrackSchema, ...) + route schemas
-    ├── config/
-    │   └── config.ts             # loadConfig(): gateway.yaml + env overrides (PORT, REDIS_URL, GATEWAY_CONFIG_PATH)
-    ├── types/
-    │   ├── adapter.ts            # ProviderAdapter interface + AdapterHealth
-    │   ├── domain.ts             # Track, Album, Artist, Playlist, StreamResult, Lyrics
-    │   ├── capabilities.ts       # ProviderCapabilities boolean flags
-    │   ├── context.ts            # ProviderContext (country, lang, quality, traceId, ...)
-    │   ├── error.ts              # ProviderError hierarchy + status codes
-    │   └── declarations.d.ts
-    ├── core/
-    │   ├── registry/
-    │   │   └── ProviderRegistry.ts          # Map<string, ProviderAdapter> + priority sort
-    │   ├── selection/
-    │   │   └── ProviderSelectionEngine.ts   # scoring + selectBestProvider + executeWithFailover
-    │   ├── circuit/
-    │   │   └── CircuitBreaker.ts            # CLOSED/OPEN/HALF_OPEN, failure threshold 3, cooldown 60s
-    │   ├── cache/
-    │   │   ├── CacheManager.ts               # owns 7 segregated caches
-    │   │   ├── RedisCacheBase.ts             # fail-open primitive, key prefix clibeats:<ns>:
-    │   │   └── segregated/
-    │   │       ├── SearchCache.ts            # TTL 3600s
-    │   │       ├── AlbumCache.ts, ArtistCache.ts, PlaylistCache.ts   # TTL 86400s
-    │   │       ├── SessionCache.ts           # no TTL
-    │   │       ├── ArtworkCache.ts           # TTL 604800s
-    │   │       └── HealthCache.ts
-    │   ├── events/
-    │   │   └── EventBus.ts                   # globalEventBus singleton
-    │   ├── health/
-    │   │   └── RedisHealthChecker.ts        # PING + timeout → UP/DEGRADED/DOWN
-    │   ├── logging/
-    │   │   └── logger.ts                     # pino JSON logger, event-bus subscriber
-    │   └── metrics/
-    │       └── metrics.ts                    # prom-client register + EventBus → metrics wiring
-    └── providers/
-        ├── registerProviders.ts             # config-driven registration for mock + youtube
-        ├── mock/
-        │   └── MockProviderAdapter.ts      # seeded dataset + MockProviderState failure simulation
-        └── youtube/
-            ├── YouTubeProviderAdapter.ts   # youtubei.js client, dual session (music/ios), timeouts
-            └── media.ts                     # YOUTUBE_PROVIDER_ID, parseRawItem, parseSubtitle, artwork
-```
+**`docs/`:**
+- Purpose: Documentation — `adr/` (ADR-001..020), `architecture/` (FINAL_ARCHITECTURE, MASTER_ROADMAP, PROVIDER_STRATEGY, TECHNICAL_DEBT, RISK_REGISTER, ...), `RELEASE_NOTES.md`, `USER_GUIDE.md`, `integration-map.md`, `LICENSES.md`
+
+**`.planning/`:**
+- Purpose: GSD workflow state — `STATE.md`, `ROADMAP.md`, `codebase/` (this map), `debug/` (recovery + PO-token investigation sessions), `phases/` (phase plans/summaries)
 
 ## Key File Locations
 
-**App root config:**
-- `app/build.gradle.kts` — all Android configuration; note `GATEWAY_BASE_URL` buildConfigField (emulator → host loopback) and testing framework deps (Paparazzi, MockWebServer, media3-test-utils)
-- `gradle/libs.versions.toml` — the version catalog used by `build.gradle.kts` (new dependencies go here)
+**Entry Points:**
+- `app/src/main/java/com/clibeats/MainActivity.kt`: Android UI entry (single activity)
+- `app/src/main/java/com/clibeats/playback/service/PlaybackService.kt`: Background media entry
+- `gateway/src/server.ts`: Gateway process entry
+- `gateway/src/app.ts`: Gateway app factory (routes + wiring)
 
-**Composition roots / DI:**
-- App: `app/src/main/java/com/clibeats/CLIBeatsApp.kt` + the 11 files in `app/src/main/java/com/clibeats/di/`. Repository bindings are centralized in `di/RepositoryModule.kt` and `di/ProviderModule.kt` — any new repository/provider impl **must** be registered here
-- Gateway: `gateway/src/app.ts` `buildApp()` — service instantiation (`CacheManager`, `ProviderRegistry`, `ProviderSelectionEngine`, `RedisHealthChecker`) and `app.decorate()` are all here
+**Configuration:**
+- `gradle/libs.versions.toml`: Android version catalog (single source of truth)
+- `app/build.gradle.kts`: App build config incl. `GATEWAY_URL` handling (debug/release)
+- `gateway/config/gateway.yaml`: Providers, cache TTLs, stream, PO-token config
+- `gateway/src/config/config.ts`: Config loader (YAML + env overrides)
+- `gateway/render.yaml`, `gateway/Dockerfile`, `gateway/docker-compose.yml`: Deployment
+- `config/detekt/detekt.yml`: Static-analysis rules incl. ForbiddenImport enforcement
+- `.github/workflows/ci.yml`: CI pipeline
 
-**Data mapping seams:**
-- App: `data/local/mapper/SongMapper.kt` + `PlaylistMapper.kt` (Room ↔ domain), `data/gateway/mapper/GatewayMapper.kt` (gateway DTO ↔ domain)
-- Gateway: `providers/*/media.ts` for raw payload → domain; `types/domain.ts` canonical shapes
+**Core Logic:**
+- `gateway/src/core/selection/ProviderSelectionEngine.ts`: failover + scoring
+- `gateway/src/core/cache/CacheManager.ts` + `cache/segregated/*.ts`: caching
+- `gateway/src/providers/youtube/YouTubeProviderAdapter.ts`: YouTube integration
+- `app/src/main/java/com/clibeats/playback/PlayerAdapter.kt`: playback state engine
+- `app/src/main/java/com/clibeats/data/gateway/GatewayMusicProvider.kt`: client-side provider
+- `app/src/main/java/com/clibeats/data/local/CliBeatsDatabase.kt`: Room DB definition
+
+**Testing:**
+- `gateway/tests/**`: gateway test suites
+- `app/src/test/java/com/clibeats/**`: Android unit + screenshot tests
+- `app/src/androidTest/java/com/clibeats/**`: instrumented DAO tests
+
+**Documentation:**
+- `docs/adr/*.md`: Architecture Decision Records (001-020)
+- `docs/architecture/*.md`: Architecture strategy, debt, risk docs
+- `docs/RELEASE_NOTES.md`, `docs/USER_GUIDE.md`, `README.md`, `WINDOWS.md`
 
 ## Naming Conventions
 
 **Files:**
-- **Android:** `PascalCase.kt` matching the public class — `SongRepository.kt`, `PlayerAdapter.kt`. Screens: `*Screen.kt`. ViewModels: `*ViewModel.kt`. UI state: `*UiState.kt`. DI: `*Module.kt`.
-- **Gateway:** `PascalCase.ts` for classes (`MockProviderAdapter.ts`), `camelCase.ts` for instances/config (`config.ts`, `logger.ts`), `*Adapter.ts` for every provider class, `*Cache.ts` for cache namespaces, `*.test.ts` in `tests/`.
+- Kotlin: `PascalCase.kt`, one class/object per file, `*Test.kt` for unit tests, `*ScreenshotTest.kt` for Paparazzi
+- TypeScript: `PascalCase.ts` for classes/modules, `kebab-case` none — camelCase file names for services (`providerTokenService.ts`), `*.test.ts` for tests
+- Android resources: `snake_case.xml` (e.g., `network_security_config.xml`, `data_extraction_rules.xml`)
 
-**Directories (both):** camelCase: `data/repository/`, `data/gateway/api/`, `core/cache/segregated/`, `providers/youtube/`.
+**Directories:**
+- Kotlin: lowercase single-context dirs matching package structure (`data/local/dao`, `domain/model`, `presentation/settings`)
+- TypeScript: lowercase (`core/cache/segregated`, `providers/youtube/poToken`)
 
-**Android package structure:** one directory per clean-architecture layer — `presentation/`, `domain/`, `data/` — mirroring the public package name `com.clibeats`.
+**Special Patterns:**
+- Room: entity → `*Entity.kt`, DAO → `*Dao.kt`, cross-ref → `*CrossRef.kt`; database schema exported under `app/schemas/com.clibeats.data.local.CliBeatsDatabase/`
+- Hilt: `di/*Module.kt` (object or class with `@InstallIn`)
+- Gateway cache: `*Cache.ts` in `core/cache/segregated/` extending `RedisCacheBase`
+- Gateway providers: `*ProviderAdapter.ts` implementing `ProviderAdapter`; types in `types/*.ts`
 
 ## Where to Add New Code
 
-**New Android feature (e.g., "Favorites"):**
-- UI/composables: `app/src/main/java/com/clibeats/presentation/favorites/FavoritesScreen.kt`
-- ViewModel: `app/src/main/java/com/clibeats/presentation/favorites/FavoritesViewModel.kt` + `FavoritesUiState.kt` (annotated `@HiltViewModel`)
-- Domain contract: `app/src/main/java/com/clibeats/domain/repository/FavoritesRepository.kt`
-- Implementation: `app/src/main/java/com/clibeats/data/repository/FavoritesRepositoryImpl.kt` + binding in `app/src/main/java/com/clibeats/di/RepositoryModule.kt`
-- Room: new entity in `data/local/entity/`, DAO in `data/local/dao/`, listed in `CliBeatsDatabase.kt` (bump `version`), and exported schema in `app/schemas/`
-- Tests: mirror package under `app/src/test/java/com/clibeats/...` (JVM) — Room DAOs use `app/src/androidTest/`
+**New Android feature (e.g., a new screen):**
+- UI + ViewModel: `app/src/main/java/com/clibeats/presentation/<feature>/`
+- State models: same dir as `*UiState.kt`
+- Domain models/contracts: `app/src/main/java/com/clibeats/domain/model` + `domain/repository`
+- Data implementation: `app/src/main/java/com/clibeats/data/**`
+- DI wiring: `app/src/main/java/com/clibeats/di/`
+- Tests: `app/src/test/java/com/clibeats/presentation/<feature>/` (unit) + `app/src/androidTest/` (instrumented)
+- Navigation: register destination in `presentation/layout/NavDestination.kt` + `MainActivity.kt`
 
-**New gateway provider ("Bandcamp"):**
-- Implement `ProviderAdapter`: `gateway/src/providers/bandcamp/BandcampProviderAdapter.ts`
-- Register: `gateway/src/providers/registerProviders.ts`
-- Enable/configure: `gateway/config/gateway.yaml` (`providers.bandcamp: { enabled, priority }`)
-- Add capability flags if needed: `gateway/src/types/capabilities.ts`
-- Tests: `gateway/tests/unit/bandcamp-adapter.test.ts`
+**New gateway provider:**
+- Adapter: `gateway/src/providers/<name>/<Name>ProviderAdapter.ts`
+- Registration: `gateway/src/providers/registerProviders.ts` (config-driven from `gateway/config/gateway.yaml`)
+- Config: `providers.<name>` block in `gateway.yaml`
+- Tests: `gateway/tests/unit/<name>-adapter.test.ts`
 
-**New gateway route:**
-- Schema first: add to `gateway/src/schemas.ts` → define route in `gateway/src/app.ts` → regenerate `gateway/openapi.json` via `npm run openapi:generate`
-- App-side client: mirror in `app/src/main/java/com/clibeats/data/gateway/api/GatewayApi.kt` + DTO in `gateway/dto/GatewayDtos.kt`
+**New gateway endpoint:**
+- Route + handler: `gateway/src/app.ts`
+- Schema: `gateway/src/schemas.ts` (auto-included in OpenAPI)
+- Tests: `gateway/tests/integration/api.test.ts`
 
-**New segregated cache namespace:**
-- Extend `RedisCacheBase` in `gateway/src/core/cache/segregated/<Name>Cache.ts`, add instance in `gateway/src/core/cache/CacheManager.ts`, wire TTL in `gateway/config/gateway.yaml`.
+**Utilities:**
+- Shared gateway helpers: `gateway/src/core/**`
+- Shared Android helpers: `app/src/main/java/com/clibeats/core/**`
 
 ## Special Directories
 
-**`app/src/test/snapshots/`**
-- Purpose: Paparazzi screenshot/layout golden images and videos
-- Generated: Yes — by `paparazzi` test runs
-- Committed: Yes
+**`app/schemas/`:**
+- Purpose: Exported Room migration schemas
+- Source: Auto-generated by Room KSP (`room.schemaLocation` arg in `app/build.gradle.kts`)
+- Committed: Yes (needed for verified migrations)
 
-**`app/schemas/`**
-- Purpose: Room schema export (`com.clibeats.data.local.CliBeatsDatabase/1.json`) for migrations
-- Generated: Yes (KSP at build time)
-- Committed: Yes
+**`gateway/dist/`:**
+- Purpose: Compiled gateway JS output
+- Source: `tsc` (`npm run build`)
+- Committed: No (gitignored; `.dockerignore` too)
 
-**`gateway/dist/`**
-- Purpose: compiled JS output of `tsc`
-- Generated: Yes (`npm run build`)
-- Committed: No (runtime artifact; `.gitignore`)
+**`.planning/debug/`:**
+- Purpose: Debug/recovery session docs (RECOVERY-01/02/06, PO-token investigation) + captured evidence (gateway.log, PNGs)
+- Committed: Yes (session state)
 
-**`gateway/coverage/`**
-- Purpose: vitest v8 coverage reports
-- Generated: Yes (`npm run test:coverage`)
-- Committed: No
-
-**`.planning/`**
-- Purpose: GSD planning state (phases, roadmap, codebase docs)
-- Generated: Yes (tooling)
-- Committed: Yes (repo tracks it)
+**`app/src/test` Paparazzi output:**
+- Purpose: Screenshot rendering fixtures
+- Source: Paparazzi Gradle plugin at test runtime
+- Committed: No (build artifacts)
 
 ---
 
-*Structure analysis: 2026-08-08*
+*Structure analysis: 2026-08-09*
+*Update when directory structure changes*

@@ -1,105 +1,91 @@
 # External Integrations
 
-**Analysis Date:** 2026-08-08
-
-Two runtimes integrate with external systems: the Android app (`app/`) consumes the provider gateway over REST, and the gateway (`gateway/`) talks to YouTube Music's unofficial InnerTube API and Redis. There are no paid API keys or OAuth flows in use.
+**Analysis Date:** 2026-08-09
 
 ## APIs & External Services
 
-**YouTube Music (InnerTube, via youtubei.js):**
-- Service: YouTube Music unofficial internal API, base `https://music.youtube.com/youtubei/v1/`
-- Used for: search, album/artist/playlist metadata, direct-to-CDN stream URL resolution
-- SDK/Client: `youtubei.js` 17.2.0 — `Innertube.create({ client_type, lang, country })` in `gateway/src/providers/youtube/YouTubeProviderAdapter.ts`
-- Two client sessions:
-  - `ClientType.MUSIC` — metadata ops (search, album, artist, playlist, health probe)
-  - `ClientType.IOS` — streaming session (`getBasicInfo`, picks highest-bitrate `adaptive_formats` audio URL)
-- Auth: **none** — unauthenticated browser client. No API key or quota limits (ADR-005)
-- Rate/geo handling: error classifier regexes in `YouTubeProviderAdapter.errorCode()` map messages to `RateLimitedError`, `GeoBlockedError`, `NetworkError`, `UnsupportedError`, `PlaybackError`, `NotFoundError` (`gateway/src/types/error.ts`)
-- Risk notes (ADR-005): unofficial API; response shapes change without notice; stream URLs expire (~1h, refreshed on demand; `expiresAtEpochSeconds` returned); PO-token/decipher may be required → surfaces as `PlaybackError`
-- Provider disabled by default: `enabled: false` in `gateway/config/gateway.yaml` (mock provider is the default registered adapter, `gateway/src/providers/registerProviders.ts`)
+**YouTube (InnerTube):**
+- What it's used for: All music search, album/artist/playlist metadata, and stream URL resolution. The gateway is the ONLY component that talks to YouTube — the Android app has zero InnerTube/YouTube code (per ADR-005, ADR-012).
+  - SDK/Client: `youtubei.js` v17.2.0 (`gateway/src/providers/youtube/YouTubeProviderAdapter.ts`)
+  - Auth: None (anonymous sessions). PO tokens (Proof of Origin) are minted in-process via `bgutils-js` BotGuard/WAA for playback from datacenter IPs (`gateway/src/providers/youtube/poToken/mint.ts`, `ProviderTokenService.ts`). Token + visitorData are bound and refreshed automatically before expiry (default 2h TTL, 30 min refresh buffer).
+  - Client types: `ClientType.MUSIC` for metadata; `ClientType.ANDROID_VR` for streaming sessions (chosen in RECOVERY-06 to get unrestricted Range-safe CDN URLs).
+  - Rate limits: No API key; subject to YouTube bot detection — the adapter maps rate-limit/geo/login messages to canonical `ProviderError` codes (`RATE_LIMITED`, `GEO_BLOCKED`, `PLAYBACK_ERROR`).
 
-**CliBeats Provider Gateway (self-hosted REST):**
-- Service: Fastify server at `http://10.0.2.2:8080/` (Android emulator loopback → host, `BuildConfig.GATEWAY_BASE_URL` in `app/build.gradle.kts`)
-- Client: Retrofit 2.11.0 + OkHttp 4.12.0, kotlinx-serialization converter — `app/src/main/java/com/clibeats/data/gateway/api/GatewayApi.kt`
-- Endpoints consumed by the app:
-  - `GET /api/v1/search?q=&filterSongs=` → `GatewaySearchResponse`
-  - `POST /api/v1/stream` `{ trackId }` → `{ stream: { streamUrl, mimeType, bitrateKbps, expiresAtEpochSeconds } }`
-  - `GET /api/v1/album/{id}`, `GET /api/v1/artist/{id}`, `GET /api/v1/playlist/{id}`
-- All endpoints defined in `gateway/src/app.ts`; OpenAPI spec generated to `gateway/openapi.json` (`gateway/scripts/generate-openapi.ts`), validated by `gateway/scripts/validate-openapi.ts` and `gateway/tests/contract/openapi.test.ts`
-- App-side errors mapped via `app/src/main/java/com/clibeats/data/gateway/mapper/GatewayErrorMapper.kt`
+**Gateway ↔ Android REST API:**
+- What it's used for: The client consumes the gateway's `/api/v1/*` contract (search, album, artist, playlist, stream, bootstrap, providers) over Retrofit + OkHttp + kotlinx.serialization.
+  - Client: `app/src/main/java/com/clibeats/data/gateway/api/GatewayApi.kt`, DTOs in `data/gateway/dto/GatewayDtos.kt`
+  - Contract: JSON Schema in `gateway/src/schemas.ts`, OpenAPI 3 spec generated/validated via `gateway/scripts/generate-openapi.ts` / `validate-openapi.ts`, UI at `/documentation`
+  - Headers: `x-trace-id` (correlation), `x-country`, `x-language`, `x-audio-quality`, `x-device` propagated from client context
 
 ## Data Storage
 
 **Databases:**
-- **Room 2.6.1** (on-device SQLite, Android): `app/src/main/java/com/clibeats/data/local/CliBeatsDatabase.kt`
-  - Entities (version 1, schema exported via KSP `room.schemaLocation` → `app/schemas`): `SongEntity`, `PlaylistEntity`, `PlaylistSongCrossRef`, `HistoryEntity`, `CacheIndexEntity`, `QueueEntity` (`app/src/main/java/com/clibeats/data/local/entity/`)
-  - DAOs: `SongDao`, `PlaylistDao`, `HistoryDao`, `CacheIndexDao`, `QueueDao` (`app/src/main/java/com/clibeats/data/local/dao/`)
-  - Type converters: `app/src/main/java/com/clibeats/data/local/CliBeatsTypeConverters.kt`
-- **Redis 7** (gateway cache): docker `redis:7-alpine` (`gateway/docker-compose.yml`), client `ioredis` (`gateway/src/core/cache/RedisCacheBase.ts`)
-  - Keys namespaced `clibeats:<namespace>:<key>` with TTL per namespace
-  - Segregated caches (`gateway/src/core/cache/CacheManager.ts` + `segregated/`): search (1h), albums/artists/playlists metadata (24h), artwork (7d), stream (15min), session, health
-  - Fail-open: Redis outage degrades to cache miss, never crashes a request (ADR-013)
-  - Test mode swaps to `ioredis-mock` when `NODE_ENV=test` (`gateway/src/app.ts` `createRedis()`)
-
-**File Storage:**
-- Android local audio cache: `context.cacheDir/audio_cache/<songId>.mp3`, indexed via `CacheIndexDao` — `app/src/main/java/com/clibeats/data/cache/CacheManager.kt`
-- Downloads written by OkHttp streaming — `app/src/main/java/com/clibeats/data/download/TrackDownloadManager.kt`
-- Coil image disk cache: `context.cacheDir/image_cache` (2% of disk) — `app/src/main/java/com/clibeats/di/ImageLoaderModule.kt`
-- No external file/blob storage
+- Room (SQLite) — on-device only. Entities: `SongEntity`, `PlaylistEntity`, `PlaylistSongCrossRef`, `HistoryEntity`, `CacheIndexEntity`, `QueueEntity` (`app/src/main/java/com/clibeats/data/local/**`). Schema v1 exported to `app/schemas/`.
+  - No cloud DB — the gateway stores no user data.
 
 **Caching:**
-- Gateway: Redis (above)
-- App: Room-backed cache index + local files; Coil memory (25%) + disk caches
+- Redis — gateway cache with segregated namespaces: search (1h TTL), metadata: albums/artists/playlists (24h), stream URLs (15 min), artwork (7 days), plus session/health caches (`gateway/src/core/cache/CacheManager.ts` + `cache/segregated/**`).
+  - Connection: `REDIS_URL` env var or `gateway/config/gateway.yaml` (`redis://localhost:6379` default).
+  - Client: ioredis v5.4.2 with `lazyConnect`, `maxRetriesPerRequest: 1`, fail-open degradation (cache errors never fail the request).
+  - Local docker-compose provides `redis:7-alpine`; Render production would need an external Redis add-on (not yet configured).
+- In-memory: `cdnUrlCache` Map in `gateway/src/app.ts` for the stream-proxy CDN URL probe results.
 
 ## Authentication & Identity
 
 **Auth Provider:**
-- Custom / none. No OAuth, no Google sign-in, no third-party identity provider
-- App stores a single `auth_token` in **EncryptedSharedPreferences** (Android Keystore MasterKey, AES256_GCM + AES256_SIV) — `app/src/main/java/com/clibeats/data/preferences/AppPreferences.kt`, wired in `app/src/main/java/com/clibeats/di/StorageModule.kt`. Migration to Tink `KeystoreAesGcm` tracked in ADR-003
-- Gateway treats the presence of an `authorization` header as `authenticated=true` in `ProviderContext` (`gateway/src/app.ts` `getContext()`); no token validation implemented
-- Client context passed via headers: `x-country` (default `US`), `x-language` (default `en`), `x-audio-quality` (default `HIGH`), `x-device` (default `mobile`), `x-trace-id`
+- None external. The gateway treats requests with an `Authorization` header as `authenticated: true` in context but does not validate tokens (`gateway/src/app.ts` `getContext()`).
+- Android stores an `AUTH_TOKEN` in EncryptedSharedPreferences backed by a Keystore `MasterKey` (AES256_GCM), excluded from cloud backup via `res/xml/data_extraction_rules.xml`. It is not currently sent as a real credential.
+
+**OAuth Integrations:**
+- None. No user accounts, no Google sign-in.
 
 ## Monitoring & Observability
 
-**Error Tracking:**
-- None external. App: custom `CrashReporter`/`TelemetryTracker` interfaces with Timber-style `android.util.Log` impls (`app/src/main/java/com/clibeats/telemetry/`). Gateway: typed error model + error responses with `code`/`traceId` (`gateway/src/types/error.ts`, `gateway/src/app.ts` error handler)
+**Metrics:**
+- Prometheus — `prom-client` registry in `gateway/src/core/metrics/metrics.ts`, exposed at `/metrics` (requests, cache hits/misses/errors, provider selections/failures, provider health gauge, circuit-breaker state gauge, search/stream latency histograms). Metrics are wired to the internal EventBus so no manual instrumentation at call sites.
 
 **Logs:**
-- Gateway: pino JSON structured logs, `service: clibeats-gateway`, ISO timestamps, level from `LOG_LEVEL`; per-request/incoming logs + response logs keyed by `x-trace-id`; EventBus events auto-logged (`gateway/src/core/logging/logger.ts`, `gateway/src/core/events/EventBus.ts`)
-- App: `android.util.Log` under `CLIBeatsTelemetry` tag; OkHttp `HttpLoggingInterceptor` (BODY level, debug builds only)
+- pino structured JSON logs (`gateway/src/core/logging/logger.ts`), ISO timestamps, `service: clibeats-gateway` base field. Every request carries a `traceId` (client-provided via `x-trace-id` or generated), logged on request and response and echoed back in the `x-trace-id` header and in every error payload.
+- Android: `android.util.Log` with diagnostic tags (`PlayerAdapterDiagnostics`, `CLIBeatsApp`), plus an internal `StructuredLogger` (`app/src/main/java/com/clibeats/core/logging/StructuredLogger.kt`) used by telemetry trackers (TimberTelemetryTracker / TimberCrashReporter exist as no-op/sanitized trackers per ADR-010).
 
-**Metrics:**
-- Gateway: Prometheus via prom-client at `GET /metrics` — counters (`gateway_requests_total`, `gateway_cache_hits/misses/errors_total`, `gateway_provider_selections/failures_total`), gauges (`gateway_provider_health`, `gateway_circuit_breaker_state`), histograms (search + stream resolution latency) (`gateway/src/core/metrics/metrics.ts`)
+**Debug endpoints:**
+- `GET /debug-yt` — temporary diagnostics route (hidden from OpenAPI via `{ schema: { hide: true } }`) that probes all youtubei.js client types and PO-token service status; used for Render PO-token investigation (`.planning/debug/yt-po-token-investigation.md`). Not intended for production traffic.
 
 ## CI/CD & Deployment
 
 **Hosting:**
-- Gateway: Docker (multi-stage `gateway/Dockerfile`, `node:20-alpine`, port 8080); orchestration via `gateway/docker-compose.yml` (gateway + redis services)
-- App: no distribution channel configured yet (ADR-011 covers production release)
+- Render.com — `gateway/render.yaml`: Docker web service `clibeats-gateway`, free plan, Oregon region, env `NODE_ENV=production`, `PORT=8080`, `PROXY_STREAMING=true`, health check `/health`. Switched from Railway to Render (`git log` 7e3935d).
+- Android — distributed as release APK (v1.0.0), signed with debug keystore; no app store pipeline configured.
 
 **CI Pipeline:**
-- GitHub Actions `.github/workflows/ci.yml`:
-  - Job 1 (Android): JDK 17 temurin, ktlintCheck, detekt, lintDebug, assembleDebug, testDebugUnitTest
-  - Job 2 (Gateway): Node 20, `npm ci`, `npm run check`, `npm test`, `npm run test:coverage` (70% threshold), `npm run openapi:validate`, `npm run test:load` (autocannon), `docker build`
+- GitHub Actions — `.github/workflows/ci.yml`, two jobs on push/PR to main/master/develop:
+  1. `quality-and-test` (Android): ktlintCheck → detekt → lintDebug → assembleDebug → testDebugUnitTest, artifacts uploaded.
+  2. `gateway-quality-and-test` (Gateway): `npm ci` → `npm run check` (tsc) → `npm test` (Vitest) → `openapi:validate` → Docker build.
+  - Secrets: none required beyond standard GitHub token.
 
 ## Environment Configuration
 
-**Required env vars (gateway):**
-- `REDIS_URL` (e.g. `redis://localhost:6379`; also set by docker-compose)
-- Optional: `PORT`, `HOST`, `GATEWAY_CONFIG_PATH`, `NODE_ENV`, `LOG_LEVEL`
-- Config file source of truth: `gateway/config/gateway.yaml`; env vars override file values (`gateway/src/config/config.ts`)
+**Development:**
+- Required env vars: `GATEWAY_URL` for the Android build (debug defaults to `http://192.168.0.106:8080/`); `REDIS_URL` optional for gateway.
+- Cleartext HTTP permitted only for dev hosts: `10.0.2.2`, `192.168.0.106`, `127.0.0.1`, `localhost` (`app/src/main/res/xml/network_security_config.xml`).
+- Mock services: `mock` provider (deterministic seeded dataset, 8 failure states) is registered alongside YouTube and used for tests and failover demos (`gateway/src/providers/mock/MockProviderAdapter.ts`).
 
-**Secrets location:**
-- No `.env` files, no secret stores, no committed credentials. Only secret-adjacent storage is the Android Keystore-backed `clibeats_secure_prefs` (`EncryptedSharedPreferences`). Provider credentials would slot into `gateway.yaml` providers section (none currently).
+**Staging:**
+- N/A — no separate staging environment; Render service doubles as the shared test deployment (PO-token investigation was run against it).
+
+**Production:**
+- Secrets management: Render env vars (none sensitive currently). `GATEWAY_URL` must be set to the deployed gateway URL for release builds (release fails fast if missing — no NXDOMAIN fallback, per RECOVERY-02/06).
+- Failover/redundancy: single gateway instance; circuit breaker + provider failover is the resilience story; Redis outage degrades to cache-miss (gateway stays up).
 
 ## Webhooks & Callbacks
 
 **Incoming:**
-- None
+- None.
 
 **Outgoing:**
-- None. Gateway is purely request/response; provider failover and cache invalidation are internal (`gateway/src/core/selection/ProviderSelectionEngine.ts`, `gateway/src/core/circuit/CircuitBreaker.ts`)
+- None. The gateway is a pull-based API only; the only outbound traffic is to YouTube/InnerTube and the CDN for stream relay.
 
 ---
 
-*Integration audit: 2026-08-08*
+*Integrations analysis: 2026-08-09*
+*Update when external services change*
