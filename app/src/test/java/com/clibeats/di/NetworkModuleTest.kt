@@ -4,8 +4,8 @@ package com.clibeats.di
 
 import com.clibeats.BuildConfig
 import com.google.common.truth.Truth.assertThat
-import java.net.URI
 import org.junit.Test
+import java.net.URI
 
 /**
  * Config-guard for `BuildConfig.GATEWAY_BASE_URL` (RECOVERY-02).
@@ -24,7 +24,6 @@ import org.junit.Test
  *    build value again.
  */
 class NetworkModuleTest {
-
     @Test
     fun `GATEWAY_BASE_URL is a well-formed http(url) URL with a host`() {
         val url = BuildConfig.GATEWAY_BASE_URL

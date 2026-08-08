@@ -15,4 +15,3 @@ abstract class ProviderModule {
     @Singleton
     abstract fun bindMusicProvider(impl: GatewayMusicProvider): MusicProvider
 }
-

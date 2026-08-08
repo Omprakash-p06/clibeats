@@ -38,5 +38,7 @@ internal object GatewayErrorMapper {
                 val body = throwable.response()?.errorBody()?.string() ?: return@runCatching null
                 Json.decodeFromString<GatewayErrorResponse>(body).error
             }.getOrNull()
-        } else null
+        } else {
+            null
+        }
 }

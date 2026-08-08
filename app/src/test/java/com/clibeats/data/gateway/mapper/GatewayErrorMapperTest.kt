@@ -10,8 +10,7 @@ class GatewayErrorMapperTest {
     private fun httpException(
         code: Int,
         body: String,
-    ): HttpException =
-        HttpException(Response.error<Any>(code, body.toResponseBody(null)))
+    ): HttpException = HttpException(Response.error<Any>(code, body.toResponseBody(null)))
 
     @Test
     fun `maps RATE_LIMITED error code`() {

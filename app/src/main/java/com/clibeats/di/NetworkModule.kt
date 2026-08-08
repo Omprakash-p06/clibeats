@@ -68,7 +68,9 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideGatewayApi(@Named("gateway") retrofit: Retrofit): GatewayApi = retrofit.create(GatewayApi::class.java)
+    fun provideGatewayApi(
+        @Named("gateway") retrofit: Retrofit,
+    ): GatewayApi = retrofit.create(GatewayApi::class.java)
 
     @Provides
     @Singleton
@@ -76,4 +78,3 @@ object NetworkModule {
         @ApplicationContext context: Context,
     ): NetworkMonitor = NetworkMonitor(context)
 }
-

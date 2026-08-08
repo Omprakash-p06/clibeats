@@ -47,7 +47,9 @@ class PlaybackRepositoryImpl
                     playerAdapter.playTrack(resolvedTrack)
                     StructuredLogger.log(StructuredEvent.PlayerPlaying(traceId, track.id))
                 } else {
-                    StructuredLogger.log(StructuredEvent.PlayerError(traceId, "STREAM_RESOLUTION", "Could not resolve stream URL for track: ${track.id}"))
+                    StructuredLogger.log(
+                        StructuredEvent.PlayerError(traceId, "STREAM_RESOLUTION", "Could not resolve stream URL for track: ${track.id}"),
+                    )
                 }
             }
         }
