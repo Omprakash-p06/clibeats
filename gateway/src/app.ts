@@ -483,5 +483,46 @@ export async function buildApp(customConfig?: Partial<GatewayConfig>, redisClien
     return reply.send({ providers: active });
   });
 
+  app.get('/api/v1/debug-yt', async (req, reply) => {
+    const { Innertube, ClientType } = require('youtubei.js');
+    const trackId = (req.query as any).trackId || 'hpSrLjc5SMs';
+    const results: Record<string, any> = {};
+
+    const clients = [
+      ClientType.MUSIC,
+      ClientType.ANDROID,
+      ClientType.ANDROID_VR,
+      ClientType.WEB,
+      ClientType.TV,
+      ClientType.TV_EMBEDDED,
+      ClientType.YTKIDS,
+    ];
+
+    for (const clientType of clients) {
+      try {
+        const yt = await Innertube.create({ client_type: clientType });
+        const info = await yt.getBasicInfo(trackId);
+        const sd = info.streaming_data;
+        const audio = (sd?.adaptive_formats ?? []).filter((f: any) =>
+          String(f.mime_type ?? '').startsWith('audio/')
+        );
+        results[clientType] = {
+          success: true,
+          formatsCount: sd?.adaptive_formats?.length ?? 0,
+          audioFormatsCount: audio.length,
+          hasUrl: audio[0]?.url ? true : false,
+          status: info.playability_status?.status,
+        };
+      } catch (err: any) {
+        results[clientType] = {
+          success: false,
+          error: err.message,
+        };
+      }
+    }
+
+    return reply.send({ results });
+  });
+
   return app;
 }
