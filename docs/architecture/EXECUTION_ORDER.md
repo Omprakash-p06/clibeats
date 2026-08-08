@@ -12,8 +12,8 @@
 Milestone 1 (Stable MVP v1.0.0) — [COMPLETED]
    │
    ▼
-Phase 3 (Railway Cloud Hosting)
-   ├── Deployment of Gateway to Railway
+Phase 3 (Render.com Cloud Hosting)
+   ├── Deployment of Gateway to Render.com
    ├── HTTPS & Domain Setup
    └── Android Release Build with Public Gateway URL
    │
@@ -43,10 +43,10 @@ Phase 5 (Future Expansion)
 ## Sequential Execution Plan
 
 ### Milestone 2: Cloud Infrastructure & Public Release (Phase 3)
-1. **Task 2.1:** Create `gateway/Dockerfile` and `railway.toml`.
-2. **Task 2.2:** Deploy Gateway to Railway PaaS with Redis plugin.
-3. **Task 2.3:** Rebuild Android Release APK pointing to `https://[railway-domain]/`.
-4. **Task 2.4:** Conduct E2E validation gate on public Railway domain.
+1. **Task 2.1:** Create `gateway/Dockerfile` and `render.yaml`.
+2. **Task 2.2:** Deploy Gateway to Render.com PaaS with Redis plugin.
+3. **Task 2.3:** Rebuild Android Release APK pointing to `https://[render-domain]/`.
+4. **Task 2.4:** Conduct E2E validation gate on public Render domain.
 5. **Task 2.5:** Publish `v1.1.0` release artifacts to GitHub Releases and submit to F-Droid.
 
 ### Milestone 3: Multi-Provider & Portability (Phase 2)

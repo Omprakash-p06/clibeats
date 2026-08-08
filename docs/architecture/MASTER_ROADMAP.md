@@ -93,7 +93,7 @@ The application is designed to work for **years** with minimal maintenance.
 **Timeline Estimate:** 4–6 weeks after Phase 2
 
 ### Objectives
-- Gateway hosted on Railway (public HTTPS endpoint)
+- Gateway hosted on Render.com (public HTTPS endpoint)
 - HTTPS, TLS, domain name configured
 - Gateway autoscaling, health monitoring, Prometheus/Grafana
 - Production error handling and circuit breakers
@@ -102,8 +102,8 @@ The application is designed to work for **years** with minimal maintenance.
 - Security audit (OWASP Mobile Top 10)
 
 ### Deliverables
-- `railway.toml` + `Dockerfile` for gateway
-- GitHub Actions CI/CD → Railway deploy pipeline
+- `render.yaml` + `Dockerfile` for gateway
+- GitHub Actions CI/CD → Render deploy pipeline
 - Grafana dashboard: provider health, stream latency, error rates
 - `.github/workflows/deploy-gateway.yml`
 - F-Droid compatible build (reproducible, no proprietary SDKs)
@@ -113,12 +113,12 @@ The application is designed to work for **years** with minimal maintenance.
 ### Risks
 | Risk | Severity | Mitigation |
 |---|---|---|
-| Railway pricing changes | MEDIUM | Gateway is stateless; migration to Fly.io/Render takes <1 day |
+| Render instance spin-down on free plan | MEDIUM | Use keep-alive pings or upgraded instance plan |
 | Play Store review rejection | MEDIUM | F-Droid remains primary distribution; GitHub Releases fallback |
-| HTTPS cert renewal failure | LOW | Railway manages certs via Let's Encrypt automatically |
+| HTTPS cert renewal failure | LOW | Render manages certs via Let's Encrypt automatically |
 
 ### Success Criteria
-- Gateway accessible at `https://gateway.clibeats.app` (or similar)
+- Gateway accessible at `https://clibeats-gateway.onrender.com` (or similar)
 - Health endpoint returns `HEALTHY` from outside LAN
 - App build uses public gateway URL, no hardcoded local IP
 - F-Droid submission PR open

@@ -40,7 +40,7 @@ The gateway emits all logs to `stdout` in **JSON Lines format** using Pino.
 
 ### Log Retention & Log Rotation
 - **Development / Local:** Printed to stdout.
-- **Production (Railway / Cloud):** Stdout captured by Railway container logging. Retained for 14 days in cloud log drain (e.g. Datadog / Papertrail / Vector).
+- **Production (Render.com / Cloud):** Stdout captured by Render.com container logging. Retained for 14 days in cloud log drain (e.g. Datadog / Papertrail / Vector).
 - **Redaction Rules:** Authorization headers, client IP addresses (optional mask), and private cookie strings are redacted via Pino `redact` paths.
 
 ---
@@ -123,7 +123,7 @@ The `ProviderSelectionEngine` manages automated circuit breaking per provider:
 
 | Alert Trigger | Severity | Action |
 |---|---|---|
-| Gateway `/health` HTTP 503 for >2m | **CRITICAL** | Page On-Call / Restart Railway Container |
+| Gateway `/health` HTTP 503 for >2m | **CRITICAL** | Page On-Call / Restart Render Container |
 | YouTube Provider Error Rate > 15% | **HIGH** | Check youtubei.js InnerTube version update |
 | Redis Connection `DOWN` | **MEDIUM** | Gateway operates degraded (cache-miss mode) |
 | p95 Stream Resolution > 3,000ms | **MEDIUM** | Inspect CDN relay bandwidth |

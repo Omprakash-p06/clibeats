@@ -1,7 +1,7 @@
 # FINAL_ARCHITECTURE.md — CliBeats Master System Architecture
 
 > **Milestone:** ARCHITECTURE-ROADMAP-01  
-> **Status:** Final Architectural Specification — No Code Changes  
+> **Status:** Final Architectural Specification — Render.com Target  
 > **Date:** 2026-08-09
 
 ---
@@ -29,11 +29,11 @@ The system architecture decouples media playback on Android from upstream music 
 │  │   Room Persistence    │             │   GatewayMusicProvider     │  │
 │  │   (Library, Playlists)│             │   (Retrofit Client)        │  │
 │  └───────────────────────┘             └─────────────┬──────────────┘  │
-└──────────────────────────────────────────────────────┼─────────────────┘
+└────────────────────────────────----------------------┼─────────────────┘
                                                        │ HTTPS (API / Stream Proxy)
                                                        ▼
 ┌────────────────────────────────────────────────────────────────────────┐
-│                     RAILWAY PROVIDER GATEWAY                           │
+│                     RENDER PROVIDER GATEWAY                            │
 │                                                                        │
 │  ┌───────────────────────┐             ┌────────────────────────────┐  │
 │  │  Fastify REST Engine  │────────────►│  Redis Cache Engine        │  │
@@ -77,8 +77,8 @@ The system architecture decouples media playback on Android from upstream music 
 - **Local-First Data Sovereignty:** Library state is 100% stored in Room SQLite DB on device.
 - **`.clibeats` Archive Export:** ZIP-compressed JSON schema containing playlists, history, liked tracks, and settings with SHA-256 checksum validation.
 
-### D. Hosting & Operations Architecture (Railway)
-- **Deployment:** Containerized Node.js application running on Railway PaaS.
+### D. Hosting & Operations Architecture (Render.com)
+- **Deployment:** Containerized Node.js application running on Render.com PaaS (`render.yaml`).
 - **Observability:** Pino structured JSON logging, Prometheus metrics exporter (`/metrics`), machine-readable health probes (`/health`).
 
 ---
@@ -88,7 +88,7 @@ The system architecture decouples media playback on Android from upstream music 
 All 10 required architectural planning deliverables have been generated in `docs/architecture/`:
 1. [`MASTER_ROADMAP.md`](file:///c:/Users/OM%20Prakash/Documents/clibeats/docs/architecture/MASTER_ROADMAP.md) — 5-Phase Product Vision
 2. [`PROVIDER_STRATEGY.md`](file:///c:/Users/OM%20Prakash/Documents/clibeats/docs/architecture/PROVIDER_STRATEGY.md) — Provider Matrix & Adapter Specification
-3. [`HOSTING_PLAN_RAILWAY.md`](file:///c:/Users/OM%20Prakash/Documents/clibeats/docs/architecture/HOSTING_PLAN_RAILWAY.md) — Railway Deployment Checklist & Docker Spec
+3. [`HOSTING_PLAN_RENDER.md`](file:///c:/Users/OM%20Prakash/Documents/clibeats/docs/architecture/HOSTING_PLAN_RENDER.md) — Render.com Deployment Checklist & Docker Spec
 4. [`PORTABLE_LIBRARY_SPEC.md`](file:///c:/Users/OM%20Prakash/Documents/clibeats/docs/architecture/PORTABLE_LIBRARY_SPEC.md) — `.clibeats` Export/Import Schema
 5. [`PRIVACY_MODEL.md`](file:///c:/Users/OM%20Prakash/Documents/clibeats/docs/architecture/PRIVACY_MODEL.md) — Zero-Surveillance & GDPR Compliance
 6. [`PRODUCTION_OPERATIONS.md`](file:///c:/Users/OM%20Prakash/Documents/clibeats/docs/architecture/PRODUCTION_OPERATIONS.md) — Logging, Metrics & Circuit Breakers

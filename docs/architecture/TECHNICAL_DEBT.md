@@ -16,7 +16,7 @@ This document identifies architectural, security, testing, and operational techn
 
 | Debt ID | Category | Description | Severity | Impact |
 |---|---|---|---|---|
-| **DEBT-01** | **Hosting & Deployment** | Gateway currently configured to run locally (`http://192.168.0.106:8080/`). Release builds require environment-based gateway base URL configuration. | **CRITICAL** | App unusable outside developer Wi-Fi LAN until deployed to public server (Railway). |
+| **DEBT-01** | **Hosting & Deployment** | Gateway currently configured to run locally (`http://192.168.0.106:8080/`). Release builds require environment-based gateway base URL configuration. | **CRITICAL** | App unusable outside developer Wi-Fi LAN until deployed to public server (Render.com). |
 | **DEBT-02** | **Provider Coupling** | Gateway has only one production provider adapter (`YouTubeProviderAdapter`). No runtime dynamic fallback provider yet. | **HIGH** | If YouTube changes InnerTube schemas, zero fallback options exist until secondary provider is built. |
 | **DEBT-03** | **Offline Download Manager** | Background downloads currently handle basic OkHttp byte streaming without native Android `DownloadManager` pause/resume or network constraint awareness. | **HIGH** | Large downloads can fail on spotty cellular networks or draw excess battery. |
 | **DEBT-04** | **Testing Coverage Gaps** | Compose UI E2E test suite uses manual script execution rather than automated UIAutomator / Maestro CI test runs. | **MEDIUM** | UI regressions must be verified via manual execution script rather than automated CI step. |
@@ -30,7 +30,7 @@ This document identifies architectural, security, testing, and operational techn
 
 ```
                   ┌─────────────────────────────────────┐
-                  │ 1. Fix DEBT-01 (Railway Deployment) │  ← Priority 0 (Release Blocker)
+                  │ 1. Fix DEBT-01 (Render Deployment)  │  ← Priority 0 (Release Blocker)
                   └──────────────────┬──────────────────┘
                                      │
                                      ▼
@@ -55,7 +55,7 @@ This document identifies architectural, security, testing, and operational techn
 ```
 
 ### Execution Strategy:
-1. **Immediate Action (Phase 3):** Deploy Gateway to Railway, update `app/build.gradle.kts` build flavors with public Railway domain, verify TLS.
+1. **Immediate Action (Phase 3):** Deploy Gateway to Render.com, update `app/build.gradle.kts` build flavors with public Render domain, verify TLS.
 2. **Short-Term (Phase 2):** Implement `PipedProviderAdapter` or `InvidiousProviderAdapter` as secondary failover provider in Gateway.
 3. **Mid-Term (Phase 2):** Refactor `TrackDownloadManager` to use WorkManager / DownloadManager with network constraints (`UNMETERED`).
 4. **Long-Term (Phase 4):** Add Maestro / UIAutomator E2E test runner to `.github/workflows/ci.yml`.
