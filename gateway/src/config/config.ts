@@ -35,6 +35,7 @@ export interface GatewayConfig {
   stream: {
     validateHeadRequests: boolean;
     urlRefreshBufferSeconds: number;
+    proxyStreaming: boolean;
   };
   health?: {
     redisTimeoutMs: number;
@@ -74,6 +75,7 @@ export function loadConfig(configPath?: string): GatewayConfig {
       stream: {
         validateHeadRequests: true,
         urlRefreshBufferSeconds: 300,
+        proxyStreaming: false,
       },
       health: {
         redisTimeoutMs: 1000,

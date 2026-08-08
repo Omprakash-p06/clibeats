@@ -9,9 +9,16 @@ server:
   minimumAndroidVersion: "1.0.0"
 
 providers:
-  mock:
+  youtube:
     enabled: true
     priority: 100
+    circuitBreaker:
+      failureThreshold: 5
+      cooldownSeconds: 60
+
+  mock:
+    enabled: true
+    priority: 10
     circuitBreaker:
       failureThreshold: 3
       cooldownSeconds: 60
@@ -26,3 +33,4 @@ cache:
 stream:
   validateHeadRequests: true
   urlRefreshBufferSeconds: 300 # 5 minutes before expiry
+  proxyStreaming: true          # relay CDN audio through the gateway (Range-safe)

@@ -84,7 +84,7 @@ class PlayerAdapter
                         runCatching {
                             android.util.Log.d(
                                 "PlayerAdapterDiagnostics",
-                                "[EXOPLAYER_TRANSITION] MediaItem URI: ${mediaItem?.localConfiguration?.uri}, Title: ${mediaItem?.mediaMetadata?.title}, Reason: $reason",
+                                "[EXOPLAYER_TRANSITION] MediaId: ${mediaItem?.mediaId}, Title: ${mediaItem?.mediaMetadata?.title}, Reason: $reason",
                             )
                         }
                         updateState()

@@ -83,7 +83,7 @@ fun MoreScreen(onNavigate: (NavDestination) -> Unit) {
                         "Developer    : Omprakash Panda\n" +
                             "Version      : v0.2.0-beta\n" +
                             "Architecture : MVVM + Clean Architecture\n" +
-                            "Provider     : YouTube Music (InnerTube API)\n" +
+                            "Provider     : YouTube Music (Gateway)\n" +
                             "Build        : Production Release\n" +
                             "Engine       : Media3 ExoPlayer\n" +
                             "Cache        : 500 MB LRU Storage\n" +

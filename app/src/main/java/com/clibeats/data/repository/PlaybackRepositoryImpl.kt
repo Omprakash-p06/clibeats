@@ -1,13 +1,13 @@
 package com.clibeats.data.repository
 
-import com.clibeats.core.logging.PlaybackEvent
+import com.clibeats.core.logging.StructuredEvent
 import com.clibeats.core.logging.StructuredLogger
 import com.clibeats.domain.model.PlaybackState
 import com.clibeats.domain.model.RepeatMode
 import com.clibeats.domain.model.Track
 import com.clibeats.domain.playback.QueueManager
-import com.clibeats.domain.provider.StreamResolver
-import com.clibeats.domain.provider.StreamResult
+import com.clibeats.domain.provider.MusicProvider
+import com.clibeats.domain.provider.ProviderResult
 import com.clibeats.domain.repository.PlaybackRepository
 import com.clibeats.playback.PlayerAdapter
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +23,7 @@ class PlaybackRepositoryImpl
     @Inject
     constructor(
         private val playerAdapter: PlayerAdapter,
-        private val streamResolver: StreamResolver,
+        private val musicProvider: MusicProvider,
         private val queueManager: QueueManager,
     ) : PlaybackRepository {
         private val repositoryScope = CoroutineScope(Dispatchers.Main)
@@ -33,20 +33,21 @@ class PlaybackRepositoryImpl
         override val queueState: StateFlow<List<Track>> = queueManager.queue
 
         override fun playTrack(track: Track) {
-            StructuredLogger.log(PlaybackEvent.TrackSelected(track.id, track.title))
+            val traceId = StructuredLogger.generateTraceId()
+            StructuredLogger.log(StructuredEvent.TrackSelected(traceId, track.id, track.title))
             repositoryScope.launch {
                 val start = System.currentTimeMillis()
-                StructuredLogger.log(PlaybackEvent.PlayerRequest(track.id))
+                StructuredLogger.log(StructuredEvent.StreamRequest(traceId, track.id))
                 val resolvedTrack = withContext(Dispatchers.IO) { ensureStreamUrl(track) }
                 val duration = System.currentTimeMillis() - start
 
                 if (!resolvedTrack.streamUrl.isNullOrBlank()) {
-                    StructuredLogger.log(PlaybackEvent.StreamResolved(track.id, resolvedTrack.streamUrl!!, duration))
-                    StructuredLogger.log(PlaybackEvent.Buffering(track.id))
+                    StructuredLogger.log(StructuredEvent.StreamResolved(traceId, track.id, duration))
+                    StructuredLogger.log(StructuredEvent.PlayerPreparing(traceId, track.id))
                     playerAdapter.playTrack(resolvedTrack)
-                    StructuredLogger.log(PlaybackEvent.Playing(track.id))
+                    StructuredLogger.log(StructuredEvent.PlayerPlaying(traceId, track.id))
                 } else {
-                    StructuredLogger.log(PlaybackEvent.Failure("STREAM_RESOLUTION", "Could not resolve stream URL for track: ${track.id}"))
+                    StructuredLogger.log(StructuredEvent.PlayerError(traceId, "STREAM_RESOLUTION", "Could not resolve stream URL for track: ${track.id}"))
                 }
             }
         }
@@ -66,8 +67,8 @@ class PlaybackRepositoryImpl
             if (!track.streamUrl.isNullOrBlank()) {
                 return track
             }
-            return when (val result = streamResolver.resolve(track.id)) {
-                is StreamResult.Success -> track.copy(streamUrl = result.url)
+            return when (val result = musicProvider.stream(track.id)) {
+                is ProviderResult.Success -> track.copy(streamUrl = result.data)
                 else -> track
             }
         }

@@ -84,7 +84,7 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text =
-                            "PROVIDER  : YouTube Music (InnerTube API)\n" +
+                            "PROVIDER  : YouTube Music (Gateway)\n" +
                                 "CACHE CAP : 500 MB (LRU Active)\n" +
                                 "LATENCY   : 38ms | CODEC: AAC-LC",
                         style = MaterialTheme.typography.bodySmall,

@@ -1,179 +1,285 @@
----
-title: CLIBeats Testing Patterns
-last_mapped_commit: f4a1654be402779424fc4b3c06f20e1023327e0d
-mapped_on: 2026-08-07
----
-
 # Testing Patterns
 
-**Analysis Date:** 2026-08-07
+**Analysis Date:** 2026-08-08
 
-## Test Framework
+Two test regimes exist in this repo:
 
-**Runner:** JUnit 4 (`junit:junit:4.13.2`, `gradle/libs.versions.toml`).
+- **Android app** (`app/`) — Gradle/JUnit 4 unit tests + instrumented Room tests + Paparazzi golden tests (109 passing as of Phase 11)
+- **Gateway** (`gateway/`) — Vitest 3 with unit/integration/contract/property/architecture suites + autocannon load test (72 tests, 70%+ coverage enforced)
 
-**Assertions:** Two styles in use:
-- Google Truth (`com.google.common.truth.Truth.assertThat`) — majority of unit tests (`SearchViewModelTest.kt`, `YouTubeMusicProviderTest.kt`, `CacheManagerTest.kt`). **Not declared in the version catalog** — it resolves transitively via `androidx.room:room-testing`.
-- JUnit4 `assertEquals` / `assertNull` / `assertNotNull` — DAO tests, mapper tests, theme token tests (`app/src/androidTest/java/com/clibeats/data/local/dao/SongDaoTest.kt`, `app/src/test/java/com/clibeats/data/local/mapper/MapperTest.kt`, `app/src/test/java/com/clibeats/theme/CliBeatsColorsTest.kt`).
+---
 
-**Mocking:** Mockito Kotlin `5.4.0` + Mockito Core `5.12.0` (`mock`, `whenever`, `verify`, `argumentCaptor`, `any`, `eq`, `never`).
+## Android Testing (`app/`)
 
-**Async:** `kotlinx-coroutines-test:1.8.1` (`runTest`, `StandardTestDispatcher`, `UnconfinedTestDispatcher`, `Dispatchers.setMain/resetMain`, `advanceTimeBy`, `advanceUntilIdle`).
+### Test Framework
 
-**Screenshot baselines:** Paparazzi `1.3.4` (`app.cash.paparazzi`) — runs as JVM unit tests, no emulator needed.
+**Runner:** JUnit 4 (`junit:4.13.2`, version catalog `gradle/libs.versions.toml`)
+**Assertions:** Google Truth (`com.google.common.truth.Truth.assertThat`) in most tests; `org.junit.Assert.assertEquals/assertNull` in Room/DAO and mapper tests (`app/src/androidTest/java/com/clibeats/data/local/dao/SongDaoTest.kt`, `app/src/test/java/com/clibeats/data/local/mapper/MapperTest.kt`)
+**Coroutines:** `kotlinx-coroutines-test` 1.8.1 — `runTest`, `StandardTestDispatcher`, `UnconfinedTestDispatcher`, `Dispatchers.setMain/resetMain`, `advanceTimeBy`
+**Mocks:** Mockito (`org.mockito:mockito-core` 5.12.0) + `mockito-kotlin` 5.4.0 (`mock()`, `whenever`, `verify`, `any`)
+**Other test deps in `app/build.gradle.kts`:** `room-testing`, `okhttp-mockwebserver`, `media3-test-utils`, `compose-ui-test-junit4`
+**Instrumented:** `androidx.test.ext:junit` + Espresso for DAO androidTests
 
-**Network:** `okhttp3:mockwebserver` for HTTP interceptor tests.
-
-**Test deps wiring:** `app/build.gradle.kts:111-123` — unit deps under `testImplementation`, instrumented under `androidTestImplementation`, `debugImplementation(libs.compose.ui.test.manifest)`.
-
-## Run Commands
-
+**Run commands:**
 ```bash
-./gradlew testDebugUnitTest          # All JVM unit tests (incl. Paparazzi screenshots + detekt runtime checks)
-./gradlew ktlintCheck                # Code style gate
-./gradlew detekt                     # Static analysis gate
-./gradlew lintDebug                  # Android Lint gate
-./gradlew connectedDebugAndroidTest  # Instrumented DAO tests (needs device/emulator — NOT in CI)
+./gradlew testDebugUnitTest          # All JVM unit tests
+./gradlew connectedAndroidTest       # Instrumented Room DAO tests (needs emulator/device)
+./gradlew testReleaseUnitTest        # Release variant unit tests
+./gradlew ktlintCheck detekt         # Static analysis (quality gate)
+./gradlew assembleDebug              # Compile gate
 ```
 
-CI (`app/../.github/workflows/ci.yml`, job `quality-and-test` on `ubuntu-latest`, JDK 17 temurin, 20-min timeout) runs, in order: `ktlintCheck --continue` → `detekt --continue` → `lintDebug --continue` → `assembleDebug` → `testDebugUnitTest`, then uploads `app/build/reports/{tests,detekt,lint-results-debug.html}`. `scripts/check-quality-gates.sh` mirrors the same four gates locally. **No coverage tool (jacoco/kover) configured — no coverage threshold enforced.**
+### Test File Organization
 
-## Test File Organization
-
-**Mirror the production package** under `app/src/test/java/com/clibeats/...`:
+**Location:** mirror of `src/main` under `app/src/test/java/` for unit; `app/src/androidTest/java/` for instrumented.
 
 ```
 app/src/test/java/com/clibeats/
-├── presentation/  # ViewModel tests, component tests, screen tests (SearchViewModelTest.kt, PlayerBarTest.kt)
-├── data/          # repository, provider, cache, download, preferences, network, local/mapper tests
-├── playback/      # PlayerAdapterTest.kt, PlayerAdapterQueueTest.kt
-├── telemetry/     # TimberTelemetryTrackerTest.kt, TimberCrashReporterTest.kt
-├── theme/         # CliBeatsColorsTest.kt, CliBeatsTypographyTest.kt, *ScreenshotTest.kt
-├── domain/model/  # TrackTest.kt
-├── integration/   # PlaybackIntegrationTest.kt (stub)
-└── license/       # LicenseComplianceTest.kt
+├── data/
+│   ├── cache/CacheManagerTest.kt
+│   ├── download/TrackDownloadManagerTest.kt
+│   ├── gateway/GatewayMusicProviderTest.kt
+│   ├── gateway/mapper/{GatewayErrorMapperTest,GatewayMapperTest}.kt
+│   ├── local/mapper/MapperTest.kt
+│   ├── network/NetworkMonitorTest.kt
+│   ├── preferences/AppPreferencesTest.kt
+│   └── repository/{SongRepositoryImplTest,PlaylistRepositoryImplTest}.kt
+├── domain/{model/TrackTest.kt, playback/QueueManagerTest.kt}
+├── presentation/
+│   ├── component/{PlayerBarTest,SongTableRowTest}.kt
+│   ├── library/LibraryViewModelTest.kt
+│   ├── player/PlayerViewModelTest.kt
+│   ├── playlist/PlaylistViewModelTest.kt
+│   ├── queue/QueueViewModelTest.kt
+│   ├── search/{SearchScreenKtTest,SearchViewModelTest}.kt
+│   └── settings/SettingsViewModelTest.kt
+├── theme/{CliBeatsColorsTest,CliBeatsTypographyTest,CliBeatsThemeScreenshotTest,PlayerBarScreenshotTest,SongTableRowScreenshotTest}.kt
+├── playback/{PlayerAdapterTest,PlayerAdapterQueueTest}.kt
+├── integration/PlaybackIntegrationTest.kt
+├── telemetry/{TimberCrashReporterTest,TimberTelemetryTrackerTest}.kt
+└── license/LicenseComplianceTest.kt
+app/src/androidTest/java/com/clibeats/data/local/dao/
+├── SongDaoTest.kt  HistoryDaoTest.kt  PlaylistDaoTest.kt  CacheIndexDaoTest.kt
 ```
 
-Instrumented (device) Room DAO tests live in `app/src/androidTest/java/com/clibeats/data/local/dao/` (`SongDaoTest.kt`, `PlaylistDaoTest.kt`, `HistoryDaoTest.kt`, `CacheIndexDaoTest.kt`). Paparazzi baselines are committed at `app/src/test/snapshots/images/*.png` (+ `snapshots/videos/` dir); Room schemas exported to `app/schemas/` via `ksp.arg("room.schemaLocation", ...)`.
+**Naming:** `{ClassUnderTest}Test.kt` (e.g. `SearchViewModelTest.kt`); screenshot tests named `*ScreenshotTest.kt`; tests for a `SearchScreen.kt` file targeting top-level functions use `SearchScreenKtTest` convention (`app/src/test/java/com/clibeats/presentation/search/SearchScreenKtTest.kt`).
 
-## Test Structure
+### Suite Structure
 
-**Class pattern** — `@Before setUp()` / `@After tearDown()`, `lateinit` subjects:
+**ViewModel tests** (`app/src/test/java/com/clibeats/presentation/library/LibraryViewModelTest.kt`, `SearchViewModelTest.kt`, `SettingsViewModelTest.kt`):
 
 ```kotlin
 @OptIn(ExperimentalCoroutinesApi::class)
 class SearchViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
-    private lateinit var musicProvider: MusicProvider
-    private lateinit var viewModel: SearchViewModel
-
-    @Before fun setUp() {
-        Dispatchers.setMain(testDispatcher)
-        musicProvider = mock()
-        viewModel = SearchViewModel(musicProvider)
-    }
+    @Before fun setUp() { Dispatchers.setMain(testDispatcher); musicProvider = mock(); viewModel = SearchViewModel(musicProvider) }
     @After fun tearDown() { Dispatchers.resetMain() }
+
+    @Test
+    fun `search returns Success state on successful provider call`() =
+        runTest {
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.searchResults.collect() }
+            whenever(musicProvider.search(any(), any())).thenReturn(ProviderResult.Success(listOf(fakeTrack)))
+            viewModel.onQueryChange("Wonderwall")
+            advanceTimeBy(400L)              // advance past 300ms debounce
+            testDispatcher.scheduler.runCurrent()
+            assertThat(viewModel.searchResults.value).isInstanceOf(SearchUiState.Success::class.java)
+        }
 }
 ```
-(`app/src/test/java/com/clibeats/presentation/search/SearchViewModelTest.kt:24-40`)
 
-**Naming:** backtick sentence-style for behavior tests (``fun `search returns Success state on successful provider call`()``); snake_case for Paparazzi screenshots (`playerBar_idleState`) and theme token tests (`background_is_0C0C0C`); camelCase for pure mapper/utility tests (`upsertAndGetById` in DAO tests).
+Key conventions:
+- `@Before`/`@After` for `Dispatchers.setMain`/`resetMain` (JUnit 4 lifecycle, no `@Rule` for coroutines)
+- Flow collection via `backgroundScope.launch(UnconfinedTestDispatcher(testScheduler))` so `stateIn`/`debounce` flows emit under virtual time
+- `whenever(...).thenReturn(...)` stubbing, then `advanceTimeBy` + `scheduler.runCurrent()` (debounce = 300ms)
 
-**ViewModel flow test pattern** — collect the StateFlow in `backgroundScope` with `UnconfinedTestDispatcher`, mutate, then `runCurrent()` / `advanceTimeBy`:
-
-```kotlin
-@Test
-fun `search returns Success state on successful provider call`() = runTest {
-    backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.searchResults.collect() }
-    whenever(musicProvider.search(any(), any())).thenReturn(ProviderResult.Success(listOf(fakeTrack)))
-    viewModel.onQueryChange("Wonderwall")
-    advanceTimeBy(400L)
-    testDispatcher.scheduler.runCurrent()
-    assertThat(viewModel.searchResults.value).isInstanceOf(SearchUiState.Success::class.java)
-}
-```
-(`SearchViewModelTest.kt:56-84`). `runTest(testDispatcher)` + `advanceUntilIdle()` used in `SettingsViewModelTest.kt:51-57`.
-
-## Mocking
-
-**Framework:** Mockito Kotlin — `mock()` for interfaces/classes, `whenever(...).thenReturn(...)` stubbing, `verify` for delegation.
-
-**Delegation verification:**
-```kotlin
-viewModel.onClear()
-verify(playbackRepository).clearQueue()
-```
-(`app/src/test/java/com/clibeats/presentation/queue/QueueViewModelTest.kt:82-85`)
-
-**Argument captors + never():**
-```kotlin
-val mediaItems = argumentCaptor<List<MediaItem>>()
-adapter.setQueue(tracks)
-verify(exoPlayer).setMediaItems(mediaItems.capture(), eq(0), eq(0L))
-verify(exoPlayer, never()).seekToNextMediaItem()
-```
-(`app/src/test/java/com/clibeats/playback/PlayerAdapterQueueTest.kt:50-59,101-107`)
-
-**Flow stubbing:** `whenever(dao.getAllAsFlow()).thenReturn(flowOf(listOf(entity)))` (`SongRepositoryImplTest.kt:42`) or a live `MutableStateFlow` for reactive ViewModels (`LibraryViewModelTest.kt:29,36`).
-
-**What to mock:** DAOs, repositories, `MusicProvider`, `AppPreferences`, `ExoPlayer`, `CacheManager`, `OkHttpClient` — any heavy/instrumented collaborator. **What NOT to mock:** domain models (constructed directly as fixtures), mappers (tested for real), Room in-memory DB (real via `androidx.room:room-testing`).
-
-## Fixtures and Factories
-
-No shared fixture files — each test class defines private factory functions with defaulted params:
+**Repository DAO tests use mocked DAOs with `flowOf(...)`:**
 
 ```kotlin
-private fun testSong(id: String = "s1") =
-    SongEntity(id = id, title = "Song $id", artist = "Artist", album = "Album",
-        durationMs = 180_000L, artworkUrl = null, streamUrl = null, providerId = "local")
+whenever(songDao.getAllAsFlow()).thenReturn(flowOf(listOf(entity)))
+val tracks = repository.getAllTracksAsFlow().first()
 ```
-(`SongDaoTest.kt:38-48`; also `track()` in `PlayerAdapterQueueTest.kt:37-47`, `testTrack()` in `MapperTest.kt:15-25`, inline `Track(...)` in `SearchViewModelTest.kt:61-71`).
+(`app/src/test/java/com/clibeats/data/repository/SongRepositoryImplTest.kt`)
 
-## Coverage
+### Room DAO Tests (androidTest)
 
-**Requirements:** None enforced — no Jacoco/Kover configured, CI runs `testDebugUnitTest` without coverage flags.
+In-memory DB per test: `Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(), CliBeatsDatabase::class.java).allowMainThreadQueries().build()` — see `app/src/androidTest/java/com/clibeats/data/local/dao/SongDaoTest.kt`. Pattern: `@RunWith(AndroidJUnit4::class)`, `@Before setup()` builds fresh DB, `@After tearDown() { db.close() }`, each test wrapped in `runTest`. A private `testSong()` factory centralizes fixture data. 4 DAOs covered: SongDao, PlaylistDao, HistoryDao, CacheIndexDao.
 
-## Test Types
+### Screenshot Tests (Paparazzi)
 
-**Unit tests (JVM):** ViewModel behavior, repository delegation, provider mapping, mappers, player adapter, telemetry, preferences, cache/download managers, network interceptor. 
+Paparazzi 1.3.4, `DeviceConfig.PIXEL_5`, snapshots recorded to `app/src/test/snapshots/`:
 
-**Screenshot tests (Paparazzi, JVM):**
 ```kotlin
 class PlayerBarScreenshotTest {
     @get:Rule
     val paparazzi = Paparazzi(deviceConfig = DeviceConfig.PIXEL_5)
-
-    @Test
-    fun playerBar_idleState() {
-        paparazzi.snapshot {
-            CliBeatsTheme { PlayerBar(trackTitle = "Not playing", artist = "", isPlaying = false, progress = 0f) }
-        }
+    @Test fun playerBar_idleState() {
+        paparazzi.snapshot { CliBeatsTheme { PlayerBar(trackTitle = "Not playing", artist = "", isPlaying = false, progress = 0f) } }
     }
 }
 ```
-(`app/src/test/java/com/clibeats/theme/PlayerBarScreenshotTest.kt`; same for `SongTableRowScreenshotTest.kt`, `CliBeatsThemeScreenshotTest.kt`). Baselines committed under `app/src/test/snapshots/images/` (7 PNGs present); regeneration via `./gradlew recordPaparazziDebug`, verify with `verifyPaparazziDebug`.
+(`app/src/test/java/com/clibeats/theme/PlayerBarScreenshotTest.kt`; also `SongTableRowScreenshotTest.kt`, `CliBeatsThemeScreenshotTest.kt`)
 
-**Instrumented DAO tests (androidTest):** `@RunWith(AndroidJUnit4::class)`, `Room.inMemoryDatabaseBuilder(...).allowMainThreadQueries().build()`, `@Before` build / `@After` close, `runTest` for suspend DAO calls (`SongDaoTest.kt`).
+Golden images committed under `app/src/test/snapshots/images/` (e.g. `com.clibeats.theme_PlayerBarScreenshotTest_playerBar_idleState.png`); updated via `RECORD_PAPARAZZI`/gradle `recordPaparazziDebug`.
 
-**Integration:** `PlaybackIntegrationTest.kt` is a stub — mocks `PlayerAdapter` and asserts on a `Track` (no real Media3 wiring yet).
+### Network / Provider Tests (MockWebServer)
 
-**Structural component tests:** `PlayerBarTest.kt` / `SongTableRowTest.kt` assert only that the generated Compose class exists via `Class.forName("com.clibeats.presentation.component.PlayerBarKt")` — smoke tests, not behavior tests.
+`app/src/test/java/com/clibeats/data/gateway/GatewayMusicProviderTest.kt`: starts `MockWebServer`, builds a Retrofit client against `server.url("/")`, and enqueues canned JSON bodies via `MockResponse().setBody(...)`. Covers happy path, empty result, RATE_LIMITED 429 mapping, and blank stream URL.
 
-**Compliance test:** `LicenseComplianceTest.kt` asserts `docs/LICENSES.md` exists and mentions Apache-2.0, AndroidX, Media3, OkHttp.
+### Async & Time Testing Patterns
 
-## Common Patterns
+- `runTest` everywhere; `StandardTestDispatcher` when asserting intermediate states; `advanceTimeBy` to cross debounce windows
+- `PlayerAdapterTest.kt` and `PlayerAdapterQueueTest.kt` mock `ExoPlayer` (`whenever(exoPlayer.currentPosition).thenReturn(0L)`) — Media3 test utils not needed for simple delegations
+- `AppPreferencesTest.kt` builds a real DataStore via `PreferenceDataStoreFactory.create(scope = CoroutineScope(UnconfinedTestDispatcher() + Job())) { File.createTempFile(...) }`, deletes on teardown, and mocks `SharedPreferences`/`Editor` for the secure-prefs half (`whenever(editor.putString(...)).thenReturn(editor)` chain)
 
-**Async/flow testing:** always `runTest`; `StandardTestDispatcher` injected via `Dispatchers.setMain`; deterministic time via `advanceTimeBy(400L)` (debounce), `scheduler.runCurrent()`, or `advanceUntilIdle()`. Never `Thread.sleep` or real delays.
+### Naming / Style Inside Tests
 
-**Error-path testing:** stub `whenever(...).thenThrow(RuntimeException("network error"))` and assert `ProviderResult.Error` with message containment (`YouTubeMusicProviderTest.kt:39-47`).
-
-**Real-storage testing:** `PreferenceDataStoreFactory.create(scope = CoroutineScope(UnconfinedTestDispatcher() + Job()))` over a temp file, deleted in `@After` (`AppPreferencesTest.kt:51-54`); `MockWebServer` start/`server.shutdown()` in `@Before`/`@After` (`InnerTubeHeaderInterceptorTest.kt:18-31`).
-
-**Local-only facts to respect when adding tests:**
-- Truth is only transitively available — declare `libs.google.truth` explicitly before relying on it in new tests.
-- `@file:Suppress("ForbiddenImport")` is required on data-layer tests that import sibling `com.clibeats.data.*` packages (`SongRepositoryImplTest.kt:1`, `MapperTest.kt:2`).
-- Instrumented tests are NOT part of the CI gate; put critical DAO behavior in JVM-testable code paths or accept emulator-only coverage.
+- Backticked sentences: `fun \`clearQuery resets query to empty string\`()`
+- Assertions: Truth (`assertThat(x).isEqualTo`, `.isInstanceOf`, `.hasSize`) in ViewModel/provider/repo tests; JUnit `assertEquals` in DAO/mapper tests
+- Suppressions: tests that cross layer packages carry `@file:Suppress("ForbiddenImport")` (e.g. `GatewayMusicProviderTest.kt`)
+- **Test counts per phase (from `app/tests` and phase summaries)** — currently **109 passing**:
+  - Phase 0–2: theme token + Paparazzi baseline (`CliBeatsColorsTest` 10, `CliBeatsTypographyTest` 7)
+  - Phase 3: DAO in-memory (androidTest) + repo mappers, 40 unit tests
+  - Phase 4/5: PlayerAdapter, PlaybackIntegration, provider/search (`GatewayMusicProviderTest`, `GatewayMapperTest`, `SearchViewModelTest`), `TrackModelTest`
+  - Phase 6: Queue/Library/Playlist ViewModel tests (9 new → 93)
+  - Phase 7: Cache, Download, NetworkMonitor (3 → 96)
+  - Phase 8: SettingsViewModel (4 → 100)
+  - Phase 9: repository + component + PlaybackIntegration (106)
+  - Phase 10: telemetry (108), Phase 11: LicenseCompliance (109)
 
 ---
 
-*Testing analysis: 2026-08-07*
+## Gateway Testing (`gateway/`)
+
+### Framework
+
+**Runner:** Vitest (`vitest` 3.0.4) with `@vitest/coverage-v8`
+**Config:** `gateway/vitest.config.ts` — `environment: 'node'`, includes `tests/**/*.test.ts`
+**Run:**
+```bash
+npm run check            # tsc --noEmit
+npm test                 # vitest run (all suites)
+npm run test:watch
+npm run test:coverage    # with coverage gates (70%)
+npm run test:load        # autocannon load test (ts-node tests/load/load-test.ts)
+npm run openapi:generate / openapi:validate
+```
+
+### Coverage (enforced)
+
+`gateway/vitest.config.ts`:
+
+```ts
+thresholds: { statements: 70, branches: 70, functions: 70, lines: 70 }
+```
+
+Recent report (`gateway/coverage/coverage-summary.json`): lines/statements 80.3%, functions 78.2%, branches 76.2% — above gate. Weak files: `src/config/config.ts` (33%), `src/types/domain.ts` (0, type-only), `src/providers/youtube/YouTubeProviderAdapter.ts` (60%) — adapter tests exist (`tests/unit/youtube-adapter.test.ts`) but many `branch` paths unmeasured.
+
+### Suite Layout (6 directories)
+
+```
+gateway/tests/
+├── unit/          # core.test.ts, mock-provider.test.ts, redis-cache-resilience.test.ts, redis-health.test.ts, youtube-adapter.test.ts
+├── integration/   # api.test.ts, failover.test.ts, health.test.ts, metrics.test.ts
+├── contract/      # openapi.test.ts
+├── property/      # search-property.test.ts (fast-check)
+├── architecture/  # layers.test.ts (static analysis)
+└── load/          # load-test.ts (autocannon)
+```
+
+### Unit Tests
+
+**Mock provider failure matrix** (`tests/unit/mock-provider.test.ts`) — iterates every `MockProviderState`:
+
+```ts
+it('OFFLINE throws NetworkError (no fall-through to PlaybackError)', async () => {
+  const mock = new MockProviderAdapter('mock', 42, 100);
+  mock.state = 'OFFLINE';
+  await expect(mock.search('cyber', ctx)).rejects.toThrow(NetworkError);
+  expect(await mock.healthCheck()).toMatchObject({ status: 'UNHEALTHY', score: 0 });
+});
+```
+
+- `core.test.ts`: registry/selection/circuit-breaker logic with a registered `MockProviderAdapter`
+- `redis-cache-resilience.test.ts` — uses `ioredis-mock` (`new RedisMock()`), validates key namespacing (`clibeats:search:hello`), fail-open behavior (Redis read throws → `get` returns `null`; write throws → resolves), TTL on sessions
+- `redis-health.test.ts` — `mock` redis via `{ ping: vi.fn() }`, fake timers (`vi.useFakeTimers`/`advanceTimersByTimeAsync`) for the timeout path
+- `youtube-adapter.test.ts` — mocks `youtubei.js` module (`vi.mock('youtubei.js', () => ({ ... Innertube: { create: mockCreate } }))`), tests search mapping, stream format selection, `NotFoundError` when no audio format, rate-limit wrap, `healthCheck` UP/DOWN, and MUSIC vs IOS client selection
+
+### Integration Tests (fastify.inject)
+
+`tests/integration/**` — boot full app via `buildApp()` (which swaps in `ioredis-mock` when `NODE_ENV === 'test'`), `await app.ready()`, drive requests with `app.inject({ method, url, payload, headers })`:
+
+- `api.test.ts` — endpoint coverage incl. trace-ID header propagation (`x-trace-id` echo)
+- `failover.test.ts` — sets `primaryMock.shouldSimulateError`, verifies secondary provider serves the request; circuit-breaker opens after 3 failures (`cb.getState() === 'OPEN'`)
+- `health.test.ts` — injects a fake failing Redis into `buildApp({}, failingRedis)`, asserts `redis: 'DOWN'` and gateway `DEGRADED`, plus the "health does not lie" invariant
+- `metrics.test.ts` — asserts Prometheus metric names present in `/metrics` payload and that cache hit/miss counters move
+
+Test env: `buildApp()` uses `process.env.NODE_ENV === 'test'` → `RedisMock` (in `src/app.ts`).
+
+### Contract Tests (OpenAPI)
+
+`tests/contract/openapi.test.ts` — `app.swagger({ yaml: false })` returns live spec:
+- openapi `3.x`, deterministic serialization (generation is idempotent)
+- exact path list contract (`/api/v1/{bootstrap,search,album/{id},artist/{id},playlist/{id},stream,providers}`, `/health`, `/metrics`, `/version`)
+- every operation documents `tags`, `description`, `responses` incl. 200/default, and 400-validation via `fastify.inject` (missing `trackId` → 400)
+
+### Property Tests (fast-check)
+
+`tests/property/search-property.test.ts`:
+
+```ts
+fc.assert(fc.asyncProperty(fc.fullUnicodeString({ maxLength: 100 }), async (query) => {
+  const res = await app.inject({ method: 'GET', url: `/api/v1/search?q=${encodeURIComponent(query)}` });
+  expect(res.statusCode).toBe(200);
+  // schema invariant: tracks[] all have id/providerId/title/artist/durationSeconds as strings/number
+}), { numRuns: 100 });
+```
+
+### Architecture Tests (static layering)
+
+`tests/architecture/layers.test.ts` — walk `src/`, parse `from '...'` imports, assert:
+- `core/` never imports `providers/`
+- `providers/**` (except register) never import `core|config|app`
+- `types/` is a leaf; `config/config.ts` depends only on `external` packages
+- `registerProviders.ts` composes `core` + adapter (dependency-injection wiring is real)
+
+### Load Test (autocannon)
+
+`tests/load/load-test.ts` — sets `NODE_ENV=test`, `buildApp()`, listens on ephemeral port, runs `autocannon({ connections: 100, duration: 10, pipelining: 1 })` against `/api/v1/search?q=cyber`, logs requests/sec + p99, exits non-zero if any non-2xx. Invoked by CI via `npm run test:load`.
+
+### Mocking (gateway)
+
+- Module mock: `vi.mock('youtubei.js', ...)` with `mockCreate`/`mockSearch`/`mockGetBasicInfo` hoisted (`tests/unit/youtube-adapter.test.ts`)
+- Redis mock: `ioredis-mock` in `tests/unit/redis-cache-resilience.test.ts` and implicit in `buildApp` (NODE_ENV test)
+- Inline fake objects for `ProviderAdapter`/Redis (`{ ping: vi.fn() }`, `{ get/set/ping: async () => { throw ... } }`) in health/cache resilience tests
+- `MockProviderAdapter` is itself the canonical fake provider, reused across unit/integration/failover suites
+
+### Fixtures / Factories
+
+- Shared typed `const ctx: ProviderContext = { country: 'US', language: 'en', ... }` at top of each consumer-file (`mock-provider.test.ts`, `youtube-adapter.test.ts`)
+- Mock provider datasets deterministic via seeded PRNG (`seed=42`) in `MockProviderAdapter`
+
+**Fixtures are not centralized** — each gateway test file builds its own `ProviderContext` and fake payloads inline.
+
+### Test Types Summary
+
+| Type | Location | Tool |
+|------|----------|------|
+| Unit (JVM) | `app/src/test/` | JUnit4, Mockito, kotlinx-coroutines-test, Paparazzi |
+| Unit (node) | `gateway/tests/unit/` | vitest, `vi.mock`, ioredis-mock |
+| Instrumented Room | `app/src/androidTest/` | AndroidJUnit4, Room in-memory |
+| Integration | `gateway/tests/integration/` | vitest + `app.inject` |
+| Contract | `gateway/tests/contract/` | vitest + `app.swagger` |
+| Property | `gateway/tests/property/` | fast-check |
+| Architecture | `gateway/tests/architecture/` | vitest + fs walk |
+| Load | `gateway/tests/load/` | autocannon |
+
+### CI Hooks
+
+`.github/workflows/ci.yml`:
+- `quality-and-test` (Android): JDK 17 → `ktlintCheck` → `detekt` → `lintDebug` → `assembleDebug` → `testDebugUnitTest` → upload `app/build/reports/`
+- `gateway-quality-and-test`: Node 20 → `npm ci` → `npm run check` → `npm test` → `npm run test:coverage` (fails if <70%) → `openapi:validate` → `test:load` (fails on non-2xx) → `docker build`
+
+---
+
+*Testing analysis: 2026-08-08*

@@ -6,7 +6,7 @@ describe('Gateway Fastify Integration Tests (fastify.inject)', () => {
   let app: FastifyInstance;
 
   beforeEach(async () => {
-    app = await buildApp();
+    app = await buildApp({ providers: { mock: { enabled: true, priority: 100 }, youtube: { enabled: false } } });
     await app.ready();
   });
 
