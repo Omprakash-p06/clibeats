@@ -483,7 +483,7 @@ export async function buildApp(customConfig?: Partial<GatewayConfig>, redisClien
     return reply.send({ providers: active });
   });
 
-  app.get('/debug-yt', async (req, reply) => {
+  app.get('/debug-yt', { schema: { hide: true } as any }, async (req, reply) => {
     const { Innertube, ClientType } = require('youtubei.js');
     const trackId = (req.query as any).trackId || 'hpSrLjc5SMs';
     const results: Record<string, any> = {};
