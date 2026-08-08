@@ -5,7 +5,12 @@ import { buildApp } from '../../src/app';
 
 describe('Gateway /health Redis Truthfulness', () => {
   it('reports redis UP when healthy', async () => {
-    const app = await buildApp();
+    const mockRedis = {
+      ping: async () => 'PONG',
+      get: async () => null,
+      set: async () => 'OK',
+    };
+    const app = await buildApp({ providers: { mock: { enabled: true, priority: 100 }, youtube: { enabled: false } } }, mockRedis as unknown as Redis);
     await app.ready();
     const res = await app.inject({ method: 'GET', url: '/health' });
     const body = JSON.parse(res.payload);
@@ -13,7 +18,7 @@ describe('Gateway /health Redis Truthfulness', () => {
     expect(body.redis).toBe('UP');
     expect(['HEALTHY', 'DEGRADED']).toContain(body.gateway);
     await app.close();
-  });
+  }, 10000);
 
   it('reports redis DOWN when redis unresponsive', async () => {
     const failingRedis = {

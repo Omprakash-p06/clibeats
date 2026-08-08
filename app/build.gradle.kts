@@ -21,14 +21,16 @@ android {
         minSdk = 26
         targetSdk = 34
         versionCode = 1
-        versionName = "0.1.0"
+        versionName = "1.0.0"
 
-        buildConfigField("String", "GATEWAY_BASE_URL", "\"http://10.0.2.2:8080/\"")
+        val gatewayUrl = System.getenv("GATEWAY_URL") ?: "http://10.0.2.2:8080/"
+        buildConfigField("String", "GATEWAY_BASE_URL", "\"$gatewayUrl\"")
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",

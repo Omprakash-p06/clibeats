@@ -17,7 +17,7 @@ providers:
       cooldownSeconds: 60
 
   youtube:
-    enabled: false
+    enabled: true
     priority: 60
     circuitBreaker:
       failureThreshold: 5
