@@ -16,6 +16,13 @@ providers:
       failureThreshold: 3
       cooldownSeconds: 60
 
+  youtube:
+    enabled: false
+    priority: 60
+    circuitBreaker:
+      failureThreshold: 5
+      cooldownSeconds: 60
+
 cache:
   redisUrl: "redis://localhost:6379"
   metadataTTLSeconds: 86400    # 24 hours

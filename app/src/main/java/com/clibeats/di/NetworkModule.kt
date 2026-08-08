@@ -4,9 +4,8 @@ package com.clibeats.di
 
 import android.content.Context
 import com.clibeats.BuildConfig
+import com.clibeats.data.gateway.api.GatewayApi
 import com.clibeats.data.network.NetworkMonitor
-import com.clibeats.data.provider.api.InnerTubeApi
-import com.clibeats.data.provider.api.InnerTubeHeaderInterceptor
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -18,9 +17,9 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
-
-private const val INNERTUBE_BASE_URL = "https://music.youtube.com/youtubei/v1/"
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -35,10 +34,14 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(headerInterceptor: InnerTubeHeaderInterceptor): OkHttpClient {
+    @Named("gateway")
+    fun provideGatewayOkHttpClient(): OkHttpClient {
+        val timeoutSeconds = 30L
         val builder =
             OkHttpClient.Builder()
-                .addInterceptor(headerInterceptor)
+                .connectTimeout(timeoutSeconds, TimeUnit.SECONDS)
+                .readTimeout(timeoutSeconds, TimeUnit.SECONDS)
+                .callTimeout(timeoutSeconds, TimeUnit.SECONDS)
 
         if (BuildConfig.DEBUG) {
             builder.addInterceptor(
@@ -52,19 +55,20 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(
-        okHttpClient: OkHttpClient,
+    @Named("gateway")
+    fun provideGatewayRetrofit(
         json: Json,
+        @Named("gateway") okHttpClient: OkHttpClient,
     ): Retrofit =
         Retrofit.Builder()
-            .baseUrl(INNERTUBE_BASE_URL)
+            .baseUrl(BuildConfig.GATEWAY_BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
 
     @Provides
     @Singleton
-    fun provideInnerTubeApi(retrofit: Retrofit): InnerTubeApi = retrofit.create(InnerTubeApi::class.java)
+    fun provideGatewayApi(@Named("gateway") retrofit: Retrofit): GatewayApi = retrofit.create(GatewayApi::class.java)
 
     @Provides
     @Singleton
@@ -72,3 +76,4 @@ object NetworkModule {
         @ApplicationContext context: Context,
     ): NetworkMonitor = NetworkMonitor(context)
 }
+

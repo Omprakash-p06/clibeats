@@ -6,8 +6,8 @@ import com.clibeats.domain.model.PlaybackState
 import com.clibeats.domain.model.RepeatMode
 import com.clibeats.domain.model.Track
 import com.clibeats.domain.playback.QueueManager
-import com.clibeats.domain.provider.StreamResolver
-import com.clibeats.domain.provider.StreamResult
+import com.clibeats.domain.provider.MusicProvider
+import com.clibeats.domain.provider.ProviderResult
 import com.clibeats.domain.repository.PlaybackRepository
 import com.clibeats.playback.PlayerAdapter
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +23,7 @@ class PlaybackRepositoryImpl
     @Inject
     constructor(
         private val playerAdapter: PlayerAdapter,
-        private val streamResolver: StreamResolver,
+        private val musicProvider: MusicProvider,
         private val queueManager: QueueManager,
     ) : PlaybackRepository {
         private val repositoryScope = CoroutineScope(Dispatchers.Main)
@@ -66,8 +66,8 @@ class PlaybackRepositoryImpl
             if (!track.streamUrl.isNullOrBlank()) {
                 return track
             }
-            return when (val result = streamResolver.resolve(track.id)) {
-                is StreamResult.Success -> track.copy(streamUrl = result.url)
+            return when (val result = musicProvider.stream(track.id)) {
+                is ProviderResult.Success -> track.copy(streamUrl = result.data)
                 else -> track
             }
         }

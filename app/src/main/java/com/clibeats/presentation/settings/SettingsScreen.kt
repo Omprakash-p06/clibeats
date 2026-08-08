@@ -50,7 +50,7 @@ fun SettingsScreen(
         // Section: Active Music Provider
         TuiBlock(title = "Active Provider", isActive = true) {
             Column {
-                listOf("ytmusic" to "YouTube Music (InnerTube API)", "local" to "Local Device Media").forEach { (id, label) ->
+                listOf("ytmusic" to "YouTube Music (Gateway)", "local" to "Local Device Media").forEach { (id, label) ->
                     val isSelected = uiState.activeProviderId == id
                     Row(
                         modifier =
