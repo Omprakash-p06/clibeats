@@ -22,13 +22,16 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0.0"
-
-        val gatewayUrl = System.getenv("GATEWAY_URL") ?: "http://192.168.0.106:8080/"
-        buildConfigField("String", "GATEWAY_BASE_URL", "\"$gatewayUrl\"")
     }
 
     buildTypes {
+        debug {
+            val debugGatewayUrl = System.getenv("GATEWAY_URL") ?: "http://192.168.0.106:8080/"
+            buildConfigField("String", "GATEWAY_BASE_URL", "\"$debugGatewayUrl\"")
+        }
         release {
+            val releaseGatewayUrl = System.getenv("GATEWAY_URL") ?: "https://gateway.clibeats.io/"
+            buildConfigField("String", "GATEWAY_BASE_URL", "\"$releaseGatewayUrl\"")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(

@@ -13,6 +13,7 @@ export function largestArtworkUrl(urls: Array<string | undefined> | undefined): 
 export interface MusicItemSnapshot {
   id?: string;
   itemType?: string;
+  title?: string;
   /** Raw column text, e.g. ['Song Title', 'Song • Artist', '4.5M plays']. */
   columns?: string[];
   artists?: Array<{ name?: string; id?: string }>;
@@ -24,22 +25,49 @@ export interface MusicItemSnapshot {
 export function parseRawItem(item: unknown): MusicItemSnapshot {
   if (!item || typeof item !== 'object') return {};
   const it = item as Record<string, unknown>;
-  const snapshot: MusicItemSnapshot = {
-    id: typeof it.id === 'string' ? it.id : undefined,
-    itemType: typeof it.item_type === 'string' ? it.item_type : undefined,
-  };
+
+  let id: string | undefined = typeof it.id === 'string' ? it.id : undefined;
+  let itemType: string | undefined = typeof it.item_type === 'string' ? it.item_type : undefined;
+
+  // Extract title
+  let title: string | undefined = undefined;
+  if (typeof it.title === 'string') {
+    title = it.title;
+  } else if (it.title && typeof it.title === 'object' && typeof (it.title as any).text === 'string') {
+    title = (it.title as any).text;
+  } else if (typeof it.name === 'string') {
+    title = it.name;
+  }
 
   const flex = Array.isArray(it.flex_columns) ? it.flex_columns : [];
-  snapshot.columns = flex.map((f) => {
+  const columns = flex.map((f) => {
     const col = f as { title?: { text?: string } };
     return typeof col?.title?.text === 'string' ? col.title.text : undefined;
   }).filter((t): t is string => t !== undefined);
 
+  if (!title && columns.length > 0) {
+    title = columns[0];
+  }
+
+  // Channel/Artist items start with UC
+  if (id && id.startsWith('UC')) {
+    itemType = 'artist';
+  } else if (id && id.length === 11) {
+    itemType = 'song';
+  }
+
+  const snapshot: MusicItemSnapshot = {
+    id,
+    itemType,
+    title,
+    columns,
+  };
+
   const artists = it.artists;
   if (Array.isArray(artists)) {
     snapshot.artists = artists.map((a) => {
-      const ar = a as { name?: string; channelId?: string };
-      return { name: ar?.name, id: ar?.channelId };
+      const ar = a as { name?: string; channelId?: string; id?: string };
+      return { name: ar?.name, id: ar?.channelId ?? ar?.id };
     });
   } else {
     snapshot.artists = [];

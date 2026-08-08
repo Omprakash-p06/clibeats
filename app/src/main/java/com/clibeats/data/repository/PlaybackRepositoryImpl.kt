@@ -1,6 +1,6 @@
 package com.clibeats.data.repository
 
-import com.clibeats.core.logging.PlaybackEvent
+import com.clibeats.core.logging.StructuredEvent
 import com.clibeats.core.logging.StructuredLogger
 import com.clibeats.domain.model.PlaybackState
 import com.clibeats.domain.model.RepeatMode
@@ -33,20 +33,21 @@ class PlaybackRepositoryImpl
         override val queueState: StateFlow<List<Track>> = queueManager.queue
 
         override fun playTrack(track: Track) {
-            StructuredLogger.log(PlaybackEvent.TrackSelected(track.id, track.title))
+            val traceId = StructuredLogger.generateTraceId()
+            StructuredLogger.log(StructuredEvent.TrackSelected(traceId, track.id, track.title))
             repositoryScope.launch {
                 val start = System.currentTimeMillis()
-                StructuredLogger.log(PlaybackEvent.PlayerRequest(track.id))
+                StructuredLogger.log(StructuredEvent.StreamRequest(traceId, track.id))
                 val resolvedTrack = withContext(Dispatchers.IO) { ensureStreamUrl(track) }
                 val duration = System.currentTimeMillis() - start
 
                 if (!resolvedTrack.streamUrl.isNullOrBlank()) {
-                    StructuredLogger.log(PlaybackEvent.StreamResolved(track.id, resolvedTrack.streamUrl!!, duration))
-                    StructuredLogger.log(PlaybackEvent.Buffering(track.id))
+                    StructuredLogger.log(StructuredEvent.StreamResolved(traceId, track.id, duration))
+                    StructuredLogger.log(StructuredEvent.PlayerPreparing(traceId, track.id))
                     playerAdapter.playTrack(resolvedTrack)
-                    StructuredLogger.log(PlaybackEvent.Playing(track.id))
+                    StructuredLogger.log(StructuredEvent.PlayerPlaying(traceId, track.id))
                 } else {
-                    StructuredLogger.log(PlaybackEvent.Failure("STREAM_RESOLUTION", "Could not resolve stream URL for track: ${track.id}"))
+                    StructuredLogger.log(StructuredEvent.PlayerError(traceId, "STREAM_RESOLUTION", "Could not resolve stream URL for track: ${track.id}"))
                 }
             }
         }

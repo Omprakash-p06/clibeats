@@ -120,24 +120,30 @@ export class YouTubeProviderAdapter implements ProviderAdapter {
   ): Promise<Track[]> {
     if (!query.trim()) return [];
     try {
-      const res = await this.withTimeout((yt) => yt.music.search(query));
+      const res = await this.withTimeout((yt) =>
+        yt.music.search(query, filterSongs ? { type: 'song' } : undefined)
+      );
       const tracks: Track[] = [];
-      const contents = (res.contents ?? []) as Array<{ contents?: unknown[] }>;
-      for (const section of contents) {
-        for (const rawItem of section.contents ?? []) {
-          const item = parseRawItem(rawItem);
-          const isSong = item.itemType === 'song' || item.itemType?.includes('song');
-          if (filterSongs && !isSong) continue;
-          if (!item.id || !item.columns?.[0]) continue;
+      const sections = (res.contents ?? []) as any[];
 
-          const col = item.columns;
-          const subtitle = col[1];
+      for (const section of sections) {
+        const rawItems = Array.isArray(section?.contents) ? section.contents : [section];
+        for (const rawItem of rawItems) {
+          const item = parseRawItem(rawItem);
+          if (!item.id || item.itemType === 'artist') continue;
+          const isSong = !item.itemType || item.itemType === 'song' || item.itemType.includes('song') || item.id.length === 11;
+          if (filterSongs && !isSong) continue;
+
+          const title = item.title ?? item.columns?.[0];
+          if (!title) continue;
+
+          const subtitle = item.columns?.[1];
           const { artist, album } = parseSubtitle(subtitle);
 
           tracks.push({
             id: item.id,
             providerId: this.id,
-            title: col[0],
+            title,
             artist: item.artists?.[0]?.name ?? artist ?? 'Unknown Artist',
             album: item.albumName ?? album,
             durationSeconds: item.durationSeconds ?? 0,

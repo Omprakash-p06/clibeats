@@ -9,18 +9,18 @@ server:
   minimumAndroidVersion: "1.0.0"
 
 providers:
-  mock:
+  youtube:
     enabled: true
     priority: 100
     circuitBreaker:
-      failureThreshold: 3
+      failureThreshold: 5
       cooldownSeconds: 60
 
-  youtube:
+  mock:
     enabled: true
-    priority: 60
+    priority: 10
     circuitBreaker:
-      failureThreshold: 5
+      failureThreshold: 3
       cooldownSeconds: 60
 
 cache:
