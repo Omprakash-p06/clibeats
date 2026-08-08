@@ -23,7 +23,7 @@ android {
         versionCode = 1
         versionName = "1.0.0"
 
-        val gatewayUrl = System.getenv("GATEWAY_URL") ?: "http://10.0.2.2:8080/"
+        val gatewayUrl = System.getenv("GATEWAY_URL") ?: "http://192.168.0.106:8080/"
         buildConfigField("String", "GATEWAY_BASE_URL", "\"$gatewayUrl\"")
     }
 

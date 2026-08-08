@@ -43,7 +43,18 @@ function createRedis(config: GatewayConfig): Redis {
   if (process.env.NODE_ENV === 'test') {
     return new RedisMock() as unknown as Redis;
   }
-  return new Redis(config.cache.redisUrl);
+  const client = new Redis(config.cache.redisUrl, {
+    maxRetriesPerRequest: 1,
+    enableOfflineQueue: false,
+    retryStrategy(times) {
+      if (times > 2) return null;
+      return 500;
+    },
+  });
+  client.on('error', (err) => {
+    logger.warn({ error: err.message }, 'Redis connection warning (degrading to cache-miss)');
+  });
+  return client;
 }
 
 export async function buildApp(customConfig?: Partial<GatewayConfig>, redisClient?: Redis): Promise<FastifyInstance> {
