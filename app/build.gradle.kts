@@ -21,32 +21,12 @@ android {
         minSdk = 26
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0.0"
+        versionName = "0.1.0"
     }
 
     buildTypes {
-        debug {
-            val debugGatewayUrl =
-                providers.gradleProperty("GATEWAY_URL").orNull
-                    ?: System.getenv("GATEWAY_URL")
-                    ?: "http://192.168.0.106:8080/"
-            buildConfigField("String", "GATEWAY_BASE_URL", "\"$debugGatewayUrl\"")
-        }
         release {
-            // Never fall back to a hardcoded host: the former default
-            // (https://gateway.clibeats.io/) is not registered and is NXDOMAIN on
-            // public resolvers, so a release APK built without GATEWAY_URL could
-            // never reach the gateway (UnknownHostException -> provider_offline).
-            // Fail fast at configuration time instead of shipping a dead APK.
-            // Accept either a Gradle property (-PGATEWAY_URL=...) or the
-            // GATEWAY_URL environment variable — same switch as debug.
-            val releaseGatewayUrl =
-                providers.gradleProperty("GATEWAY_URL").orNull
-                    ?: System.getenv("GATEWAY_URL")
-                    ?: "http://localhost:8080/"
-            buildConfigField("String", "GATEWAY_BASE_URL", "\"$releaseGatewayUrl\"")
-            isMinifyEnabled = true
-            isShrinkResources = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",

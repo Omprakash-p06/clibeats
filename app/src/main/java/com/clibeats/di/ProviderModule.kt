@@ -1,6 +1,8 @@
+@file:Suppress("ForbiddenImport")
+
 package com.clibeats.di
 
-import com.clibeats.data.gateway.GatewayMusicProvider
+import com.clibeats.data.provider.YouTubeMusicProvider
 import com.clibeats.domain.provider.MusicProvider
 import dagger.Binds
 import dagger.Module
@@ -13,5 +15,5 @@ import javax.inject.Singleton
 abstract class ProviderModule {
     @Binds
     @Singleton
-    abstract fun bindMusicProvider(impl: GatewayMusicProvider): MusicProvider
+    abstract fun bindMusicProvider(impl: YouTubeMusicProvider): MusicProvider
 }

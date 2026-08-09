@@ -99,31 +99,13 @@ fun MainLayout(
 
             // ── Persistent Player Bar ─────────────────────────────────────
             PlayerBar(
-                trackTitle = playbackState.currentTrack?.title ?: "Nothing Playing",
-                artist = buildString {
-                    val track = playbackState.currentTrack
-                    if (track != null) {
-                        append(track.artist)
-                        if (track.album.isNotBlank()) append(" • ${track.album}")
-                    } else {
-                        append("YouTube Music Provider")
-                    }
-                },
+                trackTitle = playbackState.currentTrack?.title ?: "Not playing",
+                artist = playbackState.currentTrack?.artist ?: "",
                 isPlaying = playbackState.isPlaying,
                 progress = progress,
-                artworkContent = playbackState.currentTrack?.artworkUrl?.let { url ->
-                    {
-                        coil.compose.AsyncImage(
-                            model = url,
-                            contentDescription = "Artwork for ${playbackState.currentTrack?.title}",
-                            modifier = Modifier.fillMaxSize(),
-                        )
-                    }
-                },
                 onPlayPauseClick = playerViewModel::onPlayPauseClick,
                 onSkipNextClick = playerViewModel::onSkipNextClick,
                 onSkipPreviousClick = playerViewModel::onSkipPreviousClick,
-                onQueueClick = { onDestinationSelected(NavDestination.Queue) },
             )
         }
     }
@@ -133,11 +115,9 @@ private fun NavigationSuiteScope.buildNavItems(
     selectedDestination: NavDestination,
     onDestinationSelected: (NavDestination) -> Unit,
 ) {
-    NavDestination.mainTabs.forEach { destination ->
-        val isSelected = destination == selectedDestination
-        val labelText = if (isSelected) "> ${destination.label}" else destination.label
+    NavDestination.all.forEach { destination ->
         item(
-            selected = isSelected,
+            selected = destination == selectedDestination,
             onClick = { onDestinationSelected(destination) },
             icon = {
                 Icon(
@@ -145,7 +125,7 @@ private fun NavigationSuiteScope.buildNavItems(
                     contentDescription = destination.contentDescription,
                 )
             },
-            label = { Text(text = labelText, maxLines = 1) },
+            label = { Text(destination.label) },
         )
     }
 }

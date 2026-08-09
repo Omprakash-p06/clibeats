@@ -1,0 +1,94 @@
+[
+    {
+        "merged": "com.clibeats.app-debug-76:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "com.clibeats.app-main-78:/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/mipmap-xhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.clibeats.app-main-78:/mipmap-xhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.clibeats.app-main-78:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "com.clibeats.app-main-78:/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/font_jetbrains_mono_medium.ttf.flat",
+        "source": "com.clibeats.app-main-78:/font/jetbrains_mono_medium.ttf"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/font_jetbrains_mono_bold.ttf.flat",
+        "source": "com.clibeats.app-main-78:/font/jetbrains_mono_bold.ttf"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/font_jetbrains_mono_regular.ttf.flat",
+        "source": "com.clibeats.app-main-78:/font/jetbrains_mono_regular.ttf"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "com.clibeats.app-main-78:/mipmap-mdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/mipmap-hdpi_ic_launcher_foreground.png.flat",
+        "source": "com.clibeats.app-main-78:/mipmap-hdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "com.clibeats.app-main-78:/mipmap-xhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "com.clibeats.app-main-78:/mipmap-xxxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.clibeats.app-main-78:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "com.clibeats.app-main-78:/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/xml_network_security_config.xml.flat",
+        "source": "com.clibeats.app-main-78:/xml/network_security_config.xml"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/mipmap-xxhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.clibeats.app-main-78:/mipmap-xxhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "com.clibeats.app-main-78:/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/mipmap-mdpi_ic_launcher_foreground.png.flat",
+        "source": "com.clibeats.app-main-78:/mipmap-mdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/font_jetbrains_mono_semibold.ttf.flat",
+        "source": "com.clibeats.app-main-78:/font/jetbrains_mono_semibold.ttf"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "com.clibeats.app-main-78:/mipmap-xxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/xml_data_extraction_rules.xml.flat",
+        "source": "com.clibeats.app-main-78:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "com.clibeats.app-main-78:/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "com.clibeats.app-main-78:/mipmap-hdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.clibeats.app-debug-76:/mipmap-xxxhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.clibeats.app-main-78:/mipmap-xxxhdpi/ic_launcher_foreground.png"
+    }
+]

@@ -1,7 +1,6 @@
 # Android / Gradle
 *.iml
 .gradle/
-.kotlin/
 /local.properties
 /.idea/
 .DS_Store
@@ -13,14 +12,4 @@
 !debug.keystore
 
 # Build output
-app/build/
-
-# Gateway / Node.js
-gateway/node_modules/
-gateway/dist/
-gateway/tests/**/*.js
-gateway/tests/**/*.js.map
-gateway/tests/**/*.d.ts
-gateway/openapi.json
-gateway/coverage/
-gateway/reports/
+app/build/.kotlin/

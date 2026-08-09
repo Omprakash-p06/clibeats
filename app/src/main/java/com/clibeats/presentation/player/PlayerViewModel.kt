@@ -16,16 +16,10 @@ class PlayerViewModel
         val playbackState: StateFlow<PlaybackState> = playbackRepository.playbackState
 
         fun onPlayPauseClick() {
-            val state = playbackState.value
-            if (state.isPlaying) {
+            if (playbackState.value.isPlaying) {
                 playbackRepository.pause()
             } else {
-                val currentTrack = state.currentTrack
-                if (currentTrack != null) {
-                    playbackRepository.playTrack(currentTrack)
-                } else {
-                    playbackRepository.play()
-                }
+                playbackRepository.play()
             }
         }
 
@@ -35,9 +29,5 @@ class PlayerViewModel
 
         fun onSkipPreviousClick() {
             playbackRepository.skipToPrevious()
-        }
-
-        fun playTrack(track: com.clibeats.domain.model.Track) {
-            playbackRepository.playTrack(track)
         }
     }

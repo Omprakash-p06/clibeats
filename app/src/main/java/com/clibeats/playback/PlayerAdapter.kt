@@ -11,15 +11,10 @@ import com.clibeats.data.cache.CacheManager
 import com.clibeats.domain.model.PlaybackState
 import com.clibeats.domain.model.RepeatMode
 import com.clibeats.domain.model.Track
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -30,9 +25,6 @@ class PlayerAdapter
         private val player: ExoPlayer,
         private val cacheManager: CacheManager,
     ) {
-        private val adapterScope = CoroutineScope(Dispatchers.Main)
-        private var tickerJob: Job? = null
-
         private val _playbackState =
             MutableStateFlow(
                 PlaybackState(
@@ -54,40 +46,14 @@ class PlayerAdapter
         init {
             player.addListener(
                 object : Player.Listener {
-                    override fun onPlaybackStateChanged(playbackState: Int) {
-                        val stateName =
-                            when (playbackState) {
-                                Player.STATE_IDLE -> "STATE_IDLE"
-                                Player.STATE_BUFFERING -> "STATE_BUFFERING"
-                                Player.STATE_READY -> "STATE_READY"
-                                Player.STATE_ENDED -> "STATE_ENDED"
-                                else -> "STATE_UNKNOWN($playbackState)"
-                            }
-                        runCatching { android.util.Log.d("PlayerAdapterDiagnostics", "[EXOPLAYER_STATE] Changed to: $stateName") }
-                        updateState()
-                    }
-
                     override fun onIsPlayingChanged(isPlaying: Boolean) {
-                        runCatching { android.util.Log.d("PlayerAdapterDiagnostics", "[EXOPLAYER_IS_PLAYING] isPlaying: $isPlaying") }
                         updateState()
-                        if (isPlaying) {
-                            startTicker()
-                        } else {
-                            stopTicker()
-                        }
                     }
 
                     override fun onMediaItemTransition(
                         mediaItem: MediaItem?,
                         reason: Int,
                     ) {
-                        runCatching {
-                            android.util.Log.d(
-                                "PlayerAdapterDiagnostics",
-                                "[EXOPLAYER_TRANSITION] MediaId: ${mediaItem?.mediaId}, " +
-                                    "Title: ${mediaItem?.mediaMetadata?.title}, Reason: $reason",
-                            )
-                        }
                         updateState()
                     }
 
@@ -106,41 +72,8 @@ class PlayerAdapter
                     override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
                         updateState()
                     }
-
-                    override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
-                        val httpStatus =
-                            (error.cause as? androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException)
-                                ?.responseCode ?: -1
-                        runCatching {
-                            android.util.Log.e(
-                                "PlayerAdapterDiagnostics",
-                                "[EXOPLAYER_ERROR] errorCode: ${error.errorCode}, " +
-                                    "errorCodeName: ${error.errorCodeName}, httpStatus: $httpStatus, " +
-                                    "message: ${error.message}",
-                                error,
-                            )
-                        }
-                        stopTicker()
-                        updateState()
-                    }
                 },
             )
-        }
-
-        private fun startTicker() {
-            stopTicker()
-            tickerJob =
-                adapterScope.launch {
-                    while (isActive) {
-                        delay(500L)
-                        updateState()
-                    }
-                }
-        }
-
-        private fun stopTicker() {
-            tickerJob?.cancel()
-            tickerJob = null
         }
 
         fun playTrack(track: Track) {
@@ -254,7 +187,7 @@ class PlayerAdapter
         }
 
         private fun Track.toMediaItem(): MediaItem {
-            val cachedFile = cacheManager.getCachedFileDirect(id)
+            val cachedFile = runCatching { runBlocking { cacheManager.getCachedFile(id) } }.getOrNull()
             val uri =
                 if (cachedFile != null && cachedFile.exists()) {
                     android.net.Uri.fromFile(cachedFile)

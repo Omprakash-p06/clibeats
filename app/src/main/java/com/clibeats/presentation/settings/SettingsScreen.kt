@@ -16,7 +16,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,8 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.clibeats.presentation.component.TuiBlock
 import com.clibeats.presentation.theme.CliBeatsAccent
+import com.clibeats.presentation.theme.CliBeatsSurface
 
 private const val BYTES_PER_MB = 1048576L
 
@@ -43,31 +49,45 @@ fun SettingsScreen(
             modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .padding(12.dp)
+                .padding(16.dp)
                 .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        Text(
+            text = "[ SETTINGS ]",
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+
         // Section: Active Music Provider
-        TuiBlock(title = "Active Provider", isActive = true) {
-            Column {
-                listOf("ytmusic" to "YouTube Music (Gateway)", "local" to "Local Device Media").forEach { (id, label) ->
-                    val isSelected = uiState.activeProviderId == id
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = CliBeatsSurface),
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = "ACTIVE MUSIC PROVIDER",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = CliBeatsAccent,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                listOf("ytmusic" to "YouTube Music", "local" to "Local Device Media").forEach { (id, label) ->
                     Row(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
                                 .clickable { viewModel.setActiveProvider(id) }
-                                .padding(vertical = 6.dp),
+                                .padding(vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text(
-                            text = if (isSelected) "(•) " else "( ) ",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = if (isSelected) CliBeatsAccent else MaterialTheme.colorScheme.onSurfaceVariant,
+                        RadioButton(
+                            selected = uiState.activeProviderId == id,
+                            onClick = { viewModel.setActiveProvider(id) },
+                            colors = RadioButtonDefaults.colors(selectedColor = CliBeatsAccent),
                         )
                         Text(
                             text = label,
-                            style = MaterialTheme.typography.bodySmall,
+                            style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -76,16 +96,23 @@ fun SettingsScreen(
         }
 
         // Section: Audio Cache Limit
-        TuiBlock(title = "Disk Cache Limit") {
-            Column {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = CliBeatsSurface),
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = "DISK CACHE LIMIT",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = CliBeatsAccent,
+                )
                 Text(
                     text = "Current Usage: ${uiState.currentCacheSizeBytes / BYTES_PER_MB} MB",
-                    style = MaterialTheme.typography.labelSmall,
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 listOf(256, 512, 1024, 2048).forEach { mb ->
-                    val isSelected = uiState.cacheMaxMb == mb
                     Row(
                         modifier =
                             Modifier
@@ -94,14 +121,14 @@ fun SettingsScreen(
                                 .padding(vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text(
-                            text = if (isSelected) "(•) " else "( ) ",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = if (isSelected) CliBeatsAccent else MaterialTheme.colorScheme.onSurfaceVariant,
+                        RadioButton(
+                            selected = uiState.cacheMaxMb == mb,
+                            onClick = { viewModel.setCacheMaxMb(mb) },
+                            colors = RadioButtonDefaults.colors(selectedColor = CliBeatsAccent),
                         )
                         Text(
                             text = "$mb MB",
-                            style = MaterialTheme.typography.bodySmall,
+                            style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -110,40 +137,52 @@ fun SettingsScreen(
         }
 
         // Section: Streaming Quality
-        TuiBlock(title = "Audio Quality") {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = CliBeatsSurface),
+        ) {
             Row(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .clickable { viewModel.setHighQualityStreaming(!uiState.highQualityStreaming) },
+                        .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column {
                     Text(
                         text = "HIGH QUALITY STREAMING",
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.titleMedium,
                         color = CliBeatsAccent,
                     )
                     Text(
                         text = "Prefer 256kbps AAC audio streams",
-                        style = MaterialTheme.typography.labelSmall,
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                Text(
-                    text = if (uiState.highQualityStreaming) "[ ON ]" else "[ OFF ]",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = if (uiState.highQualityStreaming) CliBeatsAccent else MaterialTheme.colorScheme.onSurfaceVariant,
+                Switch(
+                    checked = uiState.highQualityStreaming,
+                    onCheckedChange = { viewModel.setHighQualityStreaming(it) },
+                    colors = SwitchDefaults.colors(checkedThumbColor = CliBeatsAccent),
                 )
             }
         }
 
         // Section: Actions
-        TuiBlock(title = "Maintenance Actions") {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = CliBeatsSurface),
+        ) {
             Column(
+                modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
+                Text(
+                    text = "MAINTENANCE ACTIONS",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = CliBeatsAccent,
+                )
                 Button(
                     onClick = { viewModel.clearCache() },
                     modifier = Modifier.fillMaxWidth(),

@@ -3,9 +3,7 @@ package com.clibeats.di
 import android.content.Context
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
-import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,22 +27,9 @@ object PlaybackModule {
     fun provideExoPlayer(
         @ApplicationContext context: Context,
         audioAttributes: AudioAttributes,
-    ): ExoPlayer {
-        val httpDataSourceFactory =
-            DefaultHttpDataSource.Factory()
-                .setUserAgent(
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                )
-                .setAllowCrossProtocolRedirects(true)
-
-        val mediaSourceFactory =
-            DefaultMediaSourceFactory(context)
-                .setDataSourceFactory(httpDataSourceFactory)
-
-        return ExoPlayer.Builder(context)
-            .setMediaSourceFactory(mediaSourceFactory)
+    ): ExoPlayer =
+        ExoPlayer.Builder(context)
             .setAudioAttributes(audioAttributes, true)
             .setHandleAudioBecomingNoisy(true)
             .build()
-    }
 }

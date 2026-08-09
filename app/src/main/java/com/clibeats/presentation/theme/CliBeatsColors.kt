@@ -5,25 +5,14 @@ package com.clibeats.presentation.theme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.ui.graphics.Color
 
-val CliBeatsBackground = Color(0xFF0C0C0C)
-val CliBeatsSurface = Color(0xFF121212)
-val CliBeatsSurfaceVariant = Color(0xFF1A1A1A)
+val CliBeatsBackground = Color(0xFF0D0D0D)
+val CliBeatsSurface = Color(0xFF151515)
+val CliBeatsSurfaceVariant = Color(0xFF1E1E1E)
 val CliBeatsAccent = Color(0xFF1DB954)
-val CliBeatsAccentHover = Color(0xFF1ED760)
-val CliBeatsAccentPressed = Color(0xFF1AA34A)
-val CliBeatsHighlight = Color(0xFF222222)
-val CliBeatsSelectedRow = Color(0xFF1A1A1A)
-val CliBeatsHoveredRow = Color(0xFF2A2A2A)
-val CliBeatsHeader = Color(0xFF535353)
 val CliBeatsTextPrimary = Color(0xFFFFFFFF)
-val CliBeatsTextSecondary = Color(0xFFB3B3B3)
-val CliBeatsSubtext = Color(0xFF808080)
-val CliBeatsTextDisabled = Color(0xFF535353)
-val CliBeatsNowPlaying = Color(0xFF1DB954)
-val CliBeatsDisabled = Color(0xFF404040)
+val CliBeatsTextSecondary = Color(0xFFA0A0A0)
+val CliBeatsTextDisabled = Color(0xFF505050)
 val CliBeatsDivider = Color(0xFF2A2A2A)
-val CliBeatsBorderInactive = Color(0xFF333333)
-val CliBeatsBorderActive = Color(0xFF1DB954)
 val CliBeatsDestructive = Color(0xFFE53935)
 val CliBeatsDestructiveSurface = Color(0xFF3B1515)
 
@@ -33,8 +22,6 @@ val CliBeatsColorScheme = darkColorScheme(
     surfaceVariant = CliBeatsSurfaceVariant,
     primary = CliBeatsAccent,
     onPrimary = Color(0xFF000000),
-    secondaryContainer = CliBeatsSurfaceVariant,
-    onSecondaryContainer = CliBeatsAccent,
     onBackground = CliBeatsTextPrimary,
     onSurface = CliBeatsTextPrimary,
     onSurfaceVariant = CliBeatsTextSecondary,

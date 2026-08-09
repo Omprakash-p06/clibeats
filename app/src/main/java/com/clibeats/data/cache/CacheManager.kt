@@ -33,11 +33,6 @@ class CacheManager
             return if (file.exists() && file.length() > 0) file else null
         }
 
-        fun getCachedFileDirect(songId: String): File? {
-            val file = File(cacheDir, "$songId.mp3")
-            return if (file.exists() && file.length() > 0) file else null
-        }
-
         suspend fun saveTrackToCache(
             songId: String,
             inputStream: InputStream,

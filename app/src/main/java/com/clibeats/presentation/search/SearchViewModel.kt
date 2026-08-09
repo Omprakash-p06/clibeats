@@ -13,8 +13,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -34,27 +36,29 @@ class SearchViewModel
         val searchResults: StateFlow<SearchUiState> =
             _query
                 .debounce(DEBOUNCE_MS)
+                .filter { it.length >= MIN_QUERY_LENGTH }
                 .distinctUntilChanged()
                 .flatMapLatest { q ->
-                    flow {
-                        emit(SearchUiState.Loading)
-                        val searchQuery = if (q.length < MIN_QUERY_LENGTH) "" else q
-                        emit(
-                            when (val result = musicProvider.search(searchQuery)) {
-                                is ProviderResult.Success -> SearchUiState.Success(result.data)
-                                is ProviderResult.Error -> SearchUiState.Error(result.message)
-                                is ProviderResult.Loading -> SearchUiState.Loading
-                            },
-                        )
+                    if (q.isBlank()) {
+                        flowOf<SearchUiState>(SearchUiState.Idle)
+                    } else {
+                        flow {
+                            emit(SearchUiState.Loading)
+                            emit(
+                                when (val result = musicProvider.search(q)) {
+                                    is ProviderResult.Success -> SearchUiState.Success(result.data)
+                                    is ProviderResult.Error -> SearchUiState.Error(result.message)
+                                    is ProviderResult.Loading -> SearchUiState.Loading
+                                },
+                            )
+                        }
                     }
                 }
                 .stateIn(
                     scope = viewModelScope,
                     started = SharingStarted.WhileSubscribed(5_000L),
-                    initialValue = SearchUiState.Loading,
+                    initialValue = SearchUiState.Idle,
                 )
-
-        val uiState: StateFlow<SearchUiState> = searchResults
 
         fun onQueryChange(query: String) {
             _query.value = query
