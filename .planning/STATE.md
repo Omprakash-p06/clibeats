@@ -2,39 +2,41 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
+status: Awaiting next milestone
 stopped_at: Completed 03-04-PLAN.md
-last_updated: "2026-08-07T05:56:48.705Z"
+last_updated: "2026-08-09T21:38:16.269Z"
+last_activity: 2026-08-10
+last_activity_desc: Milestone v1.0 completed and archived
 progress:
   total_phases: 12
-  completed_phases: 9
+  completed_phases: 12
   total_plans: 44
-  completed_plans: 37
+  completed_plans: 44
 ---
 
 # STATE: CLIBeats
 
 ## Project Status
 
-- **Current Milestone**: Milestone 1 - Engineering Foundation & Core TUI Client
-- **Current Phase**: Phase 3 - Database & Local Persistence Layer
-- **Phase Status**: Phases 0, 1, 2 & 3 COMPLETED. Phase 3 execution complete (5/5 plans, incl. gap closure 03-05) — Room schemas, DAOs, repositories, AppPreferences, DAO integration tests, repository unit tests, ADR-003 and all verified gaps closed with a green whole-project quality gate. Re-verification in progress before final phase sign-off.
-- **Last Action**: Completed Plan 03-05 (gap closure) of Phase 3 — implemented Keystore-backed EncryptedSharedPreferences (MasterKey AES256_GCM) for AUTH_TOKEN with cloud-backup exclusions, corrected ADR-003, mapper upserts preserving localPath/cachedAt/createdAt, `@ForeignKey` CASCADE on playlist_song_cross_ref, and LIKE wildcard escaping; added AppPreferencesTest (6) and MapperTest (5); full quality gate green (`assembleDebug`, `testDebugUnitTest` 40/0, `ktlintCheck`, `detekt` all exit 0).
+- **Current Milestone**: Milestone 1 - Engineering Foundation & Core TUI Client ✅ SHIPPED v1.0
+- **Current Phase**: None — milestone v1.0 complete and archived
+- **Phase Status**: ALL 12 PHASES COMPLETED (44/44 plans, 109 unit tests green, production assembleRelease clean). Milestone v1.0 archived 2026-08-10 to `.planning/milestones/`.
+- **Last Action**: Milestone v1.0 completion — verified all 12 phases (generated VERIFICATION.md for 0, 1, 5; refreshed 9, 10, 11), archived roadmap/requirements/phases, updated MILESTONES.md, PROJECT.md, ROADMAP.md, and STATE.md.
 
 ## Phase Matrix
 
-- [x] **Phase 0**: Engineering Foundation & CI/CD Pipeline ← COMPLETED
-- [x] **Phase 1**: Architecture Core & Provider API Abstraction ← COMPLETED
-- [x] **Phase 2**: TUI Design System & Navigation Layout ← COMPLETED
+- [x] **Phase 0**: Engineering Foundation & CI/CD Pipeline ← COMPLETED 2026-08-04
+- [x] **Phase 1**: Architecture Core & Provider API Abstraction ← COMPLETED 2026-08-05
+- [x] **Phase 2**: TUI Design System & Navigation Layout ← COMPLETED 2026-08-05
 - [x] **Phase 3**: Database & Local Persistence Layer ← COMPLETED 2026-08-05
-- [ ] **Phase 4**: Playback Engine & Background Media Service
-- [ ] **Phase 5**: Provider Integration & Search
-- [ ] **Phase 6**: Playlists, Queue Management & Library
-- [ ] **Phase 7**: Caching, Downloads & Security Layer
-- [ ] **Phase 8**: Performance Budgets & Accessibility
-- [ ] **Phase 9**: Comprehensive Testing & Hardening Suite
-- [ ] **Phase 10**: Beta Validation & Telemetry
-- [ ] **Phase 11**: Production Release & Distribution
+- [x] **Phase 4**: Playback Engine & Background Media Service ← COMPLETED 2026-08-05
+- [x] **Phase 5**: Provider Integration & Search ← COMPLETED 2026-08-06
+- [x] **Phase 6**: Playlists, Queue Management & Library ← COMPLETED 2026-08-06
+- [x] **Phase 7**: Caching, Downloads & Security Layer ← COMPLETED 2026-08-06
+- [x] **Phase 8**: Performance Budgets & Accessibility ← COMPLETED 2026-08-06
+- [x] **Phase 9**: Comprehensive Testing & Hardening Suite ← COMPLETED 2026-08-06
+- [x] **Phase 10**: Beta Validation & Telemetry ← COMPLETED 2026-08-07
+- [x] **Phase 11**: Production Release & Distribution ← COMPLETED 2026-08-07
 
 ## Memory & Decisions
 
@@ -48,14 +50,29 @@ progress:
 - Plan 03-04 (Phase 3): Added 4 hermetic Room DAO integration tests (androidTest, `Room.inMemoryDatabaseBuilder`), a Mockito unit test for `SongRepositoryImpl` (mockito-kotlin 5.4.0 + mockito-core 5.12.0 in the version catalog), and ADR-003 (Room 2.6.1 + KSP, DataStore Preferences 1.1.1, Repository pattern). Added `androidx.test.ext:junit 1.2.1` so the `AndroidJUnit4`-run DAO tests compile. Full quality gate green — first clean detekt run on the data layer (reconciled 131 pre-existing issues via targeted `@Suppress`; config-refinement recommendation D-02 logged in deferred-items.md). Deferred D-01 ktlint violations fixed. Open item: run `connectedDebugAndroidTest` on CI/emulator (WINDOWS.md #2).
 - Plan 03-05 (Phase 3, gap closure): Closed all verified gaps from 03-VERIFICATION.md / 03-REVIEW.md. `AUTH_TOKEN` now stored in `EncryptedSharedPreferences` backed by a Keystore `MasterKey` (`AES256_GCM`, security-crypto 1.1.0-alpha06); DataStore kept for non-sensitive settings; `data_extraction_rules.xml` excludes both prefs stores from cloud backup/device transfer; ADR-003 corrected (the prior "Keystore-backed DataStore" claim was false). Mappers preserve `localPath`/`cachedAt`/`createdAt` on REPLACE upserts. `PlaylistSongCrossRef` gained `@ForeignKey CASCADE` + indices (schema 1.json regenerated). `SongDao` LIKE queries use `ESCAPE '\'` with an `escapeForLike()` helper. New tests: `AppPreferencesTest` (6), `MapperTest` (5).
 
+## Deferred Items
+
+Items acknowledged and deferred at milestone close on 2026-08-10:
+
+| Category | Item | Status |
+|----------|------|--------|
+| debug | recovery-01 | unknown |
+| debug | recovery-02 | unknown |
+| debug | recovery-06 | unknown |
+| debug | yt-po-token-investigation | unknown |
+| uat_gap | 00-UAT.md | unknown (0 pending scenarios) |
+| uat_gap | 01-UAT.md | unknown (0 pending scenarios) |
+| uat_gap | 02-UAT.md | testing (4 pending scenarios) |
+| deferred | Phase 03 detekt config refinement (D-02: duplicate Indentation rule, over-broad ForbiddenImport) | open |
+
 ## Next Action
 
-Execute Phase 4 (Playback Engine & Background Media Service) — a fresh-zero Phase 3 milestone boundary. Phase 3 delivered a fully-gated, encrypted Room persistence layer; run `/gsd-verify-work 3` then `/gsd-plan-phase 4` (or `/gsd-discuss-phase 4` first).
+Start the next milestone with `/gsd-new-milestone` — defines fresh requirements and roadmap for v1.1 (beta validation feedback, release pipeline polish, detekt config refinement, phase-02 UAT closeout).
 
 ## Session
 
-**Last session:** 2026-08-05T08:53:30.000Z
-**Stopped at:** Completed 03-04-PLAN.md
+**Last session:** 2026-08-10
+**Stopped at:** Milestone v1.0 archived and committed
 **Resume file:** None
 
 ## Performance Metrics
@@ -67,3 +84,14 @@ Execute Phase 4 (Playback Engine & Background Media Service) — a fresh-zero Ph
 | 03-03 | 6 | 5 tasks | 15 files |
 | 03-04 | 20 | 4 tasks | 6 files |
 | 03-05 | 20 | 5 tasks | 16 files |
+
+## Current Position
+
+Phase: Milestone v1.0 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-08-10 — Milestone v1.0 completed and archived
+
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone

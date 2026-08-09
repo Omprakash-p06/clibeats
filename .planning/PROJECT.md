@@ -1,7 +1,7 @@
 # PROJECT: CLIBeats
 
 ## What This Is
-CLIBeats is a free, production-grade Android music client inspired by terminal interfaces (TUI). It features a compact, text-dense layout with monospaced JetBrains Mono typography, high-contrast dark theme, persistent playback controls, and a provider-agnostic architecture supporting local media and external music sources.
+CLIBeats is a free, production-grade Android music client inspired by terminal interfaces (TUI). v1.0 ships a complete client: a compact, text-dense layout with monospaced JetBrains Mono typography, high-contrast dark theme, persistent playback controls, encrypted local persistence, offline caching, and a provider-agnostic architecture backed by the CliBeats Gateway for search and streaming.
 
 ## Vision
 Build a free, production-grade Android music client inspired by terminal interfaces (TUI) using a compact, keyboard-inspired UI while supporting multiple music providers through a modular abstraction layer.
@@ -16,7 +16,7 @@ Build a free, production-grade Android music client inspired by terminal interfa
 - **Atomic Verified Commits**: Always commit changes immediately upon completing and verifying any debug session or roadmap phase once all test cases pass.
 
 ## Requirements
-Project requirements are tracked in detail in `.planning/REQUIREMENTS.md`. Key functional requirement pillars:
+Project requirements are tracked in detail in `.planning/REQUIREMENTS.md` (fresh for the next milestone). Key functional requirement pillars:
 - `REQ-ARCH`: Modular Architecture & Provider Abstraction
 - `REQ-UI`: TUI Design System & Compact Components
 - `REQ-NAV`: Predictable Layout Shell & Navigation
@@ -24,7 +24,7 @@ Project requirements are tracked in detail in `.planning/REQUIREMENTS.md`. Key f
 - `REQ-AUDIO`: ExoPlayer Playback Engine & Background Service
 - `REQ-ENG`: Testing, CI/CD Pipeline & Static Analysis Gates
 
-**Validated in Phase 3 (2026-08-05):** `REQ-DATA` (Room persistence layer — 5 entities, 4 DAOs, repository pattern), `REQ-OFF`/encrypted storage (Keystore-backed `EncryptedSharedPreferences` for credentials + DataStore for settings + backup exclusions), and the `REQ-ENG` quality gates (compile, unit, ktlint, detekt, schema export all green).
+**Validated in v1.0 (2026-08-10):** All 12 engineering phases verified `passed` with 44/44 plans executed. Highlights: `REQ-DATA` (Room persistence — 5 entities, 4 DAOs, repository pattern), `REQ-AUDIO` (Media3 PlaybackService + PlayerAdapter), encrypted storage (Keystore-backed `EncryptedSharedPreferences` AES256_GCM + backup exclusions), provider abstraction evolved to the CliBeats Gateway architecture (ADR-012–ADR-020), offline cache/download layer, telemetry with PII redaction, and production release (R8, licenses, 109 unit tests green). Full requirement outcomes archived in `.planning/milestones/v1.0-REQUIREMENTS.md`.
 
 ## Definition of Done (DoD)
 Every PR, feature, and roadmap phase MUST satisfy the following quality criteria before merge/completion:
@@ -59,9 +59,23 @@ Every PR, feature, and roadmap phase MUST satisfy the following quality criteria
 - **Typography**: JetBrains Mono (Titles: 18sp, Body: 14sp, Metadata: 12sp)
 - **Spacing & Layout**: 8dp padding, 16dp margins, 48dp list row height, square album artwork
 
-## Milestone 1 Progress
-- `[x]` **Phase 0**: Engineering Foundation & CI/CD Pipeline (Completed)
-- `[x]` **Phase 1**: Architecture Core & Provider API Abstraction (Completed)
+## Current State (v1.0 shipped 2026-08-10)
+
+- ✅ **Milestone v1.0 shipped**: 12/12 phases verified `passed`, 44/44 plans, 109 unit tests green, production `assembleRelease` clean.
+- **Provider architecture**: CliBeats Gateway (Fastify + Redis, provider plugin architecture ADR-012–ADR-014, auth/session ADR-015, canonical models/errors/events ADR-016–018, config ADR-019, API versioning ADR-020) serves search/streaming; Android client consumes it via `GatewayMusicProvider`/`GatewayApi`.
+- **Release artifacts**: `docs/RELEASE_NOTES.md`, `docs/USER_GUIDE.md`, `docs/LICENSES.md`, ADR-011, production signing + R8.
+- **Known deferred**: 4 open debug sessions, 4 pending phase-02 UAT scenarios, detekt config refinement (D-02) — see `.planning/STATE.md` Deferred Items.
+
+## Next Milestone Goals
+
+- Validate v1.0 in the field: beta feedback, crash telemetry review, SUS scoring.
+- Polish release pipeline: real keystore signing (non-debug fallback), Play/APK distribution, automated release evidence.
+- Refine `config/detekt/detekt.yml` (duplicate Indentation rule, over-broad ForbiddenImport) to remove per-file suppressions.
+- Close out remaining UAT scenarios for the TUI design system (phase 02).
+
+## Milestone 1 Progress (archived in `.planning/milestones/v1.0-ROADMAP.md`)
+- `[x]` **Phase 0**: Engineering Foundation & CI/CD Pipeline (Completed 2026-08-04)
+- `[x]` **Phase 1**: Architecture Core & Provider API Abstraction (Completed 2026-08-05)
 - `[x]` **Phase 2**: TUI Design System & Navigation Layout (Completed 2026-08-05)
 - `[x]` **Phase 3**: Database & Local Persistence Layer (Completed 2026-08-05) — Room schemas, DAOs, repositories, DataStore + Keystore-backed EncryptedSharedPreferences (MasterKey AES256_GCM), DAO/repo tests, ADR-003. Gap closure (03-05) verified; 7/7 must-haves.
 - `[x]` **Phase 4**: Playback Engine & Background Media Service (Completed 2026-08-05) — AndroidX Media3 (1.4.1), PlaybackService (MediaSessionService), PlayerAdapter (ExoPlayer), PlaybackRepository, PlayerViewModel, MainLayout PlayerBar state binding, ADR-004. 7/7 must-haves verified.
@@ -75,4 +89,7 @@ Every PR, feature, and roadmap phase MUST satisfy the following quality criteria
 
 ## Documentation Context
 - Original specs: `docs/01_Design_Brief.docx` through `docs/06_User_Research_Report_Template.docx`
-- Architecture Decision Records: `docs/adr/`
+- Architecture Decision Records: `docs/adr/` (ADR-001 through ADR-020)
+
+---
+*Last updated: 2026-08-10 after v1.0 milestone*
