@@ -16,9 +16,15 @@ import com.clibeats.domain.model.Track
 import com.clibeats.playback.service.PlaybackService
 import com.clibeats.util.DiagnosticLogger
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -58,6 +64,24 @@ class PlayerAdapter
         val queueFlow: StateFlow<List<Track>> = _queueFlow.asStateFlow()
 
         private val trackList = mutableListOf<Track>()
+        private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+        private var tickerJob: Job? = null
+
+        private fun startPositionTicker() {
+            tickerJob?.cancel()
+            tickerJob =
+                scope.launch {
+                    while (player.isPlaying) {
+                        updateState()
+                        delay(POLL_INTERVAL_MS)
+                    }
+                }
+        }
+
+        private fun stopPositionTicker() {
+            tickerJob?.cancel()
+            tickerJob = null
+        }
 
         init {
             player.addListener(
@@ -65,6 +89,9 @@ class PlayerAdapter
                     override fun onIsPlayingChanged(isPlaying: Boolean) {
                         if (isPlaying) {
                             DiagnosticLogger.logMediaPlaying("player")
+                            startPositionTicker()
+                        } else {
+                            stopPositionTicker()
                         }
                         updateState()
                     }
@@ -240,5 +267,9 @@ class PlayerAdapter
                         .build(),
                 )
                 .build()
+        }
+
+        companion object {
+            private const val POLL_INTERVAL_MS = 500L
         }
     }
