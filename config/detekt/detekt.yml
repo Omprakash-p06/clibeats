@@ -10,6 +10,12 @@ formatting:
   active: true
   Indentation:
     active: false
+  # Import ordering is enforced by ktlint (ktlintCheck), whose ordering rule
+  # disagrees with detekt's duplicated ImportOrdering (e.g. javax vs kotlinx
+  # placement). Keeping both active would make the formatting gates mutually
+  # incompatible, so the ktlint-owned rule stays authoritative here.
+  ImportOrdering:
+    active: false
 
 complexity:
   active: true

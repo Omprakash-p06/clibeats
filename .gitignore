@@ -5,6 +5,13 @@
 /.idea/
 .DS_Store
 /build/
+# Android / Gradle
+*.iml
+.gradle/
+/local.properties
+/.idea/
+.DS_Store
+/build/
 /captures
 .externalNativeBuild
 .cxx
@@ -12,4 +19,5 @@
 !debug.keystore
 
 # Build output
+app/build/
 app/build/.kotlin/
