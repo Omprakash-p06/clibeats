@@ -5,6 +5,7 @@ package com.clibeats.data.provider
 import com.clibeats.data.provider.api.InnerTubeApi
 import com.clibeats.data.provider.dto.PlayerResponse
 import com.clibeats.data.provider.dto.SearchResponse
+import com.clibeats.data.provider.youtube.NewPipeExtractorResolver
 import com.clibeats.data.provider.youtube.PoTokenGenerator
 import com.clibeats.data.provider.youtube.StreamCacheManager
 import com.clibeats.domain.provider.ProviderResult
@@ -20,6 +21,7 @@ class YouTubeMusicProviderTest {
     private lateinit var api: InnerTubeApi
     private lateinit var poTokenGenerator: PoTokenGenerator
     private lateinit var streamCacheManager: StreamCacheManager
+    private lateinit var newPipeExtractorResolver: NewPipeExtractorResolver
     private lateinit var provider: YouTubeMusicProvider
 
     @Before
@@ -27,7 +29,8 @@ class YouTubeMusicProviderTest {
         api = mock()
         poTokenGenerator = mock()
         streamCacheManager = StreamCacheManager()
-        provider = YouTubeMusicProvider(api, poTokenGenerator, streamCacheManager)
+        newPipeExtractorResolver = mock()
+        provider = YouTubeMusicProvider(api, poTokenGenerator, streamCacheManager, newPipeExtractorResolver)
     }
 
     @Test

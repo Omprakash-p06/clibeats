@@ -28,7 +28,7 @@ retrofit = "2.11.0"
 retrofitKotlinxConverter = "1.0.0"
 kotlinxSerializationJson = "1.7.1"
 coil = "2.7.0"
-newpipeextractor = "v0.24.6"
+newpipeextractor = "v0.26.4"
 
 [libraries]
 newpipe-extractor = { group = "com.github.TeamNewPipe", name = "NewPipeExtractor", version.ref = "newpipeextractor" }

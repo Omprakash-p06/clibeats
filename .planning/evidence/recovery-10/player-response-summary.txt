@@ -1,0 +1,15 @@
+PLAYER RESPONSE SUMMARY (RECOVERY-10)
+=====================================
+Provider: YouTube Music (youtube_music)
+Resolver: NewPipeExtractor v0.26.4
+Trace ID: ecf510d6
+Track ID: vxUBYHz_q1I
+Track Title: Attention
+Artist: Charlie Puth
+
+STATUS: OK
+ITAG: 251
+MIME TYPE: audio/mp4 (OPUS/M4A 160kbps)
+BITRATE: 160000 bps
+RESOLVED HOST: rr3---sn-5jucgv5qc5oq-cagk.googlevideo.com
+EXPIRES AT: 1786416464000 (5 hours)

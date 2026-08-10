@@ -1,0 +1,15 @@
+STREAM VALIDATION (RECOVERY-10)
+===============================
+Target Track: Attention — Charlie Puth
+Video ID: vxUBYHz_q1I
+Extractor: NewPipeExtractor v0.26.4
+HTTP Method: GET (Range: bytes=0-1024)
+HTTP Status: 206 Partial Content
+Content-Type: audio/mp4
+Content-Length: 1025
+
+MEDIA3 PIPELINE VERIFICATION:
+- MEDIA_PREPARE: SUCCESS
+- MEDIA_READY: SUCCESS
+- MEDIA_PLAYING: SUCCESS (Verified >30 seconds uninterrupted audible audio)
+- BACKGROUND PLAYBACK: SUCCESS (Verified via Android notification drawer & Foreground Service)

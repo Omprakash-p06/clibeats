@@ -112,32 +112,54 @@ class PoTokenGenerator
                                 view: WebView?,
                                 url: String?,
                             ) {
-                                // Extract botguard / poToken from page context if present
-                                val jsExtractor =
-                                    """
-                                    (function() {
-                                        try {
-                                            var visitorData = window.ytInitialData?.responseContext?.webResponseContextExtensionData?.ytGスカ?.visitorData || "";
-                                            var token = window.gapi?.auth?.getToken()?.access_token || "";
-                                            window.PoTokenBridge.onTokenGenerated(token, visitorData);
-                                        } catch (e) {
-                                            window.PoTokenBridge.onTokenGenerated("", "");
+                                val handler = Handler(Looper.getMainLooper())
+                                var attempts = 0
+                                val maxAttempts = 20 // 20 * 500ms = 10s max
+
+                                val pollRunnable =
+                                    object : Runnable {
+                                        override fun run() {
+                                            if (!deferred.isActive) return
+                                            attempts++
+
+                                            val jsExtractor =
+                                                """
+                                                (function() {
+                                                    try {
+                                                        var v = (window.ytcfg && window.ytcfg.get ? window.ytcfg.get('VISITOR_DATA') : '') ||
+                                                                (window.ytcfg && window.ytcfg.data_ ? window.ytcfg.data_.VISITOR_DATA : '') || '';
+                                                        var t = (window.ytcfg && window.ytcfg.get ? window.ytcfg.get('PO_TOKEN') : '') ||
+                                                                (window.ytcfg && window.ytcfg.data_ ? window.ytcfg.data_.PO_TOKEN : '') || '';
+                                                        window.PoTokenBridge.onTokenGenerated(t || '', v || '');
+                                                    } catch (e) {
+                                                        window.PoTokenBridge.onTokenGenerated('', '');
+                                                    }
+                                                })();
+                                                """.trimIndent()
+
+                                            view?.evaluateJavascript(jsExtractor, null)
+
+                                            if (attempts < maxAttempts && deferred.isActive) {
+                                                handler.postDelayed(this, 500L)
+                                            } else if (attempts >= maxAttempts && deferred.isActive) {
+                                                deferred.complete(null)
+                                            }
                                         }
-                                    })();
-                                    """.trimIndent()
-                                view?.evaluateJavascript(jsExtractor, null)
+                                    }
+
+                                handler.post(pollRunnable)
                             }
                         }
 
-                    val targetUrl = "https://www.youtube.com/embed/" + (hint ?: "jNQXAC9IVRw")
+                    val targetUrl = "https://www.youtube.com/embed/" + (hint ?: "NJAv_7lHUIU")
                     webView.loadUrl(targetUrl)
 
-                    // Handler fallback after 5s to avoid hanging if JS evaluate fails
+                    // Overall timeout fallback
                     Handler(Looper.getMainLooper()).postDelayed({
                         if (deferred.isActive) {
                             deferred.complete(null)
                         }
-                    }, 5000L)
+                    }, tokenTimeoutMs)
                 } catch (e: Exception) {
                     DiagnosticLogger.logError(traceId, "PO_TOKEN_FAILED", e.message ?: "WebView error")
                     if (deferred.isActive) {

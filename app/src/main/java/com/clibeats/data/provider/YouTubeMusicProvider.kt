@@ -13,6 +13,7 @@ import com.clibeats.data.provider.api.InnerTubeApi
 import com.clibeats.data.provider.dto.PlayerRequest
 import com.clibeats.data.provider.dto.SearchRequest
 import com.clibeats.data.provider.mapper.toTrackList
+import com.clibeats.data.provider.youtube.NewPipeExtractorResolver
 import com.clibeats.data.provider.youtube.PoTokenGenerator
 import com.clibeats.data.provider.youtube.StreamCacheManager
 import com.clibeats.data.provider.youtube.StreamUrlDeobfuscator
@@ -34,6 +35,7 @@ class YouTubeMusicProvider
         private val api: InnerTubeApi,
         private val poTokenGenerator: PoTokenGenerator,
         private val streamCacheManager: StreamCacheManager,
+        private val newPipeExtractorResolver: NewPipeExtractorResolver,
     ) : MusicProvider {
         override val providerId: String = "youtube_music"
         override val displayName: String = "YouTube Music"
@@ -90,10 +92,29 @@ class YouTubeMusicProvider
                 return ProviderResult.Success(cached.url)
             }
 
-            // 2. Fetch PO-token via WebView BotGuard
-            val poTokenResult = poTokenGenerator.getPoToken(traceId, rawId)
+            // 2. Primary: NewPipeExtractor v0.26.4 maintained extraction
+            val newPipeExtracted = newPipeExtractorResolver.resolveStream(rawId, traceId)
+            if (newPipeExtracted != null) {
+                DiagnosticLogger.logStreamFormatSelected(
+                    traceId = traceId,
+                    itag = newPipeExtracted.itag,
+                    mimeType = newPipeExtracted.mimeType,
+                    bitrate = newPipeExtracted.bitrate,
+                )
+                DiagnosticLogger.logStreamUrlResolved(
+                    traceId = traceId,
+                    host = newPipeExtracted.host,
+                    itag = newPipeExtracted.itag,
+                    mimeType = newPipeExtracted.mimeType,
+                    expiresAtMs = newPipeExtracted.expiresAtMs,
+                )
 
-            // 3. Fallback client strategy iteration
+                streamCacheManager.put(providerId, rawId, newPipeExtracted)
+                return ProviderResult.Success(newPipeExtracted.url)
+            }
+
+            // 3. Fallback: InnerTube player API with PO-token
+            val poTokenResult = poTokenGenerator.getPoToken(traceId, rawId)
             var lastErrorMessage = "Unknown player error"
             for (clientConfig in YouTubeClientStrategy.FALLBACK_CHAIN) {
                 DiagnosticLogger.logPlayerRequest(traceId, clientConfig.name, rawId)
