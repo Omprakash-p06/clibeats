@@ -1,117 +1,330 @@
-# CLIBeats 🎵
+# CLIBeats
 
-> A free, production-grade Android music client inspired by terminal interfaces (TUI), featuring a text-dense monospaced aesthetic and provider-agnostic architecture.
+> A free, open-source Android music player with a terminal-inspired interface and direct on-device music streaming.
 
-[![CI Pipeline](https://github.com/Omprakash-p06/clibeats/actions/workflows/ci.yml/badge.svg)](https://github.com/Omprakash-p06/clibeats/actions/workflows/ci.yml)
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.0.21-purple.svg)](https://kotlinlang.org/)
-[![Android](https://img.shields.io/badge/Android-SDK%2034-green.svg)](https://developer.android.com)
+[![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.x-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org/)
+[![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-UI-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/compose)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
----
+CLIBeats is an experimental open-source Android music player designed around three principles:
 
-## 📌 Overview
+- **No advertisements**
+- **No user accounts or application-side user tracking**
+- **A fast, keyboard-terminal-inspired interface** rather than a conventional streaming-app design
 
-**CLIBeats** reimagines mobile music streaming with terminal-inspired design principles: high contrast, monospaced typography, flat zero-radius surfaces, and zero decorative animations or blurs. Under the hood, CLIBeats is built with strict Clean Architecture boundaries and a modular multi-provider backend.
-
----
-
-## 🎨 Visual Aesthetics & Design System
-
-- **Monochrome Dark Theme**: Background (`#0D0D0D`), Surface (`#151515`), Spotify Green Accent (`#1DB954`), Primary Text (`#FFFFFF`).
-- **Typography**: Bundled **JetBrains Mono** font hierarchy across all UI components.
-- **Flat Geometry**: 0dp corner radius globally — no rounded bubble cards or glassmorphism.
-- **Dense Components**: 48dp list rows with 32x32dp square album artwork and persistent 64dp player bar.
+It combines a dense monochrome UI with local persistence, background playback, playlists, queue management, and a provider-agnostic music architecture.
 
 ---
 
-## 🏗 Architecture & Tech Stack
+## Screenshots
 
-CLIBeats adheres to **MVVM + Clean Architecture** (`Presentation` ➔ `Domain` ➔ `Data`):
+<p align="center">
+  <img src="docs/evidence/final-validation/search_attention.png" width="220" alt="Search Results">
+  <img src="docs/evidence/final-validation/playing_attention.png" width="220" alt="Mini Player">
+  <img src="docs/evidence/recovery-10/04_full_player.png" width="220" alt="Full Player View">
+  <img src="docs/evidence/recovery-10/05_notification.png" width="220" alt="Notification Controls">
+</p>
 
+---
+
+## Features
+
+### Playback
+- Direct on-device stream resolution
+- Background playback
+- Media notification controls
+- Play / pause
+- Seek
+- Next / previous
+- Queue management
+- Media3 / ExoPlayer playback engine
+
+### Music Discovery
+- Music search
+- Track metadata
+- Album artwork
+- Artist and album information
+- Provider-independent track model
+
+### Library
+- Local playlists
+- Queue persistence
+- Playback history
+- Cached metadata
+- Local music support
+- Portable playlist export/import
+
+### Interface
+- Terminal-inspired visual language
+- Monospaced typography
+- Dense information layout
+- Dark monochrome palette
+- Flat surfaces
+- Minimal animation
+- Adaptive Material 3 UI
+
+---
+
+## Architecture
+
+CLIBeats uses a layered architecture designed to keep the application independent from any individual music provider.
+
+```text
+┌──────────────────────────────────────────────┐
+│                 Presentation                 │
+│                                              │
+│     Jetpack Compose · ViewModels · UI        │
+└──────────────────────┬───────────────────────┘
+                       │
+┌──────────────────────▼───────────────────────┐
+│                   Domain                     │
+│                                              │
+│  MusicProvider · Track · Album · Playlist    │
+└──────────────────────┬───────────────────────┘
+                       │
+┌──────────────────────▼───────────────────────┐
+│                    Data                      │
+│                                              │
+│  Providers · Repositories · Room · Cache     │
+└──────────────────────┬───────────────────────┘
+                       │
+              ┌────────▼────────┐
+              │ Playback Engine │
+              │ Media3/ExoPlayer│
+              └─────────────────┘
 ```
-┌────────────────────────────────────────────────────────┐
-│               Presentation Layer (UI)                  │
-│    Jetpack Compose · Material3 Adaptive · MainLayout   │
-└──────────────────────────┬─────────────────────────────┘
-                           │
-┌──────────────────────────▼─────────────────────────────┐
-│                 Domain Layer (Core)                    │
-│   MusicProvider Contract · Track / Playlist Models     │
-└──────────────────────────▲─────────────────────────────┘
-                           │
-┌──────────────────────────┴─────────────────────────────┐
-│                 Data Layer (Storage)                   │
-│   Room Database · DataStore · EncryptedSharedPreferences│
-└────────────────────────────────────────────────────────┘
+
+### Provider Abstraction
+
+Music sources implement the common `MusicProvider` contract.
+
+```text
+MusicProvider
+├── search()
+├── trending()
+├── getTrack()
+├── stream()
+├── playlists()
+└── queue()
 ```
 
-- **Platform**: Android (Min SDK 26, Target SDK 34)
-- **UI Framework**: Jetpack Compose (Material3 + Navigation Suite)
-- **Audio Engine**: AndroidX Media3 / ExoPlayer with background foreground service
-- **Database**: Room 2.6 with KSP (Kotlin Symbol Processing) & JSON Schema Export
-- **Security & Persistence**: `EncryptedSharedPreferences` (AES256_GCM via Android Keystore `MasterKey`) + DataStore Preferences
-- **Dependency Injection**: Hilt / Dagger 2.51
-- **Testing & Screenshot Baselines**: JUnit 4, Mockito, Paparazzi screenshot regression suite
-- **Static Analysis & Linting**: Detekt, ktlint, Android Lint
+This keeps provider-specific extraction and API logic isolated from the rest of the application.
 
 ---
 
-## ⚙️ Building & Running Locally
+## Technology
 
-### Prerequisites
-- JDK 17
-- Android SDK 34 (Android 14)
-- Gradle 8.5+
+| Component | Technology |
+|---|---|
+| Language | Kotlin |
+| UI | Jetpack Compose |
+| Design | Material 3 |
+| Architecture | MVVM + Clean Architecture |
+| Dependency Injection | Hilt / Dagger |
+| Database | Room |
+| Preferences | DataStore |
+| Secure Storage | Android Keystore |
+| Playback | AndroidX Media3 / ExoPlayer |
+| Networking | Retrofit + OkHttp |
+| Testing | JUnit, Mockito, Paparazzi |
+| Static Analysis | Detekt, ktlint, Android Lint |
+| Build | Gradle + Kotlin DSL |
 
-### Build Commands
+---
 
-```powershell
-# Clone repository
+## Requirements
+
+* Android 8.0 / API 26 or newer
+* JDK 17
+* Android SDK 34
+* Gradle 8.5+
+
+---
+
+## Build From Source
+
+Clone the repository:
+
+```bash
 git clone https://github.com/Omprakash-p06/clibeats.git
 cd clibeats
+```
 
-# Run unit tests
+Run unit tests:
+
+```powershell
 .\gradlew.bat testDebugUnitTest
+```
 
-# Run Paparazzi screenshot verification
+Run screenshot tests:
+
+```powershell
 .\gradlew.bat verifyPaparazziDebug
+```
 
-# Run static analysis & formatting checks
+Run static analysis:
+
+```powershell
 .\gradlew.bat ktlintCheck
 .\gradlew.bat detekt
+```
 
-# Compile Debug APK
+Build a debug APK:
+
+```powershell
 .\gradlew.bat assembleDebug
 ```
 
----
+The generated APK will be located under:
 
-## 📋 Quality Gates & Definition of Done (DoD)
-
-Every commit and pull request must pass 10 automated quality criteria before merge:
-
-1. `✓ Builds` — Clean Gradle compile with 0 errors.
-2. `✓ Lint` — Android Lint passes with 0 error-level issues.
-3. `✓ Static Analysis` — Detekt passes with 0 critical issues.
-4. `✓ Formatting` — ktlint formatting passes cleanly.
-5. `✓ Unit Tests` — 100% pass rate.
-6. `✓ Screenshot Tests` — Paparazzi snapshot baselines verified.
-7. `✓ Accessibility` — Screen reader labels and 48dp touch targets verified.
-8. `✓ Performance` — Cold start <2s budget.
-9. `✓ ADR` — Architecture Decision Records updated in `docs/adr/`.
-10. `✓ CI` — GitHub Actions workflow green (`.github/workflows/ci.yml`).
+```text
+app/build/outputs/apk/debug/
+```
 
 ---
 
-## 📜 Architecture Decision Records (ADRs)
+## Development
 
-- [ADR-000: Architecture Decision Record Template](docs/adr/ADR-000-template.md)
-- [ADR-001: Clean Architecture Layering & Hilt DI Strategy](docs/adr/ADR-001-clean-architecture-hilt.md)
-- [ADR-002: MusicProvider Abstraction Layer](docs/adr/ADR-002-music-provider-abstraction.md)
-- [ADR-003: Encrypted Storage & Local Persistence Strategy](docs/adr/ADR-003-encrypted-storage-local-persistence.md)
+Run the complete local verification suite:
+
+```powershell
+.\gradlew.bat testDebugUnitTest
+.\gradlew.bat verifyPaparazziDebug
+.\gradlew.bat ktlintCheck
+.\gradlew.bat detekt
+.\gradlew.bat lintDebug
+.\gradlew.bat assembleDebug
+```
+
+For release verification:
+
+```powershell
+.\gradlew.bat assembleRelease
+```
 
 ---
 
-## 📄 License
+## Project Structure
 
-Distributed under the MIT License. See `LICENSE` for details.
+```text
+app/
+├── src/main/java/com/clibeats/
+│   ├── data/
+│   │   ├── provider/
+│   │   ├── repository/
+│   │   ├── database/
+│   │   └── cache/
+│   │
+│   ├── domain/
+│   │   ├── model/
+│   │   └── provider/
+│   │
+│   ├── playback/
+│   ├── ui/
+│   └── di/
+│
+├── src/test/
+└── src/main/
+```
+
+Detailed architecture documentation is maintained separately in:
+
+```text
+docs/
+├── adr/
+└── architecture/
+```
+
+---
+
+## Quality
+
+CLIBeats uses automated checks for:
+
+* Compilation
+* Unit tests
+* Android Lint
+* Detekt
+* ktlint
+* Paparazzi screenshot regression tests
+* Debug APK builds
+* Release APK builds
+* CI verification
+
+The current verified playback implementation has been tested with:
+
+* Attention — Charlie Puth
+* Blinding Lights — The Weeknd
+* Believer — Imagine Dragons
+* Wonderwall — Oasis
+* Tum Hi Ho — Arijit Singh
+* Kesariya — Arijit Singh
+
+The verified runtime path performs stream resolution directly on the Android device and does not require a separate application backend.
+
+---
+
+## Current Status
+
+**Functional prototype / active development**
+
+The core playback pipeline is operational, but CLIBeats should still be considered an evolving project.
+
+Music provider implementations depend on third-party services and extraction mechanisms that can change independently of CLIBeats.
+
+Provider-specific failures may therefore require future updates.
+
+---
+
+## Privacy
+
+CLIBeats is designed around local-first operation.
+
+The application does not require a CLIBeats account or a CLIBeats-owned backend to operate.
+
+Library data, playlists, queue state, and playback history are stored locally on the device.
+
+Third-party music providers may still receive network requests required to search for and retrieve music. Their own policies therefore apply independently of CLIBeats.
+
+---
+
+## Legal Notice
+
+CLIBeats is an independent open-source software project.
+
+It does not provide or host music files itself.
+
+Music availability and access are determined by the configured music provider.
+
+Users are responsible for complying with the terms of service, copyright laws, and other applicable laws in their jurisdiction when using third-party providers.
+
+---
+
+## Documentation
+
+* [Architecture](docs/architecture/)
+* [Architecture Decision Records](docs/adr/)
+* [License](LICENSE)
+
+---
+
+## Contributing
+
+Contributions are welcome.
+
+Before submitting a pull request:
+
+1. Keep provider-specific logic isolated from the domain layer.
+2. Add or update tests for behavioral changes.
+3. Run the local quality gates.
+4. Keep UI changes consistent with the existing design system.
+5. Do not introduce backend dependencies without an explicit architectural decision.
+
+---
+
+## License
+
+CLIBeats is distributed under the MIT License.
+
+See [LICENSE](LICENSE) for the complete license text.
