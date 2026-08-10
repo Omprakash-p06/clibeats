@@ -5,6 +5,8 @@ package com.clibeats.data.provider
 import com.clibeats.data.provider.api.InnerTubeApi
 import com.clibeats.data.provider.dto.PlayerResponse
 import com.clibeats.data.provider.dto.SearchResponse
+import com.clibeats.data.provider.youtube.PoTokenGenerator
+import com.clibeats.data.provider.youtube.StreamCacheManager
 import com.clibeats.domain.provider.ProviderResult
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
@@ -16,12 +18,16 @@ import org.mockito.kotlin.whenever
 
 class YouTubeMusicProviderTest {
     private lateinit var api: InnerTubeApi
+    private lateinit var poTokenGenerator: PoTokenGenerator
+    private lateinit var streamCacheManager: StreamCacheManager
     private lateinit var provider: YouTubeMusicProvider
 
     @Before
     fun setUp() {
         api = mock()
-        provider = YouTubeMusicProvider(api)
+        poTokenGenerator = mock()
+        streamCacheManager = StreamCacheManager()
+        provider = YouTubeMusicProvider(api, poTokenGenerator, streamCacheManager)
     }
 
     @Test
@@ -80,13 +86,6 @@ class YouTubeMusicProviderTest {
             val result = provider.queue()
             assertThat(result).isInstanceOf(ProviderResult.Success::class.java)
             assertThat((result as ProviderResult.Success).data).isEmpty()
-        }
-
-    @Test
-    fun `getTrack returns Error as Phase 5 stub`() =
-        runTest {
-            val result = provider.getTrack("abc")
-            assertThat(result).isInstanceOf(ProviderResult.Error::class.java)
         }
 
     @Test

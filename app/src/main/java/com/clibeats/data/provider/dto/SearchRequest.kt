@@ -1,5 +1,8 @@
+@file:Suppress("ForbiddenImport")
+
 package com.clibeats.data.provider.dto
 
+import com.clibeats.data.provider.youtube.YouTubeClientConfig
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -17,35 +20,17 @@ data class SearchRequest(
             filterSongs: Boolean = true,
         ): SearchRequest =
             SearchRequest(
-                context = InnerTubeContext.default(),
+                context =
+                    InnerTubeContext.forClient(
+                        YouTubeClientConfig(
+                            name = "WEB_REMIX",
+                            clientName = "WEB_REMIX",
+                            clientVersion = "1.20240618.01.00",
+                            userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                        ),
+                    ),
                 query = query,
                 params = if (filterSongs) SONGS_FILTER_PARAM else null,
             )
     }
 }
-
-@Serializable
-data class InnerTubeContext(
-    val client: InnerTubeClient,
-) {
-    companion object {
-        fun default(): InnerTubeContext =
-            InnerTubeContext(
-                client =
-                    InnerTubeClient(
-                        clientName = "WEB_REMIX",
-                        clientVersion = "1.20240101.01.00",
-                        hl = "en",
-                        gl = "US",
-                    ),
-            )
-    }
-}
-
-@Serializable
-data class InnerTubeClient(
-    val clientName: String,
-    val clientVersion: String,
-    val hl: String = "en",
-    val gl: String = "US",
-)

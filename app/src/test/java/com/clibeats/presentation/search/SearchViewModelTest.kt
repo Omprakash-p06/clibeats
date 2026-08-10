@@ -1,12 +1,17 @@
+@file:Suppress("ForbiddenImport")
+
 package com.clibeats.presentation.search
 
+import com.clibeats.data.preferences.AppPreferences
 import com.clibeats.domain.model.Track
 import com.clibeats.domain.provider.MusicProvider
+import com.clibeats.domain.provider.ProviderRegistry
 import com.clibeats.domain.provider.ProviderResult
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -25,13 +30,23 @@ import org.mockito.kotlin.whenever
 class SearchViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var musicProvider: MusicProvider
+    private lateinit var providerRegistry: ProviderRegistry
+    private lateinit var appPreferences: AppPreferences
     private lateinit var viewModel: SearchViewModel
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         musicProvider = mock()
-        viewModel = SearchViewModel(musicProvider)
+        providerRegistry = mock()
+        appPreferences = mock()
+
+        whenever(providerRegistry.getProvider(any())).thenReturn(musicProvider)
+        whenever(providerRegistry.defaultProvider()).thenReturn(musicProvider)
+        whenever(providerRegistry.providers).thenReturn(listOf(musicProvider))
+        whenever(appPreferences.activeProviderId).thenReturn(flowOf("audius"))
+
+        viewModel = SearchViewModel(providerRegistry, appPreferences)
     }
 
     @After
@@ -71,14 +86,14 @@ class SearchViewModelTest {
             }
             val fakeTrack =
                 Track(
-                    id = "abc",
+                    id = "internet_archive:wonderwall",
                     title = "Wonderwall",
                     artist = "Oasis",
                     album = "(What's The Story) Morning Glory?",
                     durationMs = 259_000L,
                     artworkUrl = null,
                     streamUrl = null,
-                    providerId = "youtube_music",
+                    providerId = "internet_archive",
                 )
             whenever(musicProvider.search(any(), any())).thenReturn(
                 ProviderResult.Success(listOf(fakeTrack)),

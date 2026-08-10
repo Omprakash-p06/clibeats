@@ -145,3 +145,38 @@ fun SongTableRow(
         )
     }
 }
+
+@Suppress("FunctionNaming")
+@Composable
+fun SongTableHeader(modifier: Modifier = Modifier) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "#",
+                style = MaterialTheme.typography.labelSmall,
+                color = CliBeatsTextSecondary,
+                modifier = Modifier.width(28.dp),
+                textAlign = TextAlign.Center,
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "TITLE & ARTIST",
+                style = MaterialTheme.typography.labelSmall,
+                color = CliBeatsTextSecondary,
+                modifier = Modifier.weight(1f),
+            )
+            Text(
+                text = "TIME",
+                style = MaterialTheme.typography.labelSmall,
+                color = CliBeatsTextSecondary,
+                modifier = Modifier.padding(end = 16.dp),
+            )
+        }
+        HorizontalDivider(thickness = 1.dp, color = CliBeatsDivider)
+    }
+}

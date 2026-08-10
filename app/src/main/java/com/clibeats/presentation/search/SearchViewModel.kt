@@ -1,10 +1,11 @@
-@file:Suppress("ktlint:standard:function-naming")
+@file:Suppress("ForbiddenImport", "ktlint:standard:function-naming")
 
 package com.clibeats.presentation.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.clibeats.domain.provider.MusicProvider
+import com.clibeats.data.preferences.AppPreferences
+import com.clibeats.domain.provider.ProviderRegistry
 import com.clibeats.domain.provider.ProviderResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -27,10 +28,23 @@ private const val MIN_QUERY_LENGTH = 2
 class SearchViewModel
     @Inject
     constructor(
-        private val musicProvider: MusicProvider,
+        private val providerRegistry: ProviderRegistry,
+        private val appPreferences: AppPreferences,
     ) : ViewModel() {
         private val _query = MutableStateFlow("")
         val query: StateFlow<String> = _query.asStateFlow()
+
+        private val activeProviderId =
+            appPreferences.activeProviderId.map { it ?: ProviderRegistry.DEFAULT_PROVIDER_ID }
+
+        val activeProviderName: StateFlow<String> =
+            activeProviderId
+                .map { id -> providerRegistry.getProvider(id)?.displayName ?: id }
+                .stateIn(
+                    scope = viewModelScope,
+                    started = SharingStarted.WhileSubscribed(5_000L),
+                    initialValue = "",
+                )
 
         @Suppress("OPT_IN_USAGE")
         val searchResults: StateFlow<SearchUiState> =
@@ -39,13 +53,12 @@ class SearchViewModel
                 .filter { it.length >= MIN_QUERY_LENGTH }
                 .distinctUntilChanged()
                 .flatMapLatest { q ->
-                    if (q.isBlank()) {
-                        flowOf<SearchUiState>(SearchUiState.Idle)
-                    } else {
+                    activeProviderId.flatMapLatest { id ->
+                        val provider = providerRegistry.getProvider(id) ?: providerRegistry.defaultProvider()
                         flow {
                             emit(SearchUiState.Loading)
                             emit(
-                                when (val result = musicProvider.search(q)) {
+                                when (val result = provider.search(q)) {
                                     is ProviderResult.Success -> SearchUiState.Success(result.data)
                                     is ProviderResult.Error -> SearchUiState.Error(result.message)
                                     is ProviderResult.Loading -> SearchUiState.Loading

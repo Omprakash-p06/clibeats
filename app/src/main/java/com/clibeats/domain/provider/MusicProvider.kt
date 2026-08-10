@@ -12,6 +12,8 @@ interface MusicProvider {
         limit: Int = 20,
     ): ProviderResult<List<Track>>
 
+    suspend fun trending(limit: Int = 20): ProviderResult<List<Track>>
+
     suspend fun getTrack(trackId: String): ProviderResult<Track>
 
     suspend fun stream(trackId: String): ProviderResult<String>

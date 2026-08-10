@@ -3,12 +3,17 @@
 package com.clibeats.presentation.settings
 
 import com.clibeats.data.cache.CacheManager
+import com.clibeats.data.playlist.PlaylistExchangeManager
 import com.clibeats.data.preferences.AppPreferences
+import com.clibeats.domain.provider.ProviderRegistry
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -24,6 +29,8 @@ class SettingsViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var appPreferences: AppPreferences
     private lateinit var cacheManager: CacheManager
+    private lateinit var providerRegistry: ProviderRegistry
+    private lateinit var playlistExchangeManager: PlaylistExchangeManager
     private lateinit var viewModel: SettingsViewModel
 
     @Before
@@ -31,14 +38,17 @@ class SettingsViewModelTest {
         Dispatchers.setMain(testDispatcher)
         appPreferences = mock()
         cacheManager = mock()
+        providerRegistry = mock()
+        playlistExchangeManager = mock()
 
-        whenever(appPreferences.activeProviderId).thenReturn(flowOf("ytmusic"))
+        whenever(appPreferences.activeProviderId).thenReturn(flowOf("youtube_music"))
         whenever(appPreferences.cacheMaxMb).thenReturn(flowOf(512))
         whenever(appPreferences.highQualityStreaming).thenReturn(flowOf(true))
         whenever(appPreferences.authToken).thenReturn(flowOf(null))
         whenever(cacheManager.getAllCachedAsFlow()).thenReturn(flowOf(emptyList()))
+        whenever(providerRegistry.providers).thenReturn(emptyList())
 
-        viewModel = SettingsViewModel(appPreferences, cacheManager)
+        viewModel = SettingsViewModel(appPreferences, cacheManager, providerRegistry, playlistExchangeManager)
     }
 
     @After
@@ -51,7 +61,7 @@ class SettingsViewModelTest {
         runTest(testDispatcher) {
             testDispatcher.scheduler.advanceUntilIdle()
             val state = viewModel.uiState.value
-            assertThat(state.activeProviderId).isEqualTo("ytmusic")
+            assertThat(state.activeProviderId).isEqualTo("youtube_music")
             assertThat(state.cacheMaxMb).isEqualTo(512)
             assertThat(state.highQualityStreaming).isTrue()
         }
@@ -59,9 +69,9 @@ class SettingsViewModelTest {
     @Test
     fun `setActiveProvider delegates to appPreferences`() =
         runTest(testDispatcher) {
-            viewModel.setActiveProvider("local")
+            viewModel.setActiveProvider("audius")
             testDispatcher.scheduler.advanceUntilIdle()
-            verify(appPreferences).setActiveProviderId("local")
+            verify(appPreferences).setActiveProviderId("audius")
         }
 
     @Test
@@ -70,5 +80,19 @@ class SettingsViewModelTest {
             viewModel.setCacheMaxMb(1024)
             testDispatcher.scheduler.advanceUntilIdle()
             verify(appPreferences).setCacheMaxMb(1024)
+        }
+
+    @Test
+    fun `exportPlaylists surfaces manager result`() =
+        runTest(testDispatcher) {
+            whenever(playlistExchangeManager.export()).thenReturn(Result.success(java.io.File("clibeats.json")))
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+                viewModel.exchangeMessage.collect()
+            }
+
+            viewModel.exportPlaylists()
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            assertThat(viewModel.exchangeMessage.value).contains("Exported")
         }
 }

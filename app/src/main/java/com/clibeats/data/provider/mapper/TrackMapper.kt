@@ -68,7 +68,9 @@ private fun JsonElement.parseTrack(): Track? {
 
     val title = col0.nav("text")?.safeString() ?: return null
     val videoId =
-        col0.nav("navigationEndpoint", "watchEndpoint", "videoId")?.safeString()
+        this.nav("playlistItemData", "videoId")?.safeString()
+            ?: this.nav("navigationEndpoint", "watchEndpoint", "videoId")?.safeString()
+            ?: col0.nav("navigationEndpoint", "watchEndpoint", "videoId")?.safeString()
             ?: return null
 
     // Column 1: artist • album • duration (runs array)

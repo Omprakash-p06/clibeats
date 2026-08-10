@@ -2,6 +2,7 @@
 
 package com.clibeats.playback
 
+import android.content.Context
 import androidx.media3.exoplayer.ExoPlayer
 import com.clibeats.data.cache.CacheManager
 import kotlinx.coroutines.flow.first
@@ -26,7 +27,7 @@ class PlayerAdapterTest {
         whenever(exoPlayer.currentPosition).thenReturn(0L)
         whenever(exoPlayer.bufferedPosition).thenReturn(0L)
         whenever(exoPlayer.isPlaying).thenReturn(false)
-        adapter = PlayerAdapter(exoPlayer, cacheManager)
+        adapter = PlayerAdapter(exoPlayer, cacheManager, mock<Context>())
     }
 
     @Test

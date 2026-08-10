@@ -9,8 +9,16 @@ import kotlinx.serialization.json.JsonElement
  */
 @Serializable
 data class PlayerResponse(
+    val playabilityStatus: PlayabilityStatus? = null,
     val streamingData: JsonElement? = null,
     val videoDetails: VideoDetails? = null,
+)
+
+@Serializable
+data class PlayabilityStatus(
+    val status: String? = null,
+    val reason: String? = null,
+    val printableReason: String? = null,
 )
 
 @Serializable

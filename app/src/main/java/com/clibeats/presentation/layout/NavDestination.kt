@@ -5,13 +5,16 @@ import androidx.compose.material.icons.automirrored.outlined.PlaylistPlay
 import androidx.compose.material.icons.automirrored.outlined.QueueMusic
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LibraryMusic
+import androidx.compose.material.icons.outlined.MoreHoriz
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 
 /**
  * All navigable destinations in the CLIBeats app.
- * Ordered as they appear in the navigation rail/drawer.
+ *
+ * Primary bottom navigation consists of 4 main tabs ([mainTabs]) to avoid
+ * overcrowded wrapping; secondary destinations are reachable from the More tab.
  */
 sealed class NavDestination(
     val route: String,
@@ -40,6 +43,13 @@ sealed class NavDestination(
         contentDescription = "Library",
     )
 
+    data object More : NavDestination(
+        route = "more",
+        label = "More",
+        icon = Icons.Outlined.MoreHoriz,
+        contentDescription = "More",
+    )
+
     data object Playlists : NavDestination(
         route = "playlists",
         label = "Playlists",
@@ -62,6 +72,12 @@ sealed class NavDestination(
     )
 
     companion object {
-        val all: List<NavDestination> = listOf(Home, Search, Library, Playlists, Queue, Settings)
+        /** Primary bottom navigation tabs (kept to 4 to avoid overcrowded wrapping). */
+        val mainTabs: List<NavDestination>
+            get() = listOf(Home, Search, Library, More)
+
+        /** Every destination in the app (used by the More menu). */
+        val all: List<NavDestination>
+            get() = listOf(Home, Search, Library, More, Playlists, Queue, Settings)
     }
 }

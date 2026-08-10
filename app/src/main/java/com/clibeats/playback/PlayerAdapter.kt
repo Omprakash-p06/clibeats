@@ -1,8 +1,10 @@
 // ForbiddenImport: playback engine implementation imports are legitimate
-@file:Suppress("ForbiddenImport")
+@file:Suppress("ForbiddenImport", "TooManyFunctions")
 
 package com.clibeats.playback
 
+import android.content.Context
+import android.content.Intent
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
@@ -11,6 +13,9 @@ import com.clibeats.data.cache.CacheManager
 import com.clibeats.domain.model.PlaybackState
 import com.clibeats.domain.model.RepeatMode
 import com.clibeats.domain.model.Track
+import com.clibeats.playback.service.PlaybackService
+import com.clibeats.util.DiagnosticLogger
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,7 +29,18 @@ class PlayerAdapter
     constructor(
         private val player: ExoPlayer,
         private val cacheManager: CacheManager,
+        @ApplicationContext private val context: Context,
     ) {
+        /**
+         * Starts the media session foreground service so playback keeps running
+         * in the background and media controls appear in the notification
+         * shade / lock screen. The service wraps the same singleton [ExoPlayer].
+         */
+        private fun startPlaybackService() {
+            val intent = Intent(context, PlaybackService::class.java)
+            context.startForegroundService(intent)
+        }
+
         private val _playbackState =
             MutableStateFlow(
                 PlaybackState(
@@ -47,6 +63,21 @@ class PlayerAdapter
             player.addListener(
                 object : Player.Listener {
                     override fun onIsPlayingChanged(isPlaying: Boolean) {
+                        if (isPlaying) {
+                            DiagnosticLogger.logMediaPlaying("player")
+                        }
+                        updateState()
+                    }
+
+                    override fun onPlaybackStateChanged(playbackState: Int) {
+                        if (playbackState == Player.STATE_READY) {
+                            DiagnosticLogger.logMediaReady("player")
+                        }
+                        updateState()
+                    }
+
+                    override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
+                        DiagnosticLogger.logError("player", "MEDIA_ERROR", error.message ?: "ExoPlayer error")
                         updateState()
                     }
 
@@ -77,6 +108,7 @@ class PlayerAdapter
         }
 
         fun playTrack(track: Track) {
+            startPlaybackService()
             trackList.clear()
             trackList.add(track)
             val mediaItem = track.toMediaItem()
@@ -90,6 +122,7 @@ class PlayerAdapter
             tracks: List<Track>,
             startIndex: Int = 0,
         ) {
+            startPlaybackService()
             trackList.clear()
             trackList.addAll(tracks)
             val mediaItems = tracks.map { it.toMediaItem() }

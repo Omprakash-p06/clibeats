@@ -115,7 +115,7 @@ private fun NavigationSuiteScope.buildNavItems(
     selectedDestination: NavDestination,
     onDestinationSelected: (NavDestination) -> Unit,
 ) {
-    NavDestination.all.forEach { destination ->
+    NavDestination.mainTabs.forEach { destination ->
         item(
             selected = destination == selectedDestination,
             onClick = { onDestinationSelected(destination) },

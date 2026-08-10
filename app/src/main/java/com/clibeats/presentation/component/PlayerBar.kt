@@ -5,7 +5,6 @@
 
 package com.clibeats.presentation.component
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,7 +21,6 @@ import androidx.compose.material.icons.outlined.Pause
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.SkipNext
 import androidx.compose.material.icons.outlined.SkipPrevious
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -36,8 +34,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.clibeats.presentation.theme.CliBeatsAccent
-import com.clibeats.presentation.theme.CliBeatsDivider
-import com.clibeats.presentation.theme.CliBeatsSurface
 import com.clibeats.presentation.theme.CliBeatsSurfaceVariant
 import com.clibeats.presentation.theme.CliBeatsTextPrimary
 import com.clibeats.presentation.theme.CliBeatsTextSecondary
@@ -45,19 +41,17 @@ import com.clibeats.presentation.theme.CliBeatsTextSecondary
 /**
  * Persistent bottom player bar — always visible across all main screens.
  *
- * Per UI-SPEC:
- * - Height: 64dp
- * - Background: CliBeatsSurface (#151515)
- * - Top border: 1dp CliBeatsDivider
- * - Progress bar: 2dp, pinned to top edge of bar (above the divider)
- * - Controls: SkipPrevious · PlayArrow/Pause (32dp accent) · SkipNext · QueueMusic
+ * Terminal-style panel:
+ * - Rendered as a [TuiBlock] titled "Playing" that highlights when active
+ * - Controls: SkipPrevious · PlayArrow/Pause (accent) · SkipNext · QueueMusic
+ * - 3dp accent progress bar at the bottom of the panel
  *
  * @param progress 0.0 to 1.0 progress fraction
  */
 @Suppress("FunctionNaming", "LongMethod", "LongParameterList")
 @Composable
 fun PlayerBar(
-    trackTitle: String = "Not playing",
+    trackTitle: String = "Nothing Playing",
     artist: String = "",
     isPlaying: Boolean = false,
     progress: Float = 0f,
@@ -70,117 +64,113 @@ fun PlayerBar(
 ) {
     val playPauseDescription = if (isPlaying) "Pause $trackTitle" else "Play $trackTitle"
 
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(CliBeatsSurface),
+    TuiBlock(
+        title = "Playing",
+        isActive = isPlaying,
+        modifier = modifier.padding(horizontal = 8.dp, vertical = 4.dp),
     ) {
-        // ── 2dp progress bar pinned to top of player bar ──────────────────
-        LinearProgressIndicator(
-            progress = { progress },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(2.dp),
-            color = CliBeatsAccent,
-            trackColor = CliBeatsSurfaceVariant,
-        )
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                // Artwork square (36x36dp)
+                Box(modifier = Modifier.size(36.dp)) {
+                    artworkContent?.invoke()
+                }
 
-        // ── 1dp border divider ────────────────────────────────────────────
-        HorizontalDivider(
-            thickness = 1.dp,
-            color = CliBeatsDivider,
-        )
+                Spacer(modifier = Modifier.width(10.dp))
 
-        // ── Main player row (64dp) ────────────────────────────────────────
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(64.dp)
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            // Artwork (40x40dp square)
-            Box(modifier = Modifier.size(40.dp)) {
-                artworkContent?.invoke()
-            }
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            // Track title + artist
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = trackTitle,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = CliBeatsTextPrimary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                if (artist.isNotBlank()) {
+                // Track Title + Artist
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = artist,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = CliBeatsTextSecondary,
+                        text = trackTitle,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = CliBeatsTextPrimary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
+                    if (artist.isNotBlank()) {
+                        Text(
+                            text = artist,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = CliBeatsTextSecondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                // Controls
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(0.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconButton(
+                        onClick = onSkipPreviousClick,
+                        modifier = Modifier.semantics { contentDescription = "Skip previous" },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.SkipPrevious,
+                            contentDescription = null,
+                            tint = CliBeatsTextPrimary,
+                            modifier = Modifier.size(20.dp),
+                        )
+                    }
+
+                    IconButton(
+                        onClick = onPlayPauseClick,
+                        modifier = Modifier.semantics { contentDescription = playPauseDescription },
+                    ) {
+                        Icon(
+                            imageVector = if (isPlaying) Icons.Outlined.Pause else Icons.Outlined.PlayArrow,
+                            contentDescription = null,
+                            tint = CliBeatsAccent,
+                            modifier = Modifier.size(28.dp),
+                        )
+                    }
+
+                    IconButton(
+                        onClick = onSkipNextClick,
+                        modifier = Modifier.semantics { contentDescription = "Skip next" },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.SkipNext,
+                            contentDescription = null,
+                            tint = CliBeatsTextPrimary,
+                            modifier = Modifier.size(20.dp),
+                        )
+                    }
+
+                    IconButton(
+                        onClick = onQueueClick,
+                        modifier = Modifier.semantics { contentDescription = "Open queue" },
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.QueueMusic,
+                            contentDescription = null,
+                            tint = CliBeatsTextPrimary,
+                            modifier = Modifier.size(20.dp),
+                        )
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-            // Controls: SkipPrevious · Play/Pause · SkipNext · Queue
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(0.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                IconButton(
-                    onClick = onSkipPreviousClick,
-                    modifier = Modifier.semantics { contentDescription = "Skip previous" },
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.SkipPrevious,
-                        contentDescription = null,
-                        tint = CliBeatsTextPrimary,
-                        modifier = Modifier.size(24.dp),
-                    )
-                }
-
-                IconButton(
-                    onClick = onPlayPauseClick,
-                    modifier = Modifier.semantics { contentDescription = playPauseDescription },
-                ) {
-                    Icon(
-                        imageVector = if (isPlaying) Icons.Outlined.Pause else Icons.Outlined.PlayArrow,
-                        contentDescription = null,
-                        tint = CliBeatsAccent,
-                        modifier = Modifier.size(32.dp),
-                    )
-                }
-
-                IconButton(
-                    onClick = onSkipNextClick,
-                    modifier = Modifier.semantics { contentDescription = "Skip next" },
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.SkipNext,
-                        contentDescription = null,
-                        tint = CliBeatsTextPrimary,
-                        modifier = Modifier.size(24.dp),
-                    )
-                }
-
-                IconButton(
-                    onClick = onQueueClick,
-                    modifier = Modifier.semantics { contentDescription = "Open queue" },
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Outlined.QueueMusic,
-                        contentDescription = null,
-                        tint = CliBeatsTextPrimary,
-                        modifier = Modifier.size(24.dp),
-                    )
-                }
-            }
+            // ── Terminal Progress Bar ─────────────────────────────────────────
+            LinearProgressIndicator(
+                progress = { progress },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(3.dp),
+                color = CliBeatsAccent,
+                trackColor = CliBeatsSurfaceVariant,
+            )
         }
     }
 }

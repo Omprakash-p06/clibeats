@@ -2,6 +2,7 @@
 
 package com.clibeats.playback
 
+import android.content.Context
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
@@ -31,7 +32,7 @@ class PlayerAdapterQueueTest {
         whenever(exoPlayer.currentPosition).thenReturn(0L)
         whenever(exoPlayer.bufferedPosition).thenReturn(0L)
         whenever(exoPlayer.isPlaying).thenReturn(false)
-        adapter = PlayerAdapter(exoPlayer, cacheManager)
+        adapter = PlayerAdapter(exoPlayer, cacheManager, mock<Context>())
     }
 
     private fun track(id: String = "t1") =

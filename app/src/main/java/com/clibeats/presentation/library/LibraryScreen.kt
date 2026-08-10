@@ -35,7 +35,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.clibeats.domain.model.Track
+import com.clibeats.presentation.component.SongTableHeader
 import com.clibeats.presentation.component.SongTableRow
+import com.clibeats.presentation.component.TuiBlock
 import com.clibeats.presentation.search.formatDuration
 import com.clibeats.presentation.theme.CliBeatsAccent
 import com.clibeats.presentation.theme.CliBeatsBackground
@@ -54,64 +56,69 @@ fun LibraryScreen(viewModel: LibraryViewModel = hiltViewModel()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(CliBeatsBackground),
+            .background(CliBeatsBackground)
+            .padding(12.dp),
     ) {
-        TabRow(
-            selectedTabIndex = selectedTabIndex,
-            containerColor = CliBeatsSurface,
-            contentColor = CliBeatsAccent,
-            indicator = { tabPositions ->
-                TabRowDefaults.SecondaryIndicator(
-                    modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
-                    color = CliBeatsAccent,
-                )
-            },
-        ) {
-            tabs.forEachIndexed { index, title ->
-                Tab(
-                    selected = selectedTabIndex == index,
-                    onClick = { selectedTabIndex = index },
-                    text = {
-                        Text(
-                            text = title,
-                            style = MaterialTheme.typography.titleSmall,
-                            color = if (selectedTabIndex == index) CliBeatsAccent else CliBeatsTextSecondary,
+        TuiBlock(title = "Library (${tabs[selectedTabIndex]})", isActive = true, modifier = Modifier.weight(1f)) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                TabRow(
+                    selectedTabIndex = selectedTabIndex,
+                    containerColor = CliBeatsSurface,
+                    contentColor = CliBeatsAccent,
+                    indicator = { tabPositions ->
+                        TabRowDefaults.SecondaryIndicator(
+                            modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
+                            color = CliBeatsAccent,
                         )
                     },
-                )
-            }
-        }
-
-        when (val currentState = state) {
-            is LibraryUiState.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
                 ) {
-                    CircularProgressIndicator(color = CliBeatsAccent)
+                    tabs.forEachIndexed { index, title ->
+                        Tab(
+                            selected = selectedTabIndex == index,
+                            onClick = { selectedTabIndex = index },
+                            text = {
+                                Text(
+                                    text = title,
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = if (selectedTabIndex == index) CliBeatsAccent else CliBeatsTextSecondary,
+                                )
+                            },
+                        )
+                    }
                 }
-            }
 
-            is LibraryUiState.Empty -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = "Library is empty",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = CliBeatsTextSecondary,
-                    )
-                }
-            }
+                when (val currentState = state) {
+                    is LibraryUiState.Loading -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator(color = CliBeatsAccent)
+                        }
+                    }
 
-            is LibraryUiState.Success -> {
-                when (selectedTabIndex) {
-                    0 -> TracksList(tracks = currentState.tracks, onTrackClick = { track, index ->
-                        viewModel.onTrackClick(track, currentState.tracks, index)
-                    })
-                    1 -> ArtistsList(artists = currentState.artists)
-                    2 -> AlbumsList(albums = currentState.albums)
+                    is LibraryUiState.Empty -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = "> library --empty",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = CliBeatsTextSecondary,
+                            )
+                        }
+                    }
+
+                    is LibraryUiState.Success -> {
+                        when (selectedTabIndex) {
+                            0 -> TracksList(tracks = currentState.tracks, onTrackClick = { track, index ->
+                                viewModel.onTrackClick(track, currentState.tracks, index)
+                            })
+                            1 -> ArtistsList(artists = currentState.artists)
+                            2 -> AlbumsList(albums = currentState.albums)
+                        }
+                    }
                 }
             }
         }
@@ -125,6 +132,9 @@ private fun TracksList(
     onTrackClick: (Track, Int) -> Unit,
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
+        item {
+            SongTableHeader()
+        }
         itemsIndexed(items = tracks, key = { _, track -> track.id }) { index, track ->
             SongTableRow(
                 trackTitle = track.title,
