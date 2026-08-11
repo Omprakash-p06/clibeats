@@ -8,6 +8,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.clibeats.data.local.entity.HistoryEntity
+import com.clibeats.data.local.entity.SongEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -17,6 +18,9 @@ interface HistoryDao {
 
     @Query("SELECT * FROM history ORDER BY played_at DESC LIMIT :limit")
     fun getRecentAsFlow(limit: Int = 50): Flow<List<HistoryEntity>>
+
+    @Query("SELECT s.* FROM songs s INNER JOIN history h ON s.id = h.song_id ORDER BY h.played_at DESC LIMIT :limit")
+    fun getRecentlyPlayedTracksAsFlow(limit: Int = 50): Flow<List<SongEntity>>
 
     @Query("SELECT * FROM history ORDER BY played_at DESC")
     fun getAllAsFlow(): Flow<List<HistoryEntity>>

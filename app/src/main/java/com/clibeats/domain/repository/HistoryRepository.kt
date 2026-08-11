@@ -4,10 +4,13 @@
 package com.clibeats.domain.repository
 
 import com.clibeats.data.local.entity.HistoryEntity
+import com.clibeats.domain.model.Track
 import kotlinx.coroutines.flow.Flow
 
 interface HistoryRepository {
     fun getRecentHistoryAsFlow(limit: Int = 50): Flow<List<HistoryEntity>>
+
+    fun getRecentlyPlayedTracks(limit: Int = 50): Flow<List<Track>>
 
     suspend fun recordPlay(
         songId: String,
