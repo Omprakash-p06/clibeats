@@ -7,6 +7,7 @@ import com.clibeats.domain.model.Track
 import com.clibeats.domain.provider.MusicProvider
 import com.clibeats.domain.provider.ProviderRegistry
 import com.clibeats.domain.provider.ProviderResult
+import com.clibeats.domain.repository.PlaybackRepository
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,6 +25,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -32,6 +34,7 @@ class SearchViewModelTest {
     private lateinit var musicProvider: MusicProvider
     private lateinit var providerRegistry: ProviderRegistry
     private lateinit var appPreferences: AppPreferences
+    private lateinit var playbackRepository: PlaybackRepository
     private lateinit var viewModel: SearchViewModel
 
     @Before
@@ -40,13 +43,14 @@ class SearchViewModelTest {
         musicProvider = mock()
         providerRegistry = mock()
         appPreferences = mock()
+        playbackRepository = mock()
 
         whenever(providerRegistry.getProvider(any())).thenReturn(musicProvider)
         whenever(providerRegistry.defaultProvider()).thenReturn(musicProvider)
         whenever(providerRegistry.providers).thenReturn(listOf(musicProvider))
         whenever(appPreferences.activeProviderId).thenReturn(flowOf("audius"))
 
-        viewModel = SearchViewModel(providerRegistry, appPreferences)
+        viewModel = SearchViewModel(providerRegistry, appPreferences, playbackRepository)
     }
 
     @After
@@ -127,4 +131,11 @@ class SearchViewModelTest {
             val error = viewModel.searchResults.value as SearchUiState.Error
             assertThat(error.message).isEqualTo("Search failed")
         }
+
+    @Test
+    fun `onAddToQueue delegates to playbackRepository`() {
+        val track = Track("1", "Title", "Artist", "Album", 180000L, null, null, "local")
+        viewModel.onAddToQueue(track)
+        verify(playbackRepository).addToQueue(track)
+    }
 }

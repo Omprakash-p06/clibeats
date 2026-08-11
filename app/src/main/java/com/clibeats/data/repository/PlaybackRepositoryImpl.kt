@@ -1,4 +1,4 @@
-@file:Suppress("ForbiddenImport", "MaxLineLength", "LongMethod")
+@file:Suppress("ForbiddenImport", "MaxLineLength", "LongMethod", "TooManyFunctions")
 
 package com.clibeats.data.repository
 
@@ -144,6 +144,27 @@ class PlaybackRepositoryImpl
                         traceId,
                         "MEDIA_PLAYBACK_FAILED",
                         e.message ?: "Failed to resolve stream for playTrack",
+                    )
+                }
+            }
+        }
+
+        override fun addToQueue(track: Track) {
+            val traceId = DiagnosticLogger.generateTraceId()
+            DiagnosticLogger.logTrackSelected(traceId, track.id, track.title)
+
+            repositoryScope.launch {
+                runCatching {
+                    val resolved = streamResolver.resolve(track, traceId)
+                    DiagnosticLogger.logMediaPrepare(traceId, resolved.id)
+                    withContext(Dispatchers.Main) {
+                        playerAdapter.addToQueue(resolved)
+                    }
+                }.onFailure { e ->
+                    DiagnosticLogger.logError(
+                        traceId,
+                        "MEDIA_PLAYBACK_FAILED",
+                        e.message ?: "Failed to resolve stream for addToQueue",
                     )
                 }
             }

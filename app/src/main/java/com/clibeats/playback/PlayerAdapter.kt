@@ -159,6 +159,17 @@ class PlayerAdapter
             updateState()
         }
 
+        fun addToQueue(track: Track) {
+            startPlaybackService()
+            trackList.add(track)
+            val mediaItem = track.toMediaItem()
+            player.addMediaItem(mediaItem)
+            if (player.playbackState == Player.STATE_IDLE || player.mediaItemCount == 1) {
+                player.prepare()
+            }
+            updateState()
+        }
+
         fun restoreQueue(
             tracks: List<Track>,
             startIndex: Int = 0,

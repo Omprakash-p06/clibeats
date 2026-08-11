@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.QueueMusic
 import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
@@ -138,6 +139,7 @@ fun SearchScreen(
                         SearchResultsList(
                             tracks = currentState.tracks,
                             onTrackClick = onTrackClick,
+                            onAddToQueue = viewModel::onAddToQueue,
                         )
                     }
             }
@@ -222,6 +224,7 @@ private fun SearchNoResultsState() {
 private fun SearchResultsList(
     tracks: List<Track>,
     onTrackClick: (Track) -> Unit,
+    onAddToQueue: (Track) -> Unit,
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
@@ -246,6 +249,19 @@ private fun SearchResultsList(
                     }
                 },
                 onClick = { onTrackClick(track) },
+                actions = {
+                    IconButton(
+                        onClick = { onAddToQueue(track) },
+                        modifier = Modifier.size(28.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.QueueMusic,
+                            contentDescription = "Add to queue",
+                            tint = CliBeatsTextSecondary,
+                            modifier = Modifier.size(18.dp),
+                        )
+                    }
+                },
             )
         }
     }

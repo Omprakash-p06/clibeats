@@ -5,8 +5,10 @@ package com.clibeats.presentation.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.clibeats.data.preferences.AppPreferences
+import com.clibeats.domain.model.Track
 import com.clibeats.domain.provider.ProviderRegistry
 import com.clibeats.domain.provider.ProviderResult
+import com.clibeats.domain.repository.PlaybackRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,6 +32,7 @@ class SearchViewModel
     constructor(
         private val providerRegistry: ProviderRegistry,
         private val appPreferences: AppPreferences,
+        private val playbackRepository: PlaybackRepository,
     ) : ViewModel() {
         private val _query = MutableStateFlow("")
         val query: StateFlow<String> = _query.asStateFlow()
@@ -79,5 +82,9 @@ class SearchViewModel
 
         fun clearQuery() {
             _query.value = ""
+        }
+
+        fun onAddToQueue(track: Track) {
+            playbackRepository.addToQueue(track)
         }
     }
