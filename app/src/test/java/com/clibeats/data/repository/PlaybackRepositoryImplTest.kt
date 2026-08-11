@@ -93,6 +93,11 @@ class PlaybackRepositoryImplTest {
     }
 
     @Test
+    fun `queueState delegates to playerAdapter`() {
+        assertThat(repository.queueState.value).isEqualTo(queueFlow.value)
+    }
+
+    @Test
     fun `play delegates to playerAdapter`() {
         repository.play()
         verify(playerAdapter).play()
