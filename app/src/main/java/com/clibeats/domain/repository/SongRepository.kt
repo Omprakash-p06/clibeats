@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.Flow
 interface SongRepository {
     fun getAllTracksAsFlow(): Flow<List<Track>>
 
+    fun getRecentlyAddedTracksAsFlow(): Flow<List<Track>>
+
     fun searchTracksAsFlow(query: String): Flow<List<Track>>
 
     suspend fun getTrackById(id: String): Track?

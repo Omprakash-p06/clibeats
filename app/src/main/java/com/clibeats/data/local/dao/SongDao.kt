@@ -27,6 +27,9 @@ interface SongDao {
     @Query("SELECT * FROM songs ORDER BY title ASC")
     fun getAllAsFlow(): Flow<List<SongEntity>>
 
+    @Query("SELECT * FROM songs ORDER BY COALESCE(cached_at, 0) DESC")
+    fun getRecentlyAddedAsFlow(): Flow<List<SongEntity>>
+
     @Query(
         """
         SELECT * FROM songs 

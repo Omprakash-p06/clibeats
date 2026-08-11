@@ -25,6 +25,9 @@ class SongRepositoryImpl
     ) : SongRepository {
         override fun getAllTracksAsFlow(): Flow<List<Track>> = songDao.getAllAsFlow().map { entities -> entities.map { it.toDomain() } }
 
+        override fun getRecentlyAddedTracksAsFlow(): Flow<List<Track>> =
+            songDao.getRecentlyAddedAsFlow().map { entities -> entities.map { it.toDomain() } }
+
         override fun searchTracksAsFlow(query: String): Flow<List<Track>> =
             songDao.searchAsFlow(query.escapeForLike()).map { entities -> entities.map { it.toDomain() } }
 

@@ -48,6 +48,27 @@ class SongRepositoryImplTest {
         }
 
     @Test
+    fun `getRecentlyAddedTracksAsFlow maps song entities to domain tracks`() =
+        runTest {
+            val entity =
+                SongEntity(
+                    id = "s2",
+                    title = "Recent Track",
+                    artist = "Artist 2",
+                    album = "Album 2",
+                    durationMs = 180000L,
+                    artworkUrl = null,
+                    streamUrl = null,
+                    providerId = "ytmusic",
+                )
+            whenever(songDao.getRecentlyAddedAsFlow()).thenReturn(flowOf(listOf(entity)))
+
+            val tracks = repository.getRecentlyAddedTracksAsFlow().first()
+            assertThat(tracks).hasSize(1)
+            assertThat(tracks[0].title).isEqualTo("Recent Track")
+        }
+
+    @Test
     fun `upsertTrack delegates to songDao`() =
         runTest {
             val track =
