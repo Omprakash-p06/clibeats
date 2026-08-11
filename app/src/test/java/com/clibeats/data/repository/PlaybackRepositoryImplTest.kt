@@ -161,4 +161,10 @@ class PlaybackRepositoryImplTest {
         repository.toggleShuffle()
         verify(playerAdapter).toggleShuffle()
     }
+
+    @Test
+    fun `setRepeatMode delegates to playerAdapter`() {
+        repository.setRepeatMode(RepeatMode.ONE)
+        verify(playerAdapter).setRepeatMode(RepeatMode.ONE)
+    }
 }
