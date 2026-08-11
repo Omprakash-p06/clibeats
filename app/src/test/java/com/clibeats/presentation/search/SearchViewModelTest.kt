@@ -138,4 +138,11 @@ class SearchViewModelTest {
         viewModel.onAddToQueue(track)
         verify(playbackRepository).addToQueue(track)
     }
+
+    @Test
+    fun `onPlayNext delegates to playbackRepository`() {
+        val track = Track("1", "Title", "Artist", "Album", 180000L, null, null, "local")
+        viewModel.onPlayNext(track)
+        verify(playbackRepository).playNext(track)
+    }
 }

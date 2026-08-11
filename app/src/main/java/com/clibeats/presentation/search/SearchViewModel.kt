@@ -87,4 +87,8 @@ class SearchViewModel
         fun onAddToQueue(track: Track) {
             playbackRepository.addToQueue(track)
         }
+
+        fun onPlayNext(track: Track) {
+            playbackRepository.playNext(track)
+        }
     }

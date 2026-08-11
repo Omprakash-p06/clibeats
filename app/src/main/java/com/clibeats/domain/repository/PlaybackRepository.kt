@@ -21,6 +21,8 @@ interface PlaybackRepository {
 
     fun addToQueue(track: Track)
 
+    fun playNext(track: Track)
+
     fun moveTrackInQueue(
         fromIndex: Int,
         toIndex: Int,

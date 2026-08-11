@@ -170,6 +170,27 @@ class PlaybackRepositoryImpl
             }
         }
 
+        override fun playNext(track: Track) {
+            val traceId = DiagnosticLogger.generateTraceId()
+            DiagnosticLogger.logTrackSelected(traceId, track.id, track.title)
+
+            repositoryScope.launch {
+                runCatching {
+                    val resolved = streamResolver.resolve(track, traceId)
+                    DiagnosticLogger.logMediaPrepare(traceId, resolved.id)
+                    withContext(Dispatchers.Main) {
+                        playerAdapter.playNext(resolved)
+                    }
+                }.onFailure { e ->
+                    DiagnosticLogger.logError(
+                        traceId,
+                        "MEDIA_PLAYBACK_FAILED",
+                        e.message ?: "Failed to resolve stream for playNext",
+                    )
+                }
+            }
+        }
+
         override fun setQueue(
             tracks: List<Track>,
             startIndex: Int,

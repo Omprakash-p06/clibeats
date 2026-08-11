@@ -9,6 +9,7 @@ package com.clibeats.presentation.search
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +23,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.QueueMusic
 import androidx.compose.material.icons.outlined.Clear
+import androidx.compose.material.icons.outlined.PlaylistPlay
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -140,6 +142,7 @@ fun SearchScreen(
                             tracks = currentState.tracks,
                             onTrackClick = onTrackClick,
                             onAddToQueue = viewModel::onAddToQueue,
+                            onPlayNext = viewModel::onPlayNext,
                         )
                     }
             }
@@ -225,6 +228,7 @@ private fun SearchResultsList(
     tracks: List<Track>,
     onTrackClick: (Track) -> Unit,
     onAddToQueue: (Track) -> Unit,
+    onPlayNext: (Track) -> Unit,
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
@@ -250,16 +254,29 @@ private fun SearchResultsList(
                 },
                 onClick = { onTrackClick(track) },
                 actions = {
-                    IconButton(
-                        onClick = { onAddToQueue(track) },
-                        modifier = Modifier.size(28.dp),
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.QueueMusic,
-                            contentDescription = "Add to queue",
-                            tint = CliBeatsTextSecondary,
-                            modifier = Modifier.size(18.dp),
-                        )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        IconButton(
+                            onClick = { onPlayNext(track) },
+                            modifier = Modifier.size(28.dp),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.PlaylistPlay,
+                                contentDescription = "Play next",
+                                tint = CliBeatsTextSecondary,
+                                modifier = Modifier.size(18.dp),
+                            )
+                        }
+                        IconButton(
+                            onClick = { onAddToQueue(track) },
+                            modifier = Modifier.size(28.dp),
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Outlined.QueueMusic,
+                                contentDescription = "Add to queue",
+                                tint = CliBeatsTextSecondary,
+                                modifier = Modifier.size(18.dp),
+                            )
+                        }
                     }
                 },
             )
