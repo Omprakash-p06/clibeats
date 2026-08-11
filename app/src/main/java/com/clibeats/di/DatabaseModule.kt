@@ -25,7 +25,8 @@ object DatabaseModule {
             context,
             CliBeatsDatabase::class.java,
             "clibeats.db",
-        ).build()
+        ).addMigrations(CliBeatsDatabase.MIGRATION_1_2)
+            .build()
 
     @Provides
     @Singleton
@@ -46,4 +47,8 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideQueueDao(db: CliBeatsDatabase) = db.queueDao()
+
+    @Provides
+    @Singleton
+    fun provideLikedSongDao(db: CliBeatsDatabase) = db.likedSongDao()
 }
