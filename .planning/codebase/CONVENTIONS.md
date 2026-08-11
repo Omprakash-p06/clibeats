@@ -1,132 +1,119 @@
 # Coding Conventions
 
-**Analysis Date:** 2026-08-09
+**Analysis Date:** 2026-08-12
 
 ## Naming Patterns
 
 **Files:**
-- Kotlin: `PascalCase.kt`, one primary class/object per file; `*Test.kt` for unit tests, `*ScreenshotTest.kt` for Paparazzi; DAOs as `*Dao.kt`, entities as `*Entity.kt`, Hilt modules as `*Module.kt`
-- TypeScript: PascalCase for class/module files (`ProviderSelectionEngine.ts`, `CacheManager.ts`), camelCase for leaf modules (`config.ts`, `logger.ts`, `metrics.ts`); `*.test.ts` for Vitest suites
-- Android resources: `snake_case.xml` (`network_security_config.xml`, `data_extraction_rules.xml`)
+- Kotlin: `PascalCase.kt`, one primary class/object per file; `*Test.kt` for unit tests, `*ScreenshotTest.kt` for Paparazzi; DAOs as `*Dao.kt`, entities as `*Entity.kt`, Hilt modules as `*Module.kt`, DTO files as `*Dtos.kt`/`*Response.kt`/`*Request.kt`
+- Android resources: `snake_case.xml` (`data_extraction_rules.xml`)
 
 **Functions:**
-- Kotlin/TS: `camelCase` (e.g., `executeWithFailover`, `getToken`, `forceRefresh`, `resolveCdnStreamUrl`)
-- Async: no special prefix; `suspend` in Kotlin, `async` functions in TS
-- Handlers: route handlers inline in `app.ts`; `healthCheck`, `onGetSession` style names for lifecycle methods
+- Kotlin: `camelCase` (e.g., `resolve`, `toggleShuffle`, `restoreQueue`, `withLocalFileUri`)
+- Async: `suspend` functions; no special prefix
+- Handlers: `onPlayPauseClick`, `onDestinationSelected` style names for UI callbacks; `Player.Listener` overrides use Media3 names (`onPlayerError`, `onMediaItemTransition`)
 
 **Variables:**
-- `camelCase` for locals; `UPPER_SNAKE_CASE` for constants (`OPERATION_TIMEOUT_MS`, `DEFAULT_REFRESH_BUFFER_SECONDS`, `MOCK_PROVIDER_STATES`)
-- Private state with leading underscore for MutableStateFlow backing fields (`_playbackState`, `_queueFlow`) exposed via `asStateFlow()`
+- `camelCase` for locals; `UPPER_SNAKE_CASE` for constants (`POLL_INTERVAL_MS`, `DEFAULT_MAX_CACHE_BYTES`, `INNERTUBE_BASE_URL`)
+- Private StateFlow backing fields with leading underscore (`_playbackState`, `_queueFlow`, `_downloads`) exposed via `asStateFlow()`
 
 **Types:**
-- Interfaces/types: `PascalCase`, no `I` prefix (`ProviderAdapter`, `GatewayConfig`, `Track`, `ProviderToken`, `StreamResult`)
-- Enums/type unions: `PascalCase` type name, `UPPER_SNAKE_CASE` values (`MockProviderState`, `'HEALTHY' | 'OFFLINE' | ...`; `CircuitState = 'CLOSED' | 'OPEN' | 'HALF_OPEN'`)
-- Kotlin sealed classes for results: `ProviderResult.Success/Error`
-- DTOs: `*Dto`/`Gateway*` classes in `data/gateway/dto/`; mappers as extension functions (`toDomainTracks()`)
+- Interfaces/types: `PascalCase`, no `I` prefix (`MusicProvider`, `ProviderRegistry`, `PlaybackState`, `Track`)
+- Enums: `PascalCase` type, `UPPER_SNAKE_CASE` values (`RepeatMode.OFF/ONE/ALL`, `CliBeatsThemeMode.DARK/AMOLED`, `DownloadStatus.Downloading/Completed/Failed`)
+- Sealed types for results: `ProviderResult.Success/Error/Loading`, `DownloadStatus`, `*UiState` (sealed interface with `Loading`/`Empty`/`Success`)
+- DTOs: `*Dto`/`*Response`/`*Request` classes in `data/provider/dto/`; mappers as extension functions (`toDomainTrack()`, `toTrackList()`, `toEntity()`)
 
 ## Code Style
 
 **Formatting:**
-- Kotlin: ktlint (`org.jlleitschuh.gradle.ktlint` 12.1.1) enforced in CI (`./gradlew ktlintCheck`); 4-space indent; trailing commas in multiline calls (per ktlint defaults)
-- TypeScript: `tsc --strict` + formatting consistent with Prettier-style defaults (2-space indent, semicolons required, single quotes, 100-col); no ESLint/Prettier config file present — enforcement is via type checking and review
+- Kotlin: ktlint (`org.jlleitschuh.gradle.ktlint` 12.1.1) enforced in CI (`./gradlew ktlintCheck`); 4-space indent; trailing commas in multiline calls
+- `@file:Suppress` always annotated with a justification comment (e.g., `// ForbiddenImport: data-layer self-imports are legitimate...`)
 
 **Linting:**
-- Detekt 1.23.6 (`config/detekt/detekt.yml`): `maxIssues: 0` (fail on any issue), rules tuned — `TooManyFunctions` (15/15/10), `LongMethod` (60), `LargeClass` (300), `MagicNumber` (with ignore list -1/0/1/2/100/1000, hash-code fn, property declarations), `UnusedPrivateMember`
-- `ForbiddenImport` (Detekt) enforces Clean Architecture: `com.clibeats.data.*` must NOT be imported by presentation layer. Legitimate intra-layer imports use targeted `@file:Suppress("ForbiddenImport")` with a comment explaining why (e.g., `CliBeatsDatabase.kt`, `PlaybackService.kt`, `PlayerAdapter.kt`)
+- Detekt 1.23.6 (`config/detekt/detekt.yml`): `maxIssues: 0` (fail on any issue); rules tuned — `TooManyFunctions` (15/15/10), `LongMethod` (60), `LargeClass` (300), `MagicNumber` (ignore -1/0/1/2/100/1000, hash-code fn, property declarations), `UnusedPrivateMember`
+- `ForbiddenImport` enforces Clean Architecture: `com.clibeats.data.*` MUST NOT be imported by presentation layer; legitimate imports use targeted `@file:Suppress("ForbiddenImport")` with a comment (heavily used — 40+ files)
+- `Indentation` and `ImportOrdering` detekt rules are disabled: Indentation misparses `ktlint_official @Inject constructor()` style (false positives), ImportOrdering conflicts with ktlint's ordering rule (ktlint is authoritative)
 - Android Lint: `abortOnError = true`, `checkDependencies = true`, warnings not errors
-- Gateway: no linter config; `npm run check` (`tsc --noEmit`, strict mode) is the gate; `strict: true` in `tsconfig.json`
+- `@SuppressLint` used sparingly; note `PlaybackService.refreshNotification` suppresses `MissingPermission`/`NotificationPermission` (see CONCERNS)
 
 ## Import Organization
 
 **Kotlin:**
 1. `java.*` / `android.*` (platform)
 2. `androidx.*`
-3. Third-party (kotlinx, dagger, retrofit, etc.)
-4. `com.clibeats.*` internal, then relative — ktlint enforces ordering; alphabetical within groups, blank lines between groups
-
-**TypeScript:**
-1. Node built-ins (`stream`, `events`)
-2. External packages (`fastify`, `ioredis`, `pino`, `youtubei.js`)
-3. Relative imports (`./config/config`, `../core/...`) — alphabetical by path
-- Type-only imports use `import type { ... }` (e.g., `import type { FastifyInstance } from 'fastify'`, `import type { ProviderAdapter } from '../../types/adapter'`)
+3. Third-party (kotlinx, dagger, retrofit, okhttp, etc.)
+4. `com.clibeats.*` internal — ktlint enforces ordering; alphabetical within groups, blank lines between groups
 
 **Path Aliases:**
-- None — relative imports throughout both codebases
+- None — relative imports throughout
 
 ## Error Handling
 
 **Patterns:**
-- Gateway: throw typed `ProviderError` subclasses from adapters; global Fastify error handler in `app.ts` maps to canonical `{ error: { code, message, providerId, retryAfterSeconds, traceId } }` (ADR-016). Never leak raw stack traces to clients.
-- Android: return `ProviderResult.Success/Error` from data layer via `runCatching { }`; map gateway errors to user-facing messages with `GatewayErrorMapper`. ViewModels surface errors in `*UiState` rather than throwing.
-- Failover: `ProviderSelectionEngine.executeWithFailover` records failures on circuit breakers, rethrows last `ProviderError` or wraps in `InternalError`
-
-**Error Types:**
-- Canonical codes: `AUTHENTICATION_FAILED`, `RATE_LIMITED`, `GEO_BLOCKED`, `NOT_FOUND`, `UNSUPPORTED`, `PLAYBACK_ERROR`, `NETWORK_ERROR`, `TIMEOUT_ERROR`, `INTERNAL_ERROR` (+ `INVALID_REQUEST` for schema validation) in `gateway/src/types/error.ts` and `schemas.ts`
-- Classification: unknown errors matched by regex (`rate limit|too many|quota` → RateLimited, `geo|region|country` → GeoBlocked, `network|fetch|socket|econn` → NetworkError) in `YouTubeProviderAdapter.errorCode()`
-- Timeouts: `withTimeout` wrapper races operations against a `TimeoutError` after 30s (`.unref()` timers)
-- Logging: log with traceId context before rethrowing; gateway logs `unhandled error` with stack server-side only
+- Data layer returns `ProviderResult.Success/Error/Loading` via `runCatching { }` — exceptions never leak to UI
+- Providers wrap network calls in `runCatching`/`try-catch` → `ProviderResult.Error(message, cause)`; `CancellationException` is rethrown, never swallowed (see `InternetArchiveMusicProvider.rankAndMap`)
+- `PlaybackException` subclasses (`StreamResolutionFailed`) are thrown by `StreamResolver` and caught by `PlaybackRepositoryImpl` (which logs, see CONCERNS)
+- ViewModels surface errors in `*UiState` rather than throwing
+- `runCatching { }.onFailure { log }` is the standard idiom for background/repository work
+- UI callbacks wired directly to ViewModel methods (`playerViewModel::onPlayPauseClick`)
 
 ## Logging
 
 **Framework:**
-- Gateway: pino JSON (`gateway/src/core/logging/logger.ts`), level from `LOG_LEVEL` (default info), ISO timestamps, `service: clibeats-gateway`
-- Android: `android.util.Log` with tag constants (`PlayerAdapterDiagnostics`, `CLIBeatsApp`); `StructuredLogger` abstraction in `core/logging/` implemented by `TimberTelemetryTracker`/`TimberCrashReporter` (sanitized, ADR-010)
+- `DiagnosticLogger` (`app/src/main/java/com/clibeats/util/DiagnosticLogger.kt`) — single logcat tag `CliBeatsDiagnostic`, 8-char trace ids, `safeLog` with logcat→stdout fallback
+- `StructuredLogger` abstraction in `core/logging/` implemented by `TimberTelemetryTracker`/`TimberCrashReporter` (logcat-only, ADR-010)
 
 **Patterns:**
-- Structured object logging: `logger.info({ traceId, method, url, statusCode }, 'request completed')`
-- Trace IDs: generate/accept `x-trace-id` in `onRequest` hook, log on request+response, echo back in header and errors
-- EventBus-driven metrics/logs: events (`REQUEST_RECEIVED`, `CACHE_CHECKED`, `PROVIDER_FAILED`, `CIRCUIT_TRIPPED`) are logged automatically by a wildcard listener — do not manually log what the EventBus already covers
-- Log at service boundaries and lifecycle transitions; avoid logging sensitive tokens/PII; release logcat sanitized (release notes mention logcat sanitization)
+- Log every search/stream/player lifecycle transition: `SEARCH_REQUEST`, `STREAM_RESOLUTION_STARTED`, `PLAYER_REQUEST`/`PLAYER_RESPONSE` (client + status), `STREAM_URL_RESOLVED` (host/itag/mimeType/expiry), `MEDIA_PREPARE`/`MEDIA_READY`/`MEDIA_PLAYING`
+- Log errors with a code + message: `logError(traceId, "STREAM_RESOLUTION_FAILED", message)`
+- Never log token values (PO token/visitor data)
+- Note: `logSearchRequest` logs the raw query at INFO in all builds (see CONCERNS)
 
 ## Comments
 
 **When to Comment:**
-- Explain *why* and document non-obvious decisions: hardcoded IP defaults + NXDOMAIN fail-fast rationale (`app/build.gradle.kts`), PO-token binding/visitor-data coupling (`YouTubeProviderAdapter.getStreamingSession`), lazy ioredis-mock require for production `--omit=dev` (`app.ts`)
-- Reference ADRs and recovery sessions in comments (`// ADR-013`, `// RECOVERY-10`)
-- Avoid obvious comments; keep code self-documenting otherwise
-
-**KDoc/TSDoc:**
-- Public gateway classes/functions use JSDoc `/** ... */` with `@param`/`@returns` (e.g., `ProviderTokenService.getToken`, `resolveStream`); `@internal` marker used for diagnostics-only members (`tokenService`)
-- Android public APIs and DTOs documented sparingly with KDoc; `@file:Suppress` always annotated with a justification comment
+- Explain *why* and document non-obvious decisions: Audius stream-endpoint rationale (`AudiusMusicProvider.kt`), PO-token/visitor-data coupling, MediaStore future work (`LocalMusicProvider.kt:17-19`), deprecated security-crypto with Tink migration plan (`StorageModule.kt`)
+- Reference ADRs and plans in comments (`// ADR-003`, `// per Plan 03-03 spec`)
+- KDoc on public classes/interfaces (`MusicProvider`, `ProviderId`, `MusicProviderRegistry`); `@param` docs on shared components (`TrackArtwork`)
 
 **TODO Comments:**
-- Rare; deferred items tracked in `.planning/` docs (e.g., D-01/D-02 in STATE.md) rather than inline TODOs. Code search finds no inline TODO/FIXME/HACK markers as of this analysis.
+- Rare; deferred items tracked in `.planning/` docs rather than inline TODOs
 
 ## Function Design
 
 **Size:**
-- Detekt `LongMethod` threshold: 60 lines; `TooManyFunctions` 15/class — refactor beyond these
-- Route handlers kept thin; logic delegated to engine/adapters/caches
+- Detekt `LongMethod` threshold: 60 lines; `TooManyFunctions` 15/class — refactor beyond these (or suppress with justification)
+- ViewModels keep `UiState` + single event-handler methods; screens delegate to ViewModel methods
 
 **Parameters:**
-- Prefer small param lists; option objects for config (e.g., `YouTubeProviderOptions`, `ProviderRegistrationOverride`)
-- Destructure objects in Kotlin parameter lists (`constructor(private val player: ExoPlayer, ...)` style injection)
+- Small param lists; constructor injection with `@Inject constructor` (Hilt)
+- DI test-friendly secondary constructors for dispatcher injection (`PlaybackRepositoryImpl`)
 
 **Return Values:**
-- Explicit returns; early guard clauses (`if (!query.trim()) return []`)
-- Kotlin: `runCatching` + `ProviderResult`; `withContext(Dispatchers.IO)` for network
+- Explicit returns; early guard clauses (`if (tracks.isEmpty()) return`, `if (clientId.isBlank()) return ProviderResult.Error(...)`)
+- Kotlin: `runCatching` + `ProviderResult`; `withContext(Dispatchers.Main)` for player ops after IO resolution
 
 ## Module Design
 
-**Kotlin (Clean Architecture):**
+**Clean Architecture:**
 - `presentation` → `domain` ← `data` dependency rule (domain depends on nothing); enforced by Detekt `ForbiddenImport`
 - `data` implements `domain` interfaces (repository contracts in `domain/repository/`, impls in `data/repository/`)
-- Hilt: `@Singleton`/`@InstallIn(SingletonComponent::class)` modules per concern (`DatabaseModule`, `NetworkModule`, `PlaybackModule`); constructor injection with `@Inject`
+- Hilt: `@Singleton`/`@InstallIn(SingletonComponent::class)` modules per concern (`DatabaseModule`, `NetworkModule`, `PlaybackModule`, `ProviderModule`, `StorageModule`); constructor injection with `@Inject`; `@Named` qualifiers for multi-binding (`JAMENDO_CLIENT_ID_QUALIFIER`, `INNERTUBE_OKHTTP_QUALIFIER`)
+- One explicit exception to layering: `HistoryRepository` returns `HistoryEntity` (data type) — documented + suppressed
 
-**TypeScript (gateway):**
-- Separation: `types/` (pure contracts, no logic) → `core/` (framework-agnostic services) → `providers/` (adapters) → `app.ts` (composition root)
-- Fastify instance decoration (`app.decorate('registry', ...)`) used as DI; no inversion-of-control container
-- Singleton `globalEventBus` for cross-cutting concerns
-- Cache segregation: one class per namespace extending `RedisCacheBase` (`SearchCache`, `AlbumCache`, ...)
+**Provider Pattern:**
+- Every provider implements `MusicProvider` with a `providerId` (`"youtube_music"`, `"jamendo"`, `"audius"`, `"internet_archive"`, `"local"`); registered in `ProviderModule` in display-priority order
+- Composite ids via `ProviderId.composite`/`rawSourceId`; mappers convert DTOs → domain
 
 ## Testing Conventions
 
 **General:**
-- Arrange/Act/Assert structure in tests; `describe` (Vitest) / JUnit `@Test` method groups
-- Unit tests hermetic: gateway tests run under `NODE_ENV=test` (ioredis-mock, no PO-token minting, no network)
-- Gate: CI runs Android (ktlint, detekt, lint, build, unit tests) and gateway (tsc, vitest, openapi validate, docker build) quality gates; see TESTING.md
+- Arrange/Act/Assert structure; JUnit `@Test` methods with backtick names describing behavior (`fun \`upsertTrack delegates to songDao\`()`)
+- Hermetic unit tests: MockWebServer for HTTP, mocked DAOs/repositories, `MainDispatcherRule` (kotlinx-coroutines-test) for `Dispatchers.Main`
+- DAO tests use `Room.inMemoryDatabaseBuilder` in `androidTest`
+- Gate: CI runs ktlint, detekt, lint, assembleDebug, testDebugUnitTest; see TESTING.md
 
 ---
 
-*Conventions analysis: 2026-08-09*
+*Conventions analysis: 2026-08-12*
 *Update when conventions change*
