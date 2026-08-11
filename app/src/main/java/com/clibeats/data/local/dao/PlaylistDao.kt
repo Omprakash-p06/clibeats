@@ -1,5 +1,5 @@
 // ForbiddenImport: data-layer self-imports are legitimate; Phase 0 com.clibeats.data.* pattern is over-broad.
-@file:Suppress("ForbiddenImport", "MaxLineLength")
+@file:Suppress("ForbiddenImport", "MaxLineLength", "TooManyFunctions")
 
 package com.clibeats.data.local.dao
 
@@ -52,4 +52,18 @@ interface PlaylistDao {
         """,
     )
     fun getSongsForPlaylistAsFlow(playlistId: String): Flow<List<SongEntity>>
+
+    @Query("DELETE FROM playlist_song_cross_ref WHERE playlist_id = :playlistId")
+    suspend fun clearPlaylistSongs(playlistId: String)
+
+    @androidx.room.Transaction
+    suspend fun reorderPlaylistSongs(
+        playlistId: String,
+        songIds: List<String>,
+    ) {
+        clearPlaylistSongs(playlistId)
+        songIds.forEachIndexed { index, songId ->
+            addSongToPlaylist(PlaylistSongCrossRef(playlistId, songId, index))
+        }
+    }
 }

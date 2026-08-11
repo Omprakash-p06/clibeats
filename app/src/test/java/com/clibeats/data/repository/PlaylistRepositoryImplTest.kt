@@ -45,4 +45,11 @@ class PlaylistRepositoryImplTest {
             assertThat(playlists[0].name).isEqualTo("Favorites")
             assertThat(playlists[0].trackCount).isEqualTo(2)
         }
+
+    @Test
+    fun `reorderPlaylistSongs delegates to playlistDao`() =
+        runTest {
+            repository.reorderPlaylistSongs("p1", listOf("s2", "s1"))
+            org.mockito.kotlin.verify(playlistDao).reorderPlaylistSongs("p1", listOf("s2", "s1"))
+        }
 }

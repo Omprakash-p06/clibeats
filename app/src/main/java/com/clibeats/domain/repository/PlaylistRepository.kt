@@ -25,4 +25,9 @@ interface PlaylistRepository {
         playlistId: String,
         songId: String,
     )
+
+    suspend fun reorderPlaylistSongs(
+        playlistId: String,
+        songIds: List<String>,
+    )
 }

@@ -55,4 +55,9 @@ class PlaylistRepositoryImpl
             playlistId: String,
             songId: String,
         ) = playlistDao.removeSongFromPlaylist(playlistId, songId)
+
+        override suspend fun reorderPlaylistSongs(
+            playlistId: String,
+            songIds: List<String>,
+        ) = playlistDao.reorderPlaylistSongs(playlistId, songIds)
     }
