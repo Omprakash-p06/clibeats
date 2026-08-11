@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package com.clibeats.domain.repository
 
 import com.clibeats.domain.model.Album
@@ -14,11 +16,15 @@ interface LibraryRepository {
 
     fun getSavedAlbums(): Flow<List<Album>>
 
+    fun searchSavedAlbums(query: String): Flow<List<Album>>
+
     fun isAlbumSaved(albumId: String): Flow<Boolean>
 
     suspend fun toggleSaveAlbum(album: Album)
 
     fun getSavedArtists(): Flow<List<Artist>>
+
+    fun searchSavedArtists(query: String): Flow<List<Artist>>
 
     fun isArtistSaved(artistId: String): Flow<Boolean>
 

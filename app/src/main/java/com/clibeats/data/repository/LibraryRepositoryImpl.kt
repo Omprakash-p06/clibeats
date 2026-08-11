@@ -7,6 +7,7 @@ import com.clibeats.data.local.dao.LikedSongDao
 import com.clibeats.data.local.dao.SavedAlbumDao
 import com.clibeats.data.local.dao.SavedArtistDao
 import com.clibeats.data.local.dao.SongDao
+import com.clibeats.data.local.dao.escapeForLike
 import com.clibeats.data.local.entity.SavedAlbumEntity
 import com.clibeats.data.local.entity.SavedArtistEntity
 import com.clibeats.data.local.entity.SongEntity
@@ -50,6 +51,11 @@ class LibraryRepositoryImpl
                 entities.map { it.toDomainAlbum() }
             }
 
+        override fun searchSavedAlbums(query: String): Flow<List<Album>> =
+            savedAlbumDao.searchAsFlow(query.escapeForLike()).map { entities ->
+                entities.map { it.toDomainAlbum() }
+            }
+
         override fun isAlbumSaved(albumId: String): Flow<Boolean> = savedAlbumDao.isSavedFlow(albumId)
 
         override suspend fun toggleSaveAlbum(album: Album) {
@@ -63,6 +69,11 @@ class LibraryRepositoryImpl
 
         override fun getSavedArtists(): Flow<List<Artist>> =
             savedArtistDao.getAllAsFlow().map { entities ->
+                entities.map { it.toDomainArtist() }
+            }
+
+        override fun searchSavedArtists(query: String): Flow<List<Artist>> =
+            savedArtistDao.searchAsFlow(query.escapeForLike()).map { entities ->
                 entities.map { it.toDomainArtist() }
             }
 

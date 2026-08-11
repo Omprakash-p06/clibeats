@@ -23,6 +23,14 @@ interface PlaylistDao {
     @Query("SELECT * FROM playlists ORDER BY name ASC")
     fun getAllAsFlow(): Flow<List<PlaylistEntity>>
 
+    @Query(
+        """
+        SELECT * FROM playlists 
+        WHERE name LIKE '%' || :query || '%' ESCAPE '\'
+        """,
+    )
+    fun searchAsFlow(query: String): Flow<List<PlaylistEntity>>
+
     @Query("DELETE FROM playlists WHERE id = :id")
     suspend fun deleteById(id: String)
 

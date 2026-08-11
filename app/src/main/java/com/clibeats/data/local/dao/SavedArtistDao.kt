@@ -26,4 +26,13 @@ interface SavedArtistDao {
 
     @Query("SELECT * FROM saved_artists ORDER BY saved_at DESC")
     fun getAllAsFlow(): Flow<List<SavedArtistEntity>>
+
+    @Query(
+        """
+        SELECT * FROM saved_artists 
+        WHERE name LIKE '%' || :query || '%' ESCAPE '\'
+        ORDER BY saved_at DESC
+        """,
+    )
+    fun searchAsFlow(query: String): Flow<List<SavedArtistEntity>>
 }

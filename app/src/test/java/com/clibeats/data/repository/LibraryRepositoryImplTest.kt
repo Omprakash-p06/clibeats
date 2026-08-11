@@ -121,4 +121,22 @@ class LibraryRepositoryImplTest {
             repository.toggleSaveArtist(artist)
             verify(savedArtistDao).upsert(any())
         }
+
+    @Test
+    fun `searchSavedAlbums delegates to savedAlbumDao`() =
+        runTest {
+            whenever(savedAlbumDao.searchAsFlow("rock")).thenReturn(flowOf(emptyList()))
+            val result = repository.searchSavedAlbums("rock").first()
+            assertThat(result).isEmpty()
+            verify(savedAlbumDao).searchAsFlow("rock")
+        }
+
+    @Test
+    fun `searchSavedArtists delegates to savedArtistDao`() =
+        runTest {
+            whenever(savedArtistDao.searchAsFlow("metal")).thenReturn(flowOf(emptyList()))
+            val result = repository.searchSavedArtists("metal").first()
+            assertThat(result).isEmpty()
+            verify(savedArtistDao).searchAsFlow("metal")
+        }
 }
