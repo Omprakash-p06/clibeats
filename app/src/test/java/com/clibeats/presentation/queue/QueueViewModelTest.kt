@@ -89,4 +89,10 @@ class QueueViewModelTest {
         viewModel.onRemove(1)
         verify(playbackRepository).removeFromQueue(1)
     }
+
+    @Test
+    fun `onMove delegates to playbackRepository`() {
+        viewModel.onMove(0, 2)
+        verify(playbackRepository).moveTrackInQueue(0, 2)
+    }
 }

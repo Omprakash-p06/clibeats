@@ -54,6 +54,7 @@ fun SongTableRow(
     index: Int? = null,
     isNowPlaying: Boolean = false,
     artworkContent: (@Composable () -> Unit)? = null,
+    actions: (@Composable () -> Unit)? = null,
     onClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
@@ -134,8 +135,14 @@ fun SongTableRow(
                 text = duration,
                 style = MaterialTheme.typography.labelMedium,
                 color = CliBeatsTextSecondary,
-                modifier = Modifier.padding(end = 16.dp),
+                modifier = Modifier.padding(end = if (actions == null) 16.dp else 8.dp),
             )
+
+            actions?.let {
+                Box(modifier = Modifier.padding(end = 8.dp)) {
+                    it()
+                }
+            }
         }
 
         // ── 1dp row divider ───────────────────────────────────────────────
