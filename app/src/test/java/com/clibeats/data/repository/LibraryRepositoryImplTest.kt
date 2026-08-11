@@ -3,8 +3,12 @@
 package com.clibeats.data.repository
 
 import com.clibeats.data.local.dao.LikedSongDao
+import com.clibeats.data.local.dao.SavedAlbumDao
+import com.clibeats.data.local.dao.SavedArtistDao
 import com.clibeats.data.local.dao.SongDao
 import com.clibeats.data.local.entity.SongEntity
+import com.clibeats.domain.model.Album
+import com.clibeats.domain.model.Artist
 import com.clibeats.domain.model.Track
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,13 +27,17 @@ import org.mockito.kotlin.whenever
 class LibraryRepositoryImplTest {
     private lateinit var songDao: SongDao
     private lateinit var likedSongDao: LikedSongDao
+    private lateinit var savedAlbumDao: SavedAlbumDao
+    private lateinit var savedArtistDao: SavedArtistDao
     private lateinit var repository: LibraryRepositoryImpl
 
     @Before
     fun setUp() {
         songDao = mock()
         likedSongDao = mock()
-        repository = LibraryRepositoryImpl(songDao, likedSongDao)
+        savedAlbumDao = mock()
+        savedArtistDao = mock()
+        repository = LibraryRepositoryImpl(songDao, likedSongDao, savedAlbumDao, savedArtistDao)
     }
 
     @Test
@@ -72,5 +80,45 @@ class LibraryRepositoryImplTest {
             repository.toggleLike(track)
             verify(songDao).upsert(any())
             verify(likedSongDao).likeSong(eq("t1"), any())
+        }
+
+    @Test
+    fun `toggleSaveAlbum unsaves album if currently saved`() =
+        runTest {
+            val album = Album("a1", "Test Album", "Artist", 2024, null, 10, "ytmusic")
+            whenever(savedAlbumDao.isSaved("a1")).thenReturn(true)
+
+            repository.toggleSaveAlbum(album)
+            verify(savedAlbumDao).deleteById("a1")
+        }
+
+    @Test
+    fun `toggleSaveAlbum upserts album if not currently saved`() =
+        runTest {
+            val album = Album("a1", "Test Album", "Artist", 2024, null, 10, "ytmusic")
+            whenever(savedAlbumDao.isSaved("a1")).thenReturn(false)
+
+            repository.toggleSaveAlbum(album)
+            verify(savedAlbumDao).upsert(any())
+        }
+
+    @Test
+    fun `toggleSaveArtist unsaves artist if currently saved`() =
+        runTest {
+            val artist = Artist("ar1", "Test Artist", null, "ytmusic")
+            whenever(savedArtistDao.isSaved("ar1")).thenReturn(true)
+
+            repository.toggleSaveArtist(artist)
+            verify(savedArtistDao).deleteById("ar1")
+        }
+
+    @Test
+    fun `toggleSaveArtist upserts artist if not currently saved`() =
+        runTest {
+            val artist = Artist("ar1", "Test Artist", null, "ytmusic")
+            whenever(savedArtistDao.isSaved("ar1")).thenReturn(false)
+
+            repository.toggleSaveArtist(artist)
+            verify(savedArtistDao).upsert(any())
         }
 }
