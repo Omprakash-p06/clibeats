@@ -143,4 +143,16 @@ class PlaybackRepositoryImplTest {
                 shuffleEnabled = eq(false),
             )
         }
+
+    @Test
+    fun `removeFromQueue delegates to playerAdapter`() {
+        repository.removeFromQueue(2)
+        verify(playerAdapter).removeFromQueue(2)
+    }
+
+    @Test
+    fun `clearQueue delegates to playerAdapter`() {
+        repository.clearQueue()
+        verify(playerAdapter).clearQueue()
+    }
 }
