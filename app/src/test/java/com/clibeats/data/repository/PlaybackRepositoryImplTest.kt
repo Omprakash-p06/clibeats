@@ -155,4 +155,10 @@ class PlaybackRepositoryImplTest {
         repository.clearQueue()
         verify(playerAdapter).clearQueue()
     }
+
+    @Test
+    fun `toggleShuffle delegates to playerAdapter`() {
+        repository.toggleShuffle()
+        verify(playerAdapter).toggleShuffle()
+    }
 }
