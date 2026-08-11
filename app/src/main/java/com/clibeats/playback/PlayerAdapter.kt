@@ -159,6 +159,30 @@ class PlayerAdapter
             updateState()
         }
 
+        fun restoreQueue(
+            tracks: List<Track>,
+            startIndex: Int = 0,
+            positionMs: Long = 0L,
+            repeatMode: RepeatMode = RepeatMode.OFF,
+            shuffleEnabled: Boolean = false,
+        ) {
+            if (tracks.isEmpty()) return
+            trackList.clear()
+            trackList.addAll(tracks)
+            val mediaItems = tracks.map { it.toMediaItem() }
+            val validIndex = startIndex.coerceIn(tracks.indices)
+            player.setMediaItems(mediaItems, validIndex, positionMs.coerceAtLeast(0L))
+            player.repeatMode =
+                when (repeatMode) {
+                    RepeatMode.OFF -> Player.REPEAT_MODE_OFF
+                    RepeatMode.ONE -> Player.REPEAT_MODE_ONE
+                    RepeatMode.ALL -> Player.REPEAT_MODE_ALL
+                }
+            player.shuffleModeEnabled = shuffleEnabled
+            player.prepare()
+            updateState()
+        }
+
         fun play() {
             player.play()
         }

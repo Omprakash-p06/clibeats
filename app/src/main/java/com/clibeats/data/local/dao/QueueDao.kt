@@ -37,4 +37,13 @@ interface QueueDao {
         """,
     )
     fun getQueueSongsAsFlow(): Flow<List<SongEntity>>
+
+    @Query(
+        """
+        SELECT songs.* FROM songs
+        INNER JOIN queue_items ON songs.id = queue_items.songId
+        ORDER BY queue_items.position ASC
+        """,
+    )
+    suspend fun getQueueSongs(): List<SongEntity>
 }

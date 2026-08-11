@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +30,10 @@ class AppPreferences
             val ACTIVE_PROVIDER_ID = stringPreferencesKey("active_provider_id")
             val CACHE_MAX_MB = intPreferencesKey("cache_max_mb")
             val HIGH_QUALITY_STREAMING = booleanPreferencesKey("high_quality_streaming")
+            val LAST_QUEUE_INDEX = intPreferencesKey("last_queue_index")
+            val LAST_PLAYBACK_POSITION = longPreferencesKey("last_playback_position")
+            val SAVED_REPEAT_MODE = stringPreferencesKey("saved_repeat_mode")
+            val SAVED_SHUFFLE_ENABLED = booleanPreferencesKey("saved_shuffle_enabled")
         }
 
         private object SecureKeys {
@@ -48,6 +53,26 @@ class AppPreferences
         val highQualityStreaming: Flow<Boolean> =
             dataStore.data.map { prefs ->
                 prefs[Keys.HIGH_QUALITY_STREAMING] ?: true
+            }
+
+        val lastQueueIndex: Flow<Int> =
+            dataStore.data.map { prefs ->
+                prefs[Keys.LAST_QUEUE_INDEX] ?: 0
+            }
+
+        val lastPlaybackPosition: Flow<Long> =
+            dataStore.data.map { prefs ->
+                prefs[Keys.LAST_PLAYBACK_POSITION] ?: 0L
+            }
+
+        val savedRepeatMode: Flow<String> =
+            dataStore.data.map { prefs ->
+                prefs[Keys.SAVED_REPEAT_MODE] ?: "OFF"
+            }
+
+        val savedShuffleEnabled: Flow<Boolean> =
+            dataStore.data.map { prefs ->
+                prefs[Keys.SAVED_SHUFFLE_ENABLED] ?: false
             }
 
         private val _authToken = MutableStateFlow(securePrefs.getString(SecureKeys.AUTH_TOKEN, null))
@@ -75,6 +100,20 @@ class AppPreferences
 
         suspend fun setHighQualityStreaming(enabled: Boolean) {
             dataStore.edit { it[Keys.HIGH_QUALITY_STREAMING] = enabled }
+        }
+
+        suspend fun saveQueueMetadata(
+            index: Int,
+            positionMs: Long,
+            repeatMode: String,
+            shuffleEnabled: Boolean,
+        ) {
+            dataStore.edit { prefs ->
+                prefs[Keys.LAST_QUEUE_INDEX] = index
+                prefs[Keys.LAST_PLAYBACK_POSITION] = positionMs
+                prefs[Keys.SAVED_REPEAT_MODE] = repeatMode
+                prefs[Keys.SAVED_SHUFFLE_ENABLED] = shuffleEnabled
+            }
         }
 
         suspend fun setAuthToken(token: String) {
