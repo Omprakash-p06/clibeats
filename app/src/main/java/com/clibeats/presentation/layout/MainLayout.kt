@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.clibeats.presentation.component.PlayerBar
+import com.clibeats.presentation.component.TrackArtwork
 import com.clibeats.presentation.player.PlayerViewModel
 import com.clibeats.presentation.theme.CliBeatsDivider
 import com.clibeats.presentation.theme.CliBeatsSurface
@@ -103,6 +104,11 @@ fun MainLayout(
                 artist = playbackState.currentTrack?.artist ?: "",
                 isPlaying = playbackState.isPlaying,
                 progress = progress,
+                artworkContent = playbackState.currentTrack?.artworkUrl?.let { url ->
+                    {
+                        TrackArtwork(artworkUrl = url, size = 36)
+                    }
+                },
                 onPlayPauseClick = playerViewModel::onPlayPauseClick,
                 onSkipNextClick = playerViewModel::onSkipNextClick,
                 onSkipPreviousClick = playerViewModel::onSkipPreviousClick,

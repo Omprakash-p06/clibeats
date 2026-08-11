@@ -43,10 +43,10 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import com.clibeats.domain.model.Track
 import com.clibeats.presentation.component.SongTableHeader
 import com.clibeats.presentation.component.SongTableRow
+import com.clibeats.presentation.component.TrackArtwork
 import com.clibeats.presentation.component.TuiBlock
 import com.clibeats.presentation.theme.CliBeatsAccent
 import com.clibeats.presentation.theme.CliBeatsBackground
@@ -243,15 +243,7 @@ private fun SearchResultsList(
                 },
                 duration = formatDuration(track.durationMs),
                 index = index + 1,
-                artworkContent = track.artworkUrl?.let {
-                    {
-                        AsyncImage(
-                            model = it,
-                            contentDescription = "Artwork for ${track.title}",
-                            modifier = Modifier.size(32.dp),
-                        )
-                    }
-                },
+                artworkContent = { TrackArtwork(artworkUrl = track.artworkUrl, size = 32) },
                 onClick = { onTrackClick(track) },
                 actions = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
