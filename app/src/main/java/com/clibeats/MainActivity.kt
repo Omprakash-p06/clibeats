@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +28,7 @@ import com.clibeats.presentation.search.SearchScreen
 import com.clibeats.presentation.settings.SettingsScreen
 import com.clibeats.presentation.theme.CliBeatsTextSecondary
 import com.clibeats.presentation.theme.CliBeatsTheme
+import com.clibeats.presentation.theme.ThemeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -35,7 +37,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            CliBeatsTheme {
+            val themeViewModel: ThemeViewModel = hiltViewModel()
+            val themeState by themeViewModel.themeState.collectAsState()
+
+            CliBeatsTheme(accent = themeState.accent, mode = themeState.mode) {
                 var selectedDestination by remember {
                     mutableStateOf<NavDestination>(NavDestination.Home)
                 }

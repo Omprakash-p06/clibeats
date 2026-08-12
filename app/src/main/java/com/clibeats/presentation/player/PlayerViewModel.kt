@@ -35,4 +35,8 @@ class PlayerViewModel
         fun onSkipPreviousClick() {
             playbackRepository.skipToPrevious()
         }
+
+        fun seekTo(positionMs: Long) {
+            playbackRepository.seekTo(positionMs)
+        }
     }

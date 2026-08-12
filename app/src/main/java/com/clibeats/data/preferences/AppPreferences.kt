@@ -34,6 +34,8 @@ class AppPreferences
             val LAST_PLAYBACK_POSITION = longPreferencesKey("last_playback_position")
             val SAVED_REPEAT_MODE = stringPreferencesKey("saved_repeat_mode")
             val SAVED_SHUFFLE_ENABLED = booleanPreferencesKey("saved_shuffle_enabled")
+            val THEME_MODE = stringPreferencesKey("theme_mode")
+            val ACCENT_COLOR_NAME = stringPreferencesKey("accent_color_name")
         }
 
         private object SecureKeys {
@@ -75,6 +77,16 @@ class AppPreferences
                 prefs[Keys.SAVED_SHUFFLE_ENABLED] ?: false
             }
 
+        val themeMode: Flow<String> =
+            dataStore.data.map { prefs ->
+                prefs[Keys.THEME_MODE] ?: "DARK"
+            }
+
+        val accentColorName: Flow<String> =
+            dataStore.data.map { prefs ->
+                prefs[Keys.ACCENT_COLOR_NAME] ?: "GREEN"
+            }
+
         private val _authToken = MutableStateFlow(securePrefs.getString(SecureKeys.AUTH_TOKEN, null))
 
         val authToken: Flow<String?> = _authToken.asStateFlow()
@@ -100,6 +112,14 @@ class AppPreferences
 
         suspend fun setHighQualityStreaming(enabled: Boolean) {
             dataStore.edit { it[Keys.HIGH_QUALITY_STREAMING] = enabled }
+        }
+
+        suspend fun setThemeMode(mode: String) {
+            dataStore.edit { it[Keys.THEME_MODE] = mode }
+        }
+
+        suspend fun setAccentColorName(name: String) {
+            dataStore.edit { it[Keys.ACCENT_COLOR_NAME] = name }
         }
 
         suspend fun saveQueueMetadata(

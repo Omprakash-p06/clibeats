@@ -104,6 +104,8 @@ fun MainLayout(
                 artist = playbackState.currentTrack?.artist ?: "",
                 isPlaying = playbackState.isPlaying,
                 progress = progress,
+                currentMs = playbackState.positionMs,
+                totalMs = trackDuration,
                 artworkContent = playbackState.currentTrack?.artworkUrl?.let { url ->
                     {
                         TrackArtwork(artworkUrl = url, size = 36)
@@ -112,6 +114,7 @@ fun MainLayout(
                 onPlayPauseClick = playerViewModel::onPlayPauseClick,
                 onSkipNextClick = playerViewModel::onSkipNextClick,
                 onSkipPreviousClick = playerViewModel::onSkipPreviousClick,
+                onSeek = playerViewModel::seekTo,
             )
         }
     }

@@ -21,20 +21,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.clibeats.presentation.theme.CliBeatsAccent
 import com.clibeats.presentation.theme.CliBeatsBackground
-import com.clibeats.presentation.theme.CliBeatsBorderActive
 import com.clibeats.presentation.theme.CliBeatsBorderInactive
 import com.clibeats.presentation.theme.CliBeatsSurface
+import com.clibeats.presentation.theme.LocalAccentColor
 
 /**
  * Authentic TUI block container with an embedded header title line.
- * Modeled after spotify-tui and spicetify-tui (`┌─ Title ───────────────┐`).
+ * Modelled after spotify-tui (`┌─ Title ───────────────┐`).
  *
- * @param title Header title text embedded in the top border
- * @param isActive When true, border and title highlight in terminal green (#1DB954)
- * @param modifier Custom modifier for the box
- * @param content Inner content composable
+ * Border behaviour:
+ *  - [isActive] = false → dim `#333333` border, secondary-colour title
+ *  - [isActive] = true  → accent-colour border + title (from [LocalAccentColor])
+ *
+ * The accent colour is resolved from [LocalAccentColor] — it automatically
+ * responds to the user's chosen theme without any extra parameters.
+ *
+ * @param title     Header title text embedded in the top border
+ * @param isActive  When true, border and title highlight in the accent colour
+ * @param modifier  Custom modifier for the box
+ * @param content   Inner content composable
  */
 @Composable
 fun TuiBlock(
@@ -43,8 +49,9 @@ fun TuiBlock(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
-    val borderColor: Color = if (isActive) CliBeatsBorderActive else CliBeatsBorderInactive
-    val titleColor: Color = if (isActive) CliBeatsAccent else MaterialTheme.colorScheme.onSurfaceVariant
+    val accent = LocalAccentColor.current
+    val borderColor: Color = if (isActive) accent else CliBeatsBorderInactive
+    val titleColor: Color = if (isActive) accent else MaterialTheme.colorScheme.onSurfaceVariant
 
     Column(
         modifier =

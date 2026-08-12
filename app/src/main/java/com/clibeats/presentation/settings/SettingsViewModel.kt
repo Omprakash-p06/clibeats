@@ -8,6 +8,8 @@ import com.clibeats.data.cache.CacheManager
 import com.clibeats.data.playlist.PlaylistExchangeManager
 import com.clibeats.data.preferences.AppPreferences
 import com.clibeats.domain.provider.ProviderRegistry
+import com.clibeats.presentation.theme.AccentColor
+import com.clibeats.presentation.theme.CliBeatsThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -33,9 +35,21 @@ class SettingsViewModel
                 appPreferences.cacheMaxMb,
                 appPreferences.highQualityStreaming,
                 appPreferences.authToken,
-                cacheManager.getAllCachedAsFlow(),
-            ) { providerId, cacheMaxMb, highQuality, token, cachedEntities ->
+            ) { providerId, cacheMaxMb, highQuality, token ->
+                Triple(
+                    Triple(providerId, cacheMaxMb, highQuality),
+                    token,
+                    Unit,
+                )
+            }.combine(cacheManager.getAllCachedAsFlow()) { (inner, token, _), cachedEntities ->
+                val (providerId, cacheMaxMb, highQuality) = inner
                 val totalBytes = cachedEntities.sumOf { it.fileSizeBytes }
+                Triple(Triple(providerId, cacheMaxMb, highQuality), token, totalBytes)
+            }.combine(appPreferences.themeMode) { (inner, token, totalBytes), modeName ->
+                Triple(Triple(inner.first, inner.second, inner.third), Pair(token, totalBytes), modeName)
+            }.combine(appPreferences.accentColorName) { (inner, extra, modeName), accentName ->
+                val (providerId, cacheMaxMb, highQuality) = inner
+                val (token, totalBytes) = extra
                 SettingsUiState(
                     activeProviderId = providerId ?: ProviderRegistry.DEFAULT_PROVIDER_ID,
                     providers =
@@ -46,6 +60,12 @@ class SettingsViewModel
                     highQualityStreaming = highQuality,
                     hasAuthToken = !token.isNullOrEmpty(),
                     currentCacheSizeBytes = totalBytes,
+                    themeMode =
+                        CliBeatsThemeMode.entries.firstOrNull { it.name == modeName }
+                            ?: CliBeatsThemeMode.DARK,
+                    accentColor =
+                        AccentColor.entries.firstOrNull { it.name == accentName }
+                            ?: AccentColor.GREEN,
                 )
             }.stateIn(
                 scope = viewModelScope,
@@ -73,6 +93,18 @@ class SettingsViewModel
         fun setHighQualityStreaming(enabled: Boolean) {
             viewModelScope.launch {
                 appPreferences.setHighQualityStreaming(enabled)
+            }
+        }
+
+        fun setThemeMode(mode: CliBeatsThemeMode) {
+            viewModelScope.launch {
+                appPreferences.setThemeMode(mode.name)
+            }
+        }
+
+        fun setAccentColor(accent: AccentColor) {
+            viewModelScope.launch {
+                appPreferences.setAccentColorName(accent.name)
             }
         }
 

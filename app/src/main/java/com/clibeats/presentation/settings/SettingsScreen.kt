@@ -1,18 +1,24 @@
-@file:Suppress("ktlint:standard:function-naming")
+@file:Suppress("ktlint:standard:function-naming", "MagicNumber")
 
 package com.clibeats.presentation.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -23,20 +29,24 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.clibeats.presentation.component.TuiBlock
-import com.clibeats.presentation.theme.CliBeatsAccent
+import com.clibeats.presentation.theme.AccentColor
+import com.clibeats.presentation.theme.CliBeatsThemeMode
+import com.clibeats.presentation.theme.LocalAccentColor
 
 private const val BYTES_PER_MB = 1048576L
 
-@Suppress("FunctionNaming", "LongMethod", "MagicNumber")
+@Suppress("FunctionNaming", "LongMethod")
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val accent = LocalAccentColor.current
 
     Column(
         modifier =
@@ -47,8 +57,44 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        // Section: Active Music Provider
-        TuiBlock(title = "Active Provider", isActive = true) {
+        // ── Section: Theme Mode ─────────────────────────────────────────────
+        TuiBlock(title = "Theme — ${uiState.themeMode.displayName}", isActive = true) {
+            Column {
+                CliBeatsThemeMode.entries.forEach { mode ->
+                    val isSelected = uiState.themeMode == mode
+                    Row(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable { viewModel.setThemeMode(mode) }
+                                .padding(vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = if (isSelected) "(•) " else "( ) ",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = if (isSelected) accent else MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            text = mode.displayName,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
+                }
+            }
+        }
+
+        // ── Section: Accent Color ───────────────────────────────────────────
+        TuiBlock(title = "Accent Color — ${uiState.accentColor.displayName}", isActive = true) {
+            AccentColorPicker(
+                selected = uiState.accentColor,
+                onSelect = viewModel::setAccentColor,
+            )
+        }
+
+        // ── Section: Active Music Provider ──────────────────────────────────
+        TuiBlock(title = "Active Provider") {
             Column {
                 uiState.providers.forEach { option ->
                     val isSelected = uiState.activeProviderId == option.id
@@ -63,7 +109,7 @@ fun SettingsScreen(
                         Text(
                             text = if (isSelected) "(•) " else "( ) ",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = if (isSelected) CliBeatsAccent else MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = if (isSelected) accent else MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Text(
                             text = option.label,
@@ -75,7 +121,7 @@ fun SettingsScreen(
             }
         }
 
-        // Section: Audio Cache Limit
+        // ── Section: Audio Cache Limit ──────────────────────────────────────
         TuiBlock(title = "Disk Cache Limit") {
             Column {
                 Text(
@@ -97,7 +143,7 @@ fun SettingsScreen(
                         Text(
                             text = if (isSelected) "(•) " else "( ) ",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = if (isSelected) CliBeatsAccent else MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = if (isSelected) accent else MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Text(
                             text = "$mb MB",
@@ -109,7 +155,7 @@ fun SettingsScreen(
             }
         }
 
-        // Section: Streaming Quality
+        // ── Section: Streaming Quality ──────────────────────────────────────
         TuiBlock(title = "Audio Quality") {
             Row(
                 modifier =
@@ -123,7 +169,7 @@ fun SettingsScreen(
                     Text(
                         text = "HIGH QUALITY STREAMING",
                         style = MaterialTheme.typography.titleSmall,
-                        color = CliBeatsAccent,
+                        color = accent,
                     )
                     Text(
                         text = "Prefer high-bitrate audio streams",
@@ -134,31 +180,26 @@ fun SettingsScreen(
                 Text(
                     text = if (uiState.highQualityStreaming) "[ ON ]" else "[ OFF ]",
                     style = MaterialTheme.typography.labelMedium,
-                    color =
-                        if (uiState.highQualityStreaming) {
-                            CliBeatsAccent
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        },
+                    color = if (uiState.highQualityStreaming) accent else MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
 
-        // Section: Playlist Exchange
+        // ── Section: Playlist Exchange ──────────────────────────────────────
         TuiBlock(title = "Playlist Exchange") {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Button(
                         onClick = { viewModel.exportPlaylists() },
                         modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.buttonColors(containerColor = CliBeatsAccent),
+                        colors = ButtonDefaults.buttonColors(containerColor = accent),
                     ) {
                         Text("EXPORT clibeats.json")
                     }
                     Button(
                         onClick = { viewModel.importPlaylists() },
                         modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.buttonColors(containerColor = CliBeatsAccent),
+                        colors = ButtonDefaults.buttonColors(containerColor = accent),
                     ) {
                         Text("IMPORT clibeats.json")
                     }
@@ -167,17 +208,15 @@ fun SettingsScreen(
                     Text(
                         text = message,
                         style = MaterialTheme.typography.labelSmall,
-                        color = CliBeatsAccent,
+                        color = accent,
                     )
                 }
             }
         }
 
-        // Section: Actions
+        // ── Section: Maintenance ────────────────────────────────────────────
         TuiBlock(title = "Maintenance Actions") {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(
                     onClick = { viewModel.clearCache() },
                     modifier = Modifier.fillMaxWidth(),
@@ -194,6 +233,49 @@ fun SettingsScreen(
                         Text("CLEAR SESSION CREDENTIALS")
                     }
                 }
+            }
+        }
+    }
+}
+
+@Suppress("FunctionNaming")
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun AccentColorPicker(
+    selected: AccentColor,
+    onSelect: (AccentColor) -> Unit,
+) {
+    val currentAccent = LocalAccentColor.current
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        AccentColor.entries.forEach { accentOption ->
+            val isSelected = selected == accentOption
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.clickable { onSelect(accentOption) },
+            ) {
+                Box(
+                    modifier =
+                        Modifier
+                            .size(32.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(accentOption.color)
+                            .then(
+                                if (isSelected) {
+                                    Modifier.border(2.dp, currentAccent, RoundedCornerShape(4.dp))
+                                } else {
+                                    Modifier
+                                },
+                            ),
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = accentOption.displayName,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = if (isSelected) currentAccent else MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
     }

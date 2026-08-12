@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,14 +23,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.QueueMusic
 import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.PlaylistPlay
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -48,12 +44,10 @@ import com.clibeats.presentation.component.SongTableHeader
 import com.clibeats.presentation.component.SongTableRow
 import com.clibeats.presentation.component.TrackArtwork
 import com.clibeats.presentation.component.TuiBlock
-import com.clibeats.presentation.theme.CliBeatsAccent
+import com.clibeats.presentation.component.TuiTextField
 import com.clibeats.presentation.theme.CliBeatsBackground
-import com.clibeats.presentation.theme.CliBeatsDivider
-import com.clibeats.presentation.theme.CliBeatsSurface
-import com.clibeats.presentation.theme.CliBeatsTextPrimary
 import com.clibeats.presentation.theme.CliBeatsTextSecondary
+import com.clibeats.presentation.theme.LocalAccentColor
 
 @Suppress("FunctionNaming", "LongMethod")
 @Composable
@@ -72,59 +66,32 @@ fun SearchScreen(
             .background(CliBeatsBackground)
             .padding(12.dp),
     ) {
-        // ── Search input block ───────────────────────────────────────────
-        TuiBlock(title = "Search Prompt", isActive = true) {
-            TextField(
-                value = query,
-                onValueChange = viewModel::onQueryChange,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .semantics { contentDescription = "Search music" },
-                placeholder = {
-                    Text(
-                        text = "> What do you want to play?",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = CliBeatsTextSecondary,
-                    )
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Search,
-                        contentDescription = null,
-                        tint = CliBeatsAccent,
-                    )
-                },
-                trailingIcon = {
-                    if (query.isNotEmpty()) {
-                        IconButton(
-                            onClick = {
-                                viewModel.clearQuery()
-                                focusManager.clearFocus()
-                            },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Clear,
-                                contentDescription = "Clear search",
-                                tint = CliBeatsTextSecondary,
-                            )
-                        }
+        // ── Search input (TUI-styled, focus-activated border) ──────────────
+        TuiTextField(
+            value = query,
+            onValueChange = viewModel::onQueryChange,
+            label = "Search",
+            placeholder = "What do you want to play?",
+            modifier = Modifier.semantics { contentDescription = "Search music" },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
+            trailingContent = {
+                if (query.isNotEmpty()) {
+                    IconButton(
+                        onClick = {
+                            viewModel.clearQuery()
+                            focusManager.clearFocus()
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Clear,
+                            contentDescription = "Clear search",
+                            tint = CliBeatsTextSecondary,
+                        )
                     }
-                },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
-                textStyle = MaterialTheme.typography.bodyMedium,
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = CliBeatsSurface,
-                    unfocusedContainerColor = CliBeatsSurface,
-                    focusedTextColor = CliBeatsTextPrimary,
-                    unfocusedTextColor = CliBeatsTextPrimary,
-                    focusedIndicatorColor = CliBeatsAccent,
-                    unfocusedIndicatorColor = CliBeatsDivider,
-                    cursorColor = CliBeatsAccent,
-                ),
-            )
-        }
+                }
+            },
+        )
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -168,6 +135,7 @@ private fun SearchIdleState() {
 @Suppress("FunctionNaming")
 @Composable
 private fun SearchLoadingState(providerName: String) {
+    val accent = LocalAccentColor.current
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -176,7 +144,7 @@ private fun SearchLoadingState(providerName: String) {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             CircularProgressIndicator(
-                color = CliBeatsAccent,
+                color = accent,
                 strokeWidth = 2.dp,
                 modifier = Modifier.size(24.dp),
             )
@@ -184,7 +152,7 @@ private fun SearchLoadingState(providerName: String) {
             Text(
                 text = "Searching $providerName... [████░░░░]",
                 style = MaterialTheme.typography.labelSmall,
-                color = CliBeatsAccent,
+                color = accent,
             )
         }
     }

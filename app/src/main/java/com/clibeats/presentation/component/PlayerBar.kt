@@ -1,10 +1,13 @@
 @file:Suppress(
     "ktlint:standard:function-naming",
     "ktlint:standard:multiline-expression-wrapping",
+    "MagicNumber",
 )
 
 package com.clibeats.presentation.component
 
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,16 +30,23 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.clibeats.presentation.theme.CliBeatsAccent
 import com.clibeats.presentation.theme.CliBeatsSurfaceVariant
 import com.clibeats.presentation.theme.CliBeatsTextPrimary
 import com.clibeats.presentation.theme.CliBeatsTextSecondary
+import com.clibeats.presentation.theme.LocalAccentColor
 
 /**
  * Persistent bottom player bar — always visible across all main screens.
@@ -44,9 +54,12 @@ import com.clibeats.presentation.theme.CliBeatsTextSecondary
  * Terminal-style panel:
  * - Rendered as a [TuiBlock] titled "Playing" that highlights when active
  * - Controls: SkipPrevious · PlayArrow/Pause (accent) · SkipNext · QueueMusic
- * - 3dp accent progress bar at the bottom of the panel
+ * - Seekable progress bar with `m:ss / m:ss` timestamp (Spotify TUI style)
  *
- * @param progress 0.0 to 1.0 progress fraction
+ * @param progress     0.0 – 1.0 progress fraction (for display)
+ * @param currentMs    Actual current position in ms (for timestamp display)
+ * @param totalMs      Track duration in ms (for timestamp display + seek calc)
+ * @param onSeek       Called with target position ms when user taps/drags bar
  */
 @Suppress("FunctionNaming", "LongMethod", "LongParameterList")
 @Composable
@@ -55,14 +68,24 @@ fun PlayerBar(
     artist: String = "",
     isPlaying: Boolean = false,
     progress: Float = 0f,
+    currentMs: Long = 0L,
+    totalMs: Long = 0L,
     artworkContent: (@Composable () -> Unit)? = null,
     onPlayPauseClick: () -> Unit = {},
     onSkipNextClick: () -> Unit = {},
     onSkipPreviousClick: () -> Unit = {},
     onQueueClick: () -> Unit = {},
+    onSeek: (positionMs: Long) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    val accent = LocalAccentColor.current
     val playPauseDescription = if (isPlaying) "Pause $trackTitle" else "Play $trackTitle"
+
+    // Track bar width in pixels for seek calculation
+    var barWidthPx by remember { mutableFloatStateOf(1f) }
+    var isDragging by remember { mutableStateOf(false) }
+    var dragProgress by remember { mutableFloatStateOf(0f) }
+    val displayProgress = if (isDragging) dragProgress else progress
 
     TuiBlock(
         title = "Playing",
@@ -129,7 +152,7 @@ fun PlayerBar(
                         Icon(
                             imageVector = if (isPlaying) Icons.Outlined.Pause else Icons.Outlined.PlayArrow,
                             contentDescription = null,
-                            tint = CliBeatsAccent,
+                            tint = accent,
                             modifier = Modifier.size(28.dp),
                         )
                     }
@@ -162,15 +185,76 @@ fun PlayerBar(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // ── Terminal Progress Bar ─────────────────────────────────────────
-            LinearProgressIndicator(
-                progress = { progress },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(3.dp),
-                color = CliBeatsAccent,
-                trackColor = CliBeatsSurfaceVariant,
-            )
+            // ── Timestamp + Seekable Progress Bar ─────────────────────────
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                // Current position timestamp
+                Text(
+                    text = formatPlayerTime(currentMs),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = CliBeatsTextSecondary,
+                    modifier = Modifier.padding(end = 6.dp),
+                )
+
+                // Seekable progress bar (fills remaining space)
+                LinearProgressIndicator(
+                    progress = { displayProgress.coerceIn(0f, 1f) },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(4.dp)
+                        .onSizeChanged { barWidthPx = it.width.toFloat().coerceAtLeast(1f) }
+                        .pointerInput(totalMs) {
+                            detectTapGestures { offset ->
+                                if (totalMs > 0L) {
+                                    val fraction = (offset.x / barWidthPx).coerceIn(0f, 1f)
+                                    onSeek((fraction * totalMs).toLong())
+                                }
+                            }
+                        }
+                        .pointerInput(totalMs) {
+                            detectHorizontalDragGestures(
+                                onDragStart = { isDragging = true },
+                                onDragEnd = {
+                                    if (totalMs > 0L) {
+                                        onSeek((dragProgress * totalMs).toLong())
+                                    }
+                                    isDragging = false
+                                },
+                                onDragCancel = { isDragging = false },
+                                onHorizontalDrag = { change, _ ->
+                                    val fraction = (change.position.x / barWidthPx).coerceIn(0f, 1f)
+                                    dragProgress = fraction
+                                },
+                            )
+                        },
+                    color = accent,
+                    trackColor = CliBeatsSurfaceVariant,
+                )
+
+                // Total duration timestamp
+                Text(
+                    text = formatPlayerTime(totalMs),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = CliBeatsTextSecondary,
+                    modifier = Modifier.padding(start = 6.dp),
+                )
+            }
         }
+    }
+}
+
+/** Format milliseconds as `m:ss` or `h:mm:ss`. */
+private fun formatPlayerTime(ms: Long): String {
+    if (ms <= 0L) return "0:00"
+    val totalSec = ms / 1_000L
+    val hours = totalSec / 3600
+    val minutes = (totalSec % 3600) / 60
+    val seconds = totalSec % 60
+    return if (hours > 0) {
+        "%d:%02d:%02d".format(hours, minutes, seconds)
+    } else {
+        "%d:%02d".format(minutes, seconds)
     }
 }
