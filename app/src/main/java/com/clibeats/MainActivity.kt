@@ -36,6 +36,7 @@ import com.clibeats.presentation.library.LibraryScreen
 import com.clibeats.presentation.onboarding.OnboardingScreen
 import com.clibeats.presentation.search.SearchScreen
 import com.clibeats.presentation.settings.SettingsScreen
+import com.clibeats.presentation.telemetry.TelemetryPrompt
 import com.clibeats.presentation.theme.CliBeatsTheme
 import com.clibeats.presentation.theme.CliBeatsThemeMode
 import com.clibeats.presentation.theme.ThemeViewModel
@@ -160,6 +161,7 @@ private fun AppContent() {
     val updateViewModel: UpdateViewModel = hiltViewModel()
     LaunchedEffect(Unit) { updateViewModel.onAppStart() }
     UpdatePrompt(viewModel = updateViewModel)
+    TelemetryPrompt()
 
     MainLayout(
         selectedDestination = tabs[pagerState.currentPage],

@@ -235,6 +235,19 @@ class SettingsViewModel
             _shareFile.value = null
         }
 
+        val anonymousUsageOptIn: StateFlow<Boolean> =
+            appPreferences.anonymousUsageOptIn.stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5_000L),
+                false,
+            )
+
+        fun setAnonymousUsageOptIn(optIn: Boolean) {
+            viewModelScope.launch {
+                appPreferences.setAnonymousUsageOptIn(optIn)
+            }
+        }
+
         companion object {
             private const val BYTES_IN_MB = 1048576L
         }

@@ -51,4 +51,27 @@ class AppPreferencesTest {
 
             assertEquals(256, appPreferences.cacheMaxMb.first())
         }
+
+    @Test
+    fun anonymousUsage_defaultsToFalseAndGeneratesDeviceIdOnOptIn() =
+        runTest {
+            assertEquals(false, appPreferences.anonymousUsageOptIn.first())
+            assertEquals(false, appPreferences.anonymousUsagePrompted.first())
+            assertEquals(null, appPreferences.anonymousDeviceId.first())
+
+            appPreferences.setAnonymousUsageOptIn(true)
+
+            assertEquals(true, appPreferences.anonymousUsageOptIn.first())
+            assertEquals(true, appPreferences.anonymousUsagePrompted.first())
+            val deviceId = appPreferences.anonymousDeviceId.first()
+            org.junit.Assert.assertNotNull(deviceId)
+        }
+
+    @Test
+    fun getOrCreateAnonymousDeviceId_persistsAcrossCalls() =
+        runTest {
+            val id1 = appPreferences.getOrCreateAnonymousDeviceId()
+            val id2 = appPreferences.getOrCreateAnonymousDeviceId()
+            assertEquals(id1, id2)
+        }
 }

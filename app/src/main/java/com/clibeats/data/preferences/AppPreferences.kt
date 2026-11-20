@@ -51,6 +51,9 @@ class AppPreferences
             val UPDATE_DOWNLOAD_ID = longPreferencesKey("update_download_id")
             val UPDATE_DOWNLOAD_VERSION = stringPreferencesKey("update_download_version")
             val UPDATE_DOWNLOAD_SHA256 = stringPreferencesKey("update_download_sha256")
+            val ANONYMOUS_USAGE_OPT_IN = booleanPreferencesKey("anonymous_usage_opt_in")
+            val ANONYMOUS_USAGE_PROMPTED = booleanPreferencesKey("anonymous_usage_prompted")
+            val ANONYMOUS_DEVICE_ID = stringPreferencesKey("anonymous_device_id")
         }
 
         /** Home "Recently played" only shows plays after this time ([ CLEAR ] on Home moves it). */
@@ -309,6 +312,37 @@ class AppPreferences
                 prefs[Keys.SAVED_REPEAT_MODE] = repeatMode
                 prefs[Keys.SAVED_SHUFFLE_ENABLED] = shuffleEnabled
             }
+        }
+
+        val anonymousUsageOptIn: Flow<Boolean> =
+            dataStore.data.map { it[Keys.ANONYMOUS_USAGE_OPT_IN] ?: false }
+
+        val anonymousUsagePrompted: Flow<Boolean> =
+            dataStore.data.map { it[Keys.ANONYMOUS_USAGE_PROMPTED] ?: false }
+
+        val anonymousDeviceId: Flow<String?> =
+            dataStore.data.map { it[Keys.ANONYMOUS_DEVICE_ID] }
+
+        suspend fun setAnonymousUsageOptIn(optIn: Boolean) {
+            dataStore.edit { prefs ->
+                prefs[Keys.ANONYMOUS_USAGE_OPT_IN] = optIn
+                prefs[Keys.ANONYMOUS_USAGE_PROMPTED] = true
+                if (optIn && prefs[Keys.ANONYMOUS_DEVICE_ID] == null) {
+                    prefs[Keys.ANONYMOUS_DEVICE_ID] = java.util.UUID.randomUUID().toString()
+                }
+            }
+        }
+
+        suspend fun markAnonymousUsagePrompted() {
+            dataStore.edit { it[Keys.ANONYMOUS_USAGE_PROMPTED] = true }
+        }
+
+        suspend fun getOrCreateAnonymousDeviceId(): String {
+            val existing = dataStore.data.first()[Keys.ANONYMOUS_DEVICE_ID]
+            if (existing != null) return existing
+            val newId = java.util.UUID.randomUUID().toString()
+            dataStore.edit { it[Keys.ANONYMOUS_DEVICE_ID] = newId }
+            return newId
         }
     }
 

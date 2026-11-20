@@ -408,6 +408,40 @@ fun SettingsScreen(
         // ── Section: Updates (GitHub Releases) ──────────────────────────────
         UpdateSection()
 
+        // ── Section: Privacy & Usage ─────────────────────────────────────────
+        val telemetryOptIn by viewModel.anonymousUsageOptIn.collectAsState()
+        TuiBlock(title = "Privacy & Usage") {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "Report usage anonymously",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Text(
+                        text = if (telemetryOptIn) "[● ON •]" else "[○ OFF •]",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = if (telemetryOptIn) accent else MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier =
+                            Modifier
+                                .clickable { viewModel.setAnonymousUsageOptIn(!telemetryOptIn) }
+                                .padding(horizontal = 4.dp, vertical = 2.dp),
+                    )
+                }
+                Text(
+                    text =
+                        "Reports usage anonymously to GitHub for real-time user count. " +
+                            "None of your personal data or listening history is collected.",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+
         // ── Section: About (developer credit; name links to GitHub) ─────────
         TuiBlock(title = "About") {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
