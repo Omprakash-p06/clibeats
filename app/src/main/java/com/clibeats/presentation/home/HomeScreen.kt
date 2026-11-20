@@ -10,7 +10,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -44,7 +43,6 @@ import com.clibeats.presentation.component.SongTableHeader
 import com.clibeats.presentation.component.SongTableRow
 import com.clibeats.presentation.component.TrackArtwork
 import com.clibeats.presentation.component.TuiBlock
-import com.clibeats.presentation.layout.NavDestination
 import com.clibeats.presentation.search.formatDuration
 import com.clibeats.presentation.theme.CliBeatsAccent
 import com.clibeats.presentation.theme.CliBeatsDivider
@@ -63,7 +61,6 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
     toggleSourceRequested: Boolean = false,
     onToggleSourceHandled: () -> Unit = {},
-    onNavigate: (NavDestination) -> Unit = {},
 ) {
     // Tapping the Home tab while already on Home switches the source Online <-> Local.
     LaunchedEffect(toggleSourceRequested) {
@@ -130,33 +127,6 @@ fun HomeScreen(
                         providers = homeViewModel.providers,
                         activeProviderId = activeProviderId,
                         onSelect = homeViewModel::setActiveProvider,
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-        }
-
-        // 2. Quick Navigation shortcuts
-        item {
-            TuiBlock(title = "Quick Navigation") {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    QuickShortcutButton(
-                        label = "[1] SEARCH",
-                        modifier = Modifier.weight(1f),
-                        onClick = { onNavigate(NavDestination.Search) },
-                    )
-                    QuickShortcutButton(
-                        label = "[2] LIBRARY",
-                        modifier = Modifier.weight(1f),
-                        onClick = { onNavigate(NavDestination.Library) },
-                    )
-                    QuickShortcutButton(
-                        label = "[3] PLAYLISTS",
-                        modifier = Modifier.weight(1f),
-                        onClick = { onNavigate(NavDestination.Playlists) },
                     )
                 }
             }
@@ -314,29 +284,6 @@ private fun EmptyHomeState() {
                     "Use [Search] to discover music or browse your local [Library].",
             style = MaterialTheme.typography.bodySmall,
             color = CliBeatsTextSecondary,
-        )
-    }
-}
-
-@Composable
-private fun QuickShortcutButton(
-    label: String,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-) {
-    Box(
-        modifier =
-            modifier
-                .background(CliBeatsSurface)
-                .border(1.dp, CliBeatsDivider)
-                .clickable(onClick = onClick)
-                .padding(vertical = 12.dp, horizontal = 8.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = CliBeatsAccent,
         )
     }
 }

@@ -19,7 +19,7 @@ Swipe left / right anywhere outside a song row to move between tabs.
 | **Library** | `[ ONLINE ]` = songs you've played, `[ OFFLINE ]` = music on your device (with the track count). Tap the tab again to switch. Tracks / Artists / Albums / **Playlists**. |
 | **Settings** | Theme & accent, music folders, playback, provider, storage, playlist exchange, about. |
 
-**Playlists** (Library → Playlists, or `[3] PLAYLISTS` on Home): ♥ Favorites, Most Played (✕ removes a song,
+**Playlists** (Library → Playlists): ♥ Favorites, Most Played (✕ removes a song,
 `[ CLEAR ALL ]` asks first), your playlists, `[ + NEW ]` and local M3U playlists. Drag a song's ≡ handle to
 reorder ♥ Favorites or your own playlists.
 
