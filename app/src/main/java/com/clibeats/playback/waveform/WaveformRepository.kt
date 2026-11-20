@@ -81,7 +81,6 @@ class WaveformRepository
                 live.onTick(state.positionMs, duration, state.isPlaying, sum, count)
             ) {
                 liveDirty = true
-                publish()
             }
             // Keep what was heard when playback stops (the app may be closed while paused).
             if (wasPlaying && !state.isPlaying) saveLive()
@@ -100,11 +99,10 @@ class WaveformRepository
             complete = false
             live = LiveLoudnessTracker()
             liveDirty = false
+            _current.value = null
             if (track == null) {
-                _current.value = null
                 return
             }
-            publish()
             val id = track.id
             val durationHint = state.durationMs.takeIf { it > 0 } ?: track.durationMs
             loadJob =
@@ -114,7 +112,9 @@ class WaveformRepository
                     if (stored != null) {
                         saved = stored.levels
                         complete = stored.complete
-                        publish()
+                        if (complete) {
+                            publish()
+                        }
                     }
                     if (complete) return@launch
                     val source = sourceFor(track) ?: return@launch
@@ -125,8 +125,8 @@ class WaveformRepository
                             saved = progress.levels
                             complete = true
                             withContext(Dispatchers.IO) { store.save(id, progress.levels, complete = true) }
+                            publish()
                         }
-                        publish()
                     }
                 }
         }
@@ -154,7 +154,12 @@ class WaveformRepository
             liveDirty = false
             val merged = mergeKnown(live.bars.levels(), saved)
             saved = merged
-            scope.launch(Dispatchers.IO) { store.save(id, merged, complete = false) }
+            val allKnown = merged.none { it.isNaN() }
+            if (allKnown) {
+                complete = true
+                publish()
+            }
+            scope.launch(Dispatchers.IO) { store.save(id, merged, complete = allKnown) }
         }
 
         private fun emptyLevels() = FloatArray(Loudness.BAR_COUNT) { Float.NaN }
