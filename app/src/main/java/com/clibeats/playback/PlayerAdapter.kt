@@ -105,10 +105,8 @@ class PlayerAdapter
         }
 
         init {
-            scope.launch {
-                audioOutputMonitor.currentDevice.collect {
-                    updateState()
-                }
+            audioOutputMonitor.onDeviceChanged = {
+                updateState()
             }
             player.addListener(
                 object : Player.Listener {

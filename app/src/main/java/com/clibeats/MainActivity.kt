@@ -176,6 +176,7 @@ private fun AppContent() {
             when (tabs[page]) {
                 NavDestination.Home ->
                     HomeScreen(
+                        onNavigate = navigate,
                         toggleSourceRequested = toggleHomeSource,
                         onToggleSourceHandled = { toggleHomeSource = false },
                     )

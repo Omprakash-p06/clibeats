@@ -24,7 +24,9 @@ class AudioOutputMonitor
     constructor(
         @ApplicationContext private val context: Context,
     ) {
-        private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
+        var onDeviceChanged: (() -> Unit)? = null
+        private val audioManager =
+            runCatching { context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager }.getOrNull()
         private val _currentDevice = MutableStateFlow(determineCurrentOutputDevice())
         val currentDevice: StateFlow<AudioOutputDevice> = _currentDevice.asStateFlow()
 
@@ -34,6 +36,7 @@ class AudioOutputMonitor
 
         private fun registerDeviceCallback() {
             val am = audioManager ?: return
+            val looper = Looper.getMainLooper() ?: return
             val callback =
                 object : AudioDeviceCallback() {
                     override fun onAudioDevicesAdded(addedDevices: Array<out AudioDeviceInfo>?) {
@@ -44,16 +47,21 @@ class AudioOutputMonitor
                         refreshDevice()
                     }
                 }
-            am.registerAudioDeviceCallback(callback, Handler(Looper.getMainLooper()))
+            runCatching {
+                am.registerAudioDeviceCallback(callback, Handler(looper))
+            }
         }
 
         fun refreshDevice() {
             _currentDevice.value = determineCurrentOutputDevice()
+            onDeviceChanged?.invoke()
         }
 
         private fun determineCurrentOutputDevice(): AudioOutputDevice {
-            val am = audioManager ?: return AudioOutputDevice("Phone speaker", AudioDeviceType.PHONE_SPEAKER)
-            val devices = am.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
+            val devices =
+                audioManager?.let { am ->
+                    runCatching { am.getDevices(AudioManager.GET_DEVICES_OUTPUTS) }.getOrNull()
+                } ?: emptyArray()
 
             val priorityOrder =
                 listOf(
