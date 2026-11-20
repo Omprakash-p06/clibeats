@@ -39,6 +39,7 @@ class PlayerAdapter
         private val player: ExoPlayer,
         private val streamResolver: StreamResolver,
         @ApplicationContext private val context: Context,
+        private val audioOutputMonitor: AudioOutputMonitor = AudioOutputMonitor(context),
     ) {
         /**
          * Starts the media session foreground service so playback keeps running
@@ -60,6 +61,7 @@ class PlayerAdapter
                     bufferedPositionMs = 0L,
                     repeatMode = RepeatMode.OFF,
                     shuffleEnabled = false,
+                    activeOutputDevice = audioOutputMonitor.currentDevice.value,
                 ),
             )
         val playbackState: StateFlow<PlaybackState> = _playbackState.asStateFlow()
@@ -103,6 +105,11 @@ class PlayerAdapter
         }
 
         init {
+            scope.launch {
+                audioOutputMonitor.currentDevice.collect {
+                    updateState()
+                }
+            }
             player.addListener(
                 object : Player.Listener {
                     override fun onIsPlayingChanged(isPlaying: Boolean) {
@@ -454,6 +461,7 @@ class PlayerAdapter
                     sampleRateHz = format?.sampleRate?.takeIf { it > 0 },
                     bitDepth = format?.pcmEncoding?.let(::bitDepthOf),
                     durationMs = player.duration.takeIf { it > 0 } ?: (currentTrack?.durationMs ?: 0L),
+                    activeOutputDevice = audioOutputMonitor.currentDevice.value,
                 )
         }
 

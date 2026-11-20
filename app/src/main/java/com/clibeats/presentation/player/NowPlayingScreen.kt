@@ -2,7 +2,10 @@
 
 package com.clibeats.presentation.player
 
+import android.content.Context
+import android.content.Intent
 import android.os.Build
+import android.provider.Settings
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
@@ -175,6 +178,7 @@ fun NowPlayingScreen(
         }
     var showSleepDialog by remember { mutableStateOf(false) }
     var showPlaylistDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     CompositionLocalProvider(LocalAccentColor provides accent) {
         Box(
@@ -230,6 +234,19 @@ fun NowPlayingScreen(
                                     .padding(horizontal = 4.dp, vertical = 2.dp),
                         )
                     }
+                    val outputDevice = state.activeOutputDevice
+                    if (outputDevice != null) {
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            text = "[ ${outputDevice.displayIcon} ${outputDevice.name.uppercase()} ]",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = CliBeatsAccent,
+                            modifier =
+                                Modifier
+                                    .clickable { launchMediaOutputSwitcher(context) }
+                                    .padding(horizontal = 4.dp, vertical = 2.dp),
+                        )
+                    }
                 }
 
                 Spacer(Modifier.height(12.dp))
@@ -242,7 +259,6 @@ fun NowPlayingScreen(
                 var artFallback by remember(track?.artworkUrl) { mutableStateOf(false) }
                 val artworkDescription = track?.let { "Artwork for ${it.title}" } ?: "No artwork"
                 val artSize = if (artFallback) FALLBACK_ART_PX else ARTWORK_FULL_PX
-                val context = LocalContext.current
                 val artUrl = artworkUrlFor(track?.artworkUrl, artSize)
                 val thumbUrl = artworkUrlFor(track?.artworkUrl, ARTWORK_THUMB_PX)
                 val hiResRequest =
@@ -586,3 +602,22 @@ private const val WASH_TINT = 0.35f
 private const val WASH_MIDDLE = 0.55f
 private val DARK_WASH = Triple(0.42f, 0.6f, 0.9f)
 private val LIGHT_WASH = Triple(0.62f, 0.74f, 0.92f)
+
+internal fun launchMediaOutputSwitcher(context: Context) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        val intent =
+            Intent("android.settings.panel.action.MEDIA_OUTPUT").apply {
+                putExtra("com.android.settings.panel.extra.PACKAGE_NAME", context.packageName)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+        if (context.packageManager.resolveActivity(intent, 0) != null) {
+            context.startActivity(intent)
+            return
+        }
+    }
+    val btIntent =
+        Intent(Settings.ACTION_BLUETOOTH_SETTINGS).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+    runCatching { context.startActivity(btIntent) }
+}

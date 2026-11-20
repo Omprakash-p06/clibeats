@@ -15,4 +15,5 @@ data class PlaybackState(
     val sampleRateHz: Int? = null,
     val bitDepth: Int? = null,
     val durationMs: Long = 0L,
+    val activeOutputDevice: AudioOutputDevice? = null,
 )
