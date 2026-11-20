@@ -166,6 +166,7 @@ private fun AppContent() {
     MainLayout(
         selectedDestination = tabs[pagerState.currentPage],
         onDestinationSelected = onTabClick,
+        updateViewModel = updateViewModel,
     ) {
         // Swipe left/right between tabs in bottom-bar order.
         HorizontalPager(

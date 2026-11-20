@@ -58,6 +58,7 @@ class UpdateManager
         private val checkMutex = Mutex()
         private val started = AtomicBoolean(false)
         private var pollJob: Job? = null
+        private var periodicCheckJob: Job? = null
         private val downloadManager: DownloadManager? = context.getSystemService(DownloadManager::class.java)
 
         private val _state = MutableStateFlow<UpdateState>(UpdateState.Idle)
@@ -71,7 +72,7 @@ class UpdateManager
 
         val installedVersion: String = BuildConfig.VERSION_NAME
 
-        /** Called once per app launch: restores a known update, then checks GitHub if a check is due. */
+        /** Called once per app launch: restores a known update, checks GitHub immediately, then polls periodically. */
         fun onAppStart() {
             if (!started.compareAndSet(false, true)) return
             scope.launch {
@@ -89,10 +90,23 @@ class UpdateManager
                 if (cached != null && UpdateRules.isNewer(cached.version, installedVersion)) {
                     present(cached, prompt = true)
                 }
-                if (UpdateRules.isCheckDue(System.currentTimeMillis(), record.lastCheckAt, frequency)) {
-                    check(userInitiated = false)
-                }
+                check(userInitiated = false)
+                startPeriodicCheck()
             }
+        }
+
+        private fun startPeriodicCheck() {
+            periodicCheckJob?.cancel()
+            periodicCheckJob =
+                scope.launch {
+                    while (isActive) {
+                        delay(PERIODIC_CHECK_INTERVAL_MS)
+                        val frequency = frequencyOf(preferences.updateRecord().frequency)
+                        if (frequency != UpdateFrequency.OFF) {
+                            check(userInitiated = false)
+                        }
+                    }
+                }
         }
 
         /** "Check now" in Settings: always hits GitHub and reports errors. */
@@ -114,6 +128,13 @@ class UpdateManager
         /** Hides the pop-up without snoozing (e.g. while the download continues in the background). */
         fun hidePrompt() {
             _promptVisible.value = false
+        }
+
+        /** Brings up the update prompt dialog if an update is available or in progress. */
+        fun showPrompt() {
+            if (releaseOf(_state.value) != null) {
+                _promptVisible.value = true
+            }
         }
 
         fun download() {
@@ -185,7 +206,12 @@ class UpdateManager
             userInitiated: Boolean,
         ) {
             if (release != null && UpdateRules.isNewer(release.version, installedVersion)) {
-                present(release, prompt = !userInitiated)
+                val record = preferences.updateRecord()
+                val cached = UpdateRules.decode(record.cachedReleaseJson)
+                if (cached == null || UpdateRules.isNewer(release.version, cached.version) || userInitiated) {
+                    preferences.setUpdateSnoozeUntil(0L)
+                }
+                present(release, prompt = true)
             } else {
                 _promptVisible.value = false
                 _state.value = if (userInitiated) UpdateState.UpToDate else UpdateState.Idle
@@ -315,8 +341,8 @@ class UpdateManager
             val signerError = if (actual != null && actual == expectedSha256) verifySigner(id) else null
             if (actual != null && actual == expectedSha256 && signerError == null) {
                 _state.value = UpdateState.ReadyToInstall(release)
-                // A download started from the pop-up brings it back when it's ready.
-                if (_promptVisible.value || startedFromPrompt) _promptVisible.value = true
+                // Bring back the prompt so the user is given the immediate choice to install.
+                _promptVisible.value = true
             } else {
                 removeDownload(id)
                 _state.value =
@@ -436,6 +462,7 @@ class UpdateManager
         private companion object {
             const val APK_MIME_TYPE = "application/vnd.android.package-archive"
             const val POLL_INTERVAL_MS = 500L
+            const val PERIODIC_CHECK_INTERVAL_MS = 30 * 60 * 1000L // 30 minutes
             const val BUFFER_SIZE = 64 * 1024
             const val PERCENT = 100
             const val UNKNOWN_PROGRESS = -1

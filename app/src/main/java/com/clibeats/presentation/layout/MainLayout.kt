@@ -74,6 +74,8 @@ import com.clibeats.presentation.theme.CliBeatsDivider
 import com.clibeats.presentation.theme.CliBeatsSurface
 import com.clibeats.presentation.theme.CliBeatsTextSecondary
 import com.clibeats.presentation.theme.LocalAccentColor
+import com.clibeats.presentation.update.UpdateStatusBar
+import com.clibeats.presentation.update.UpdateViewModel
 
 /**
  * Root layout shell for CLIBeats.
@@ -90,6 +92,7 @@ fun MainLayout(
     selectedDestination: NavDestination = NavDestination.Home,
     onDestinationSelected: (NavDestination) -> Unit = {},
     playerViewModel: PlayerViewModel = hiltViewModel(),
+    updateViewModel: UpdateViewModel = hiltViewModel(),
     content: @Composable () -> Unit = {},
 ) {
     var showNowPlaying by rememberSaveable { mutableStateOf(false) }
@@ -120,6 +123,8 @@ fun MainLayout(
                 thickness = 1.dp,
                 color = CliBeatsDivider,
             )
+
+            UpdateStatusBar(viewModel = updateViewModel)
 
             Box(
                 modifier = Modifier

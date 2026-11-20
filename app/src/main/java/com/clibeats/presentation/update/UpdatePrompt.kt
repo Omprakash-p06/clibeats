@@ -42,8 +42,8 @@ fun UpdatePrompt(viewModel: UpdateViewModel = hiltViewModel()) {
     val busy = state.isWorking
 
     AlertDialog(
-        // Tapping outside never snoozes by accident; only the buttons decide.
-        onDismissRequest = { if (busy) viewModel.hidePrompt() },
+        // Tapping outside hides the prompt dialog without snoozing permanently.
+        onDismissRequest = viewModel::hidePrompt,
         modifier = Modifier.border(1.dp, accent),
         containerColor = MaterialTheme.colorScheme.surface,
         title = { Text("> update --available", style = MaterialTheme.typography.titleSmall) },

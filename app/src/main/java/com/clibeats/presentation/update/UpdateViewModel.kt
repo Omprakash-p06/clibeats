@@ -46,4 +46,6 @@ class UpdateViewModel
         fun later() = updateManager.later()
 
         fun hidePrompt() = updateManager.hidePrompt()
+
+        fun showPrompt() = updateManager.showPrompt()
     }
