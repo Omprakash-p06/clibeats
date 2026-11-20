@@ -8,7 +8,8 @@
 Stream online or play your own lossless library — no ads, no accounts, no tracking.
 
 [![Version](https://img.shields.io/badge/version-2.3.0-1DB954)](#)
-[![Downloads](https://img.shields.io/github/downloads/Omprakash-p06/clibeats/total?label=downloads&color=1DB954)](https://github.com/Omprakash-p06/clibeats/releases)
+[![Stars](https://img.shields.io/github/stars/Omprakash-p06/clibeats?color=1DB954&logo=github)](https://github.com/Omprakash-p06/clibeats/stargazers)
+[![Downloads & Users](https://img.shields.io/github/downloads/Omprakash-p06/clibeats/total?label=users%20%26%20downloads&color=1DB954)](https://github.com/Omprakash-p06/clibeats/releases)
 [![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com/)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.x-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org/)
 [![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-UI-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/compose)
@@ -31,6 +32,7 @@ Stream online or play your own lossless library — no ads, no accounts, no trac
 - [Privacy & Legal](#privacy--legal)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
+- [Repository Stars & Community Growth](#repository-stars--community-growth)
 - [Developers](#developers)
 - [License](#license)
 
@@ -262,6 +264,14 @@ responsible for complying with providers' terms of service and copyright law in 
 2. Add or update tests for behaviour changes.
 3. Run the quality gates (tests, ktlint, detekt, lint) before opening a PR.
 4. Keep UI changes consistent with the terminal design system.
+
+---
+
+## Repository Stars & Community Growth
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Omprakash-p06/clibeats&type=Date)](https://star-history.com/#Omprakash-p06/clibeats&Date)
+
+*Real-time repository stars and active user growth. Users can optionally opt in to report anonymous usage from the app so our user counts stay up to date without collecting any personal data.*
 
 ---
 
