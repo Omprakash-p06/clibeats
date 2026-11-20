@@ -35,19 +35,19 @@ class AudioOutputMonitor
         }
 
         private fun registerDeviceCallback() {
-            val am = audioManager ?: return
-            val looper = Looper.getMainLooper() ?: return
-            val callback =
-                object : AudioDeviceCallback() {
-                    override fun onAudioDevicesAdded(addedDevices: Array<out AudioDeviceInfo>?) {
-                        refreshDevice()
-                    }
-
-                    override fun onAudioDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>?) {
-                        refreshDevice()
-                    }
-                }
             runCatching {
+                val am = audioManager ?: return@runCatching
+                val looper = Looper.getMainLooper() ?: return@runCatching
+                val callback =
+                    object : AudioDeviceCallback() {
+                        override fun onAudioDevicesAdded(addedDevices: Array<out AudioDeviceInfo>?) {
+                            refreshDevice()
+                        }
+
+                        override fun onAudioDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>?) {
+                            refreshDevice()
+                        }
+                    }
                 am.registerAudioDeviceCallback(callback, Handler(looper))
             }
         }
@@ -57,37 +57,40 @@ class AudioOutputMonitor
             onDeviceChanged?.invoke()
         }
 
-        private fun determineCurrentOutputDevice(): AudioOutputDevice {
-            val devices =
-                audioManager?.let { am ->
-                    runCatching { am.getDevices(AudioManager.GET_DEVICES_OUTPUTS) }.getOrNull()
-                } ?: emptyArray()
+        private fun determineCurrentOutputDevice(): AudioOutputDevice =
+            runCatching {
+                val devices =
+                    audioManager?.let { am ->
+                        runCatching { am.getDevices(AudioManager.GET_DEVICES_OUTPUTS) }.getOrNull()
+                    } ?: emptyArray()
 
-            val priorityOrder =
-                listOf(
-                    AudioDeviceInfo.TYPE_BLUETOOTH_A2DP,
-                    AudioDeviceInfo.TYPE_BLUETOOTH_SCO,
-                    AudioDeviceInfo.TYPE_WIRED_HEADSET,
-                    AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
-                    AudioDeviceInfo.TYPE_USB_HEADSET,
-                    AudioDeviceInfo.TYPE_USB_DEVICE,
-                )
+                val priorityOrder =
+                    listOf(
+                        AudioDeviceInfo.TYPE_BLUETOOTH_A2DP,
+                        AudioDeviceInfo.TYPE_BLUETOOTH_SCO,
+                        AudioDeviceInfo.TYPE_WIRED_HEADSET,
+                        AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
+                        AudioDeviceInfo.TYPE_USB_HEADSET,
+                        AudioDeviceInfo.TYPE_USB_DEVICE,
+                    )
 
-            val accessory = priorityOrder.firstNotNullOfOrNull { type -> devices.firstOrNull { it.type == type } }
-            val bleAccessory =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    devices.firstOrNull { isBleOutput(it) }
+                val accessory = priorityOrder.firstNotNullOfOrNull { type -> devices.firstOrNull { it.type == type } }
+                val bleAccessory =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        devices.firstOrNull { isBleOutput(it) }
+                    } else {
+                        null
+                    }
+
+                val targetDevice = accessory ?: bleAccessory
+                if (targetDevice != null) {
+                    mapAudioDeviceInfo(targetDevice)
                 } else {
-                    null
+                    AudioOutputDevice("Phone speaker", AudioDeviceType.PHONE_SPEAKER)
                 }
-
-            val targetDevice = accessory ?: bleAccessory
-            return if (targetDevice != null) {
-                mapAudioDeviceInfo(targetDevice)
-            } else {
+            }.getOrElse {
                 AudioOutputDevice("Phone speaker", AudioDeviceType.PHONE_SPEAKER)
             }
-        }
 
         @RequiresApi(Build.VERSION_CODES.S)
         private fun isBleOutput(device: AudioDeviceInfo): Boolean =
