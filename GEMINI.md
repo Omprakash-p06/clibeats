@@ -7,7 +7,10 @@ Without the server, run `graphicle context "<question>"` in a terminal.
 # GEMINI.md - Instructions for Google Gemini / Antigravity Agents
 
 ## Codebase Exploration & Discipline
-1. **Graphicle First**: Always query `graphicle` MCP or run `graphicle context "<question>"` before modifying unfamiliar files, refactoring, or adding architecture changes.
+1. **Graphicle First & Node Inspection**:
+   - ALWAYS run `graphicle sync` first before exploring or changing code.
+   - Inspect nodes and callers: use `graphicle graph explain "<symbol>"` or MCP `get_node`, and `graphicle graph affected "<symbol>"` or MCP `get_neighbors` to verify upstream/downstream impact across modules.
+   - Query project context using `graphicle context "<question>"` or MCP `query_graph` / `recall_project`.
 2. **Environment Requirements**:
    - MUST use JDK 17: `JAVA_HOME=/home/omprakash/.jdks/jdk-17`.
    - Android SDK is at `/home/omprakash/Android/Sdk` (via `local.properties`).

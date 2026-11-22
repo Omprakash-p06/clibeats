@@ -7,7 +7,10 @@ Without the server, run `graphicle context "<question>"` in a terminal.
 # CLAUDE.md - Instructions for Claude Code / Anthropic Models
 
 ## Codebase Exploration & Discipline
-1. **Graphicle First**: Always run `graphicle context "<question>"` or query `graphicle` MCP before editing unfamiliar areas of the codebase.
+1. **Graphicle First & Node Inspection**:
+   - ALWAYS run `graphicle sync` first to ensure the graph reflects the latest working tree.
+   - Inspect nodes before editing: run `graphicle graph explain "<symbol>"` or MCP `get_node` for connections, and `graphicle graph affected "<symbol>"` or MCP `get_neighbors` for reverse caller impact.
+   - For architecture queries, run `graphicle context "<question>"` or MCP `query_graph`.
 2. **Environment Requirements**:
    - `JAVA_HOME=/home/omprakash/.jdks/jdk-17` must prefix all `./gradlew` commands.
    - Sdk path is located at `/home/omprakash/Android/Sdk` (read from `local.properties`).

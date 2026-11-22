@@ -7,7 +7,10 @@ Without the server, run `graphicle context "<question>"` in a terminal.
 # GPT.md - Instructions for OpenAI GPT / Codex / Copilot Agents
 
 ## Codebase Exploration & Discipline
-1. **Graphicle First**: Always run `graphicle context "<question>"` or query `graphicle` MCP tools before editing unfamiliar codebase files.
+1. **Graphicle First & Node Inspection**:
+   - ALWAYS run `graphicle sync` first before exploring or changing code.
+   - Node traversal: run `graphicle graph explain "<symbol>"` or MCP `get_node` to inspect connections, and `graphicle graph affected "<symbol>"` or MCP `get_neighbors` to verify all reverse callers.
+   - Evidence gathering: run `graphicle context "<question>"` or MCP `query_graph` before architecture modifications.
 2. **Environment Requirements**:
    - Android build environment requires JDK 17: `JAVA_HOME=/home/omprakash/.jdks/jdk-17`.
    - Android SDK location: `/home/omprakash/Android/Sdk` (specified in `local.properties`).

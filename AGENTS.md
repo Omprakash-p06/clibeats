@@ -6,10 +6,12 @@ Without the server, run `graphicle context "<question>"` in a terminal.
 
 ## Codebase Discipline & Engineering Rules
 
-### 1. Codebase Exploration First (Graphicle & Navigation)
-- ALWAYS query `graphicle` before editing unfamiliar components or architecture layers:
+### 1. Codebase Exploration First (Graphicle & Node Inspection)
+- **Step 1: Synchronize Graphicle**: ALWAYS run `graphicle sync` first before exploring or changing code to ensure the code graph reflects the latest working copy.
+- **Step 2: Inspect Nodes & Callers**: Before modifying or creating public interfaces, data classes, or components:
   - Query graph: `graphicle context "<question>"` or MCP `query_graph` / `recall_project`.
-  - Check symbol neighbors: `get_neighbors` / `get_node` before changing public interfaces.
+  - Node inspection: `graphicle graph explain "<symbol>"` or MCP `get_node` to inspect symbol provenance and connections.
+  - Reverse impact: `graphicle graph affected "<symbol>"` or MCP `get_neighbors` to inspect downstream dependents and callers across modules.
 - Verify callers across modules before deleting or modifying shared types.
 
 ### 2. Build & Verification Environment
