@@ -115,6 +115,7 @@ internal fun PlaylistBrowser(
     onFavoritesClick: () -> Unit,
     onMostPlayedClick: () -> Unit,
     onCreateClick: () -> Unit,
+    onImportClick: () -> Unit = {},
     onPlaylistClick: (Playlist) -> Unit,
     onDeleteClick: (Playlist) -> Unit,
 ) {
@@ -184,7 +185,14 @@ internal fun PlaylistBrowser(
         if (filter == PlaylistFilter.ALL) {
             header("pinned_h", "PINNED")
             entries(pinned, viewMode)
-            header("own_h", "YOUR PLAYLISTS · ${own.size}", action = "[ + NEW ]", onAction = onCreateClick)
+            header(
+                key = "own_h",
+                title = "YOUR PLAYLISTS · ${own.size}",
+                action = "[ + NEW ]",
+                onAction = onCreateClick,
+                secondaryAction = "[ IMPORT ]",
+                onSecondaryAction = onImportClick,
+            )
             if (own.isEmpty()) {
                 item(key = "own_empty", span = fullSpan) {
                     Hint("No playlists yet. Tap [ + NEW ], or long-press any song to add it to one.")
@@ -212,6 +220,8 @@ private fun LazyGridScope.header(
     title: String,
     action: String? = null,
     onAction: () -> Unit = {},
+    secondaryAction: String? = null,
+    onSecondaryAction: () -> Unit = {},
 ) {
     item(key = key, span = fullSpan) {
         Row(
@@ -224,6 +234,18 @@ private fun LazyGridScope.header(
                 color = CliBeatsAccent,
                 modifier = Modifier.weight(1f),
             )
+            if (secondaryAction != null) {
+                Text(
+                    text = secondaryAction,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = CliBeatsAccent,
+                    modifier =
+                        Modifier
+                            .clickable(role = Role.Button, onClick = onSecondaryAction)
+                            .padding(horizontal = 4.dp, vertical = 4.dp),
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+            }
             if (action != null) {
                 Text(
                     text = action,

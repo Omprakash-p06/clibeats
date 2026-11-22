@@ -3,11 +3,13 @@ package com.clibeats.presentation.player
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.clibeats.domain.model.AudioOutput
+import com.clibeats.domain.model.LyricLine
 import com.clibeats.domain.model.PlaybackState
 import com.clibeats.domain.model.Playlist
 import com.clibeats.domain.model.RepeatMode
 import com.clibeats.domain.model.Track
 import com.clibeats.domain.repository.LibraryRepository
+import com.clibeats.domain.repository.LyricsRepository
 import com.clibeats.domain.repository.PlaybackRepository
 import com.clibeats.domain.repository.PlaylistRepository
 import com.clibeats.playback.AudioOutputMonitor
@@ -22,6 +24,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -38,6 +41,7 @@ sealed interface SleepTimer {
     data object EndOfTrack : SleepTimer
 }
 
+@Suppress("TooManyFunctions")
 @HiltViewModel
 class PlayerViewModel
     @Inject
@@ -46,6 +50,7 @@ class PlayerViewModel
         private val playlistRepository: PlaylistRepository? = null,
         private val libraryRepository: LibraryRepository? = null,
         private val audioOutputMonitor: AudioOutputMonitor? = null,
+        private val lyricsRepository: LyricsRepository? = null,
     ) : ViewModel() {
         val playbackState: StateFlow<PlaybackState> = playbackRepository.playbackState
 
@@ -62,6 +67,23 @@ class PlayerViewModel
         }
 
         val queue: StateFlow<List<Track>> = playbackRepository.queueState
+
+        /** Time-synced lyrics for the currently playing track. */
+        @Suppress("OPT_IN_USAGE")
+        val currentLyrics: StateFlow<List<LyricLine>> =
+            playbackState
+                .map { state: PlaybackState -> state.currentTrack }
+                .distinctUntilChanged { a: Track?, b: Track? -> a?.id == b?.id }
+                .flatMapLatest { track: Track? ->
+                    if (track == null || lyricsRepository == null) {
+                        flowOf(emptyList())
+                    } else {
+                        flow {
+                            val res = lyricsRepository.getLyrics(track).getOrDefault(emptyList())
+                            emit(res)
+                        }
+                    }
+                }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), emptyList())
 
         /** Whether the current track is in Favorites (liked songs). */
         @Suppress("OPT_IN_USAGE")
@@ -108,6 +130,15 @@ class PlayerViewModel
 
         fun playTrack(track: Track) {
             playbackRepository.playTrack(track)
+        }
+
+        /** Inserts [track] right after the current one. */
+        fun playNext(track: Track) {
+            playbackRepository.playNext(track)
+        }
+
+        fun addToQueue(track: Track) {
+            playbackRepository.addToQueue(track)
         }
 
         /** Plays [tracks] as the queue from [index], so next/previous and auto-advance work. */

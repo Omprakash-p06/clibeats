@@ -18,6 +18,11 @@ interface MusicProvider {
 
     suspend fun stream(trackId: String): ProviderResult<String>
 
+    suspend fun relatedTracks(
+        trackId: String,
+        limit: Int = 15,
+    ): ProviderResult<List<Track>> = ProviderResult.Success(emptyList())
+
     suspend fun playlists(): ProviderResult<List<Playlist>>
 
     suspend fun queue(): ProviderResult<List<Track>>

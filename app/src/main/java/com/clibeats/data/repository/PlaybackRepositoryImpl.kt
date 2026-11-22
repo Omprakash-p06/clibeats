@@ -10,10 +10,12 @@ import com.clibeats.data.local.dao.SongDao
 import com.clibeats.data.local.entity.QueueEntity
 import com.clibeats.data.local.mapper.toDomain
 import com.clibeats.data.local.mapper.toEntity
+import com.clibeats.data.network.NetworkMonitor
 import com.clibeats.data.preferences.AppPreferences
 import com.clibeats.domain.model.PlaybackState
 import com.clibeats.domain.model.RepeatMode
 import com.clibeats.domain.model.Track
+import com.clibeats.domain.provider.ProviderRegistry
 import com.clibeats.domain.repository.HistoryRepository
 import com.clibeats.domain.repository.PlaybackRepository
 import com.clibeats.playback.PlayerAdapter
@@ -52,6 +54,8 @@ class PlaybackRepositoryImpl
         private val historyRepository: HistoryRepository? = null,
         private val imageLoader: dagger.Lazy<ImageLoader>? = null,
         private val appContext: Context? = null,
+        private val providerRegistry: ProviderRegistry? = null,
+        private val networkMonitor: NetworkMonitor? = null,
     ) : PlaybackRepository {
         @Inject
         constructor(
@@ -63,6 +67,8 @@ class PlaybackRepositoryImpl
             historyRepository: HistoryRepository,
             imageLoader: dagger.Lazy<ImageLoader>,
             @ApplicationContext appContext: Context,
+            providerRegistry: ProviderRegistry,
+            networkMonitor: NetworkMonitor,
         ) : this(
             playerAdapter,
             streamResolver,
@@ -73,6 +79,8 @@ class PlaybackRepositoryImpl
             historyRepository,
             imageLoader,
             appContext,
+            providerRegistry,
+            networkMonitor,
         )
 
         private val repositoryScope = CoroutineScope(SupervisorJob() + ioDispatcher)
@@ -124,8 +132,7 @@ class PlaybackRepositoryImpl
                 launch(start = CoroutineStart.UNDISPATCHED) { persistPlaybackPosition() }
             }
             repositoryScope.launch {
-                // On each new track: record history and warm stream URLs for the next tracks
-                // so skip / auto-advance starts without waiting on extraction.
+                // On each new track: record history, warm stream URLs, and trigger infinite autoplay
                 playerAdapter.playbackState
                     .map { it.currentTrack }
                     .distinctUntilChanged { a, b -> a?.id == b?.id }
@@ -134,6 +141,7 @@ class PlaybackRepositoryImpl
                         rememberPlayed(current)
                         runCatching { historyRepository?.recordPlay(current.id, current.providerId) }
                         prefetchAfter(current)
+                        checkAutoplay(current)
                     }
             }
         }
@@ -254,6 +262,41 @@ class PlaybackRepositoryImpl
             }
         }
 
+        @Suppress("ReturnCount")
+        private suspend fun checkAutoplay(current: Track) {
+            val enabled = runCatching { appPreferences.autoplayEnabled?.first() == true }.getOrDefault(false)
+            if (!enabled) return
+            if (playerAdapter.playbackState.value.repeatMode != RepeatMode.OFF) return
+            if (networkMonitor?.isOnline?.value != true) return
+            val queue = playerAdapter.queueFlow.value
+            val currentIndex = queue.indexOfFirst { it.id == current.id }
+            if (currentIndex < 0 || currentIndex < queue.lastIndex - 1) return
+
+            val provider =
+                providerRegistry?.getProvider(current.providerId)
+                    ?: providerRegistry?.getProvider(ProviderRegistry.DEFAULT_PROVIDER_ID)
+                    ?: return
+            val result = provider.relatedTracks(current.id)
+            val related = (result as? com.clibeats.domain.provider.ProviderResult.Success)?.data.orEmpty()
+            if (related.isEmpty()) return
+
+            val recentHistory =
+                runCatching {
+                    historyRepository?.getRecentlyPlayedTracks(AUTOPLAY_HISTORY_DEDUP_LIMIT)
+                        ?.first()
+                        ?.map { it.id }
+                        ?.toSet()
+                }.getOrNull().orEmpty()
+
+            val existingIds = queue.map { it.id }.toSet()
+            val candidates = related.filter { it.id !in existingIds && it.id !in recentHistory }
+            if (candidates.isNotEmpty()) {
+                withContext(Dispatchers.Main) {
+                    playerAdapter.addAllToQueue(candidates)
+                }
+            }
+        }
+
         /** Warms the disk cache with the next tracks' high-res covers so Now Playing shows them instantly. */
         private fun prefetchArtwork(track: Track) {
             val context = appContext ?: return
@@ -370,6 +413,7 @@ class PlaybackRepositoryImpl
         private companion object {
             const val PREFETCH_COUNT = 2
             const val HISTORY_LIMIT = 100
+            const val AUTOPLAY_HISTORY_DEDUP_LIMIT = 25
             const val POSITION_SAVE_STEP_MS = 5_000L
             const val RESTART_THRESHOLD_MS = 3_000L
         }

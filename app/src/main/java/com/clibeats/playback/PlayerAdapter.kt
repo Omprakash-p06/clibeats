@@ -231,6 +231,19 @@ class PlayerAdapter
             updateState()
         }
 
+        fun addAllToQueue(tracks: List<Track>) {
+            if (tracks.isEmpty()) return
+            startPlaybackService()
+            trackList.addAll(tracks)
+            syncQueue()
+            val mediaItems = tracks.map { it.toMediaItem() }
+            player.addMediaItems(mediaItems)
+            if (player.playbackState == Player.STATE_IDLE || player.mediaItemCount == tracks.size) {
+                player.prepare()
+            }
+            updateState()
+        }
+
         fun playNext(track: Track) {
             startPlaybackService()
             val targetIndex =

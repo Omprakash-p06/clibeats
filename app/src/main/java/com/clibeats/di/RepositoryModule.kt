@@ -5,11 +5,13 @@ package com.clibeats.di
 
 import com.clibeats.data.repository.HistoryRepositoryImpl
 import com.clibeats.data.repository.LibraryRepositoryImpl
+import com.clibeats.data.repository.LyricsRepositoryImpl
 import com.clibeats.data.repository.PlaybackRepositoryImpl
 import com.clibeats.data.repository.PlaylistRepositoryImpl
 import com.clibeats.data.repository.SongRepositoryImpl
 import com.clibeats.domain.repository.HistoryRepository
 import com.clibeats.domain.repository.LibraryRepository
+import com.clibeats.domain.repository.LyricsRepository
 import com.clibeats.domain.repository.PlaybackRepository
 import com.clibeats.domain.repository.PlaylistRepository
 import com.clibeats.domain.repository.SongRepository
@@ -41,4 +43,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindLibraryRepository(impl: LibraryRepositoryImpl): LibraryRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindLyricsRepository(impl: LyricsRepositoryImpl): LyricsRepository
 }

@@ -168,6 +168,17 @@ private fun SplitQueueView(
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    val autoplay by viewModel.autoplayEnabled.collectAsState()
+                    Text(
+                        text = if (autoplay) "[ ∞ AUTOPLAY: ON ]" else "[ ∞ AUTOPLAY: OFF ]",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = if (autoplay) CliBeatsAccent else CliBeatsTextSecondary,
+                        modifier =
+                            Modifier
+                                .clickable { viewModel.toggleAutoplay() }
+                                .padding(horizontal = 6.dp, vertical = 4.dp),
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "[ SHUFFLE ]",
                         style = MaterialTheme.typography.labelSmall,

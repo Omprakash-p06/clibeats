@@ -1,5 +1,8 @@
+@file:Suppress("ReturnCount")
+
 package com.clibeats.presentation.navigation
 
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -96,3 +99,5 @@ class AppRouter(
 
     private fun stack(tab: MainTab): MutableList<AppRoute> = stacks.getValue(tab)
 }
+
+val LocalAppRouter = compositionLocalOf<AppRouter> { error("No AppRouter provided") }

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -26,11 +27,14 @@ import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.clibeats.presentation.detail.AlbumDetailScreen
+import com.clibeats.presentation.detail.ArtistDetailScreen
 import com.clibeats.presentation.home.HomeScreen
 import com.clibeats.presentation.layout.MainLayout
 import com.clibeats.presentation.library.LibraryScreen
 import com.clibeats.presentation.navigation.AppRoute
 import com.clibeats.presentation.navigation.AppRouter
+import com.clibeats.presentation.navigation.LocalAppRouter
 import com.clibeats.presentation.navigation.MainTab
 import com.clibeats.presentation.onboarding.OnboardingScreen
 import com.clibeats.presentation.playlist.PlaylistScreen
@@ -135,45 +139,55 @@ private fun AppContent() {
     LaunchedEffect(Unit) { updateViewModel.onAppStart() }
     UpdatePrompt(viewModel = updateViewModel)
 
-    MainLayout(
-        activeTab = router.activeTab,
-        breadcrumb = router.currentRoute.breadcrumb,
-        canGoBack = router.canGoBack,
-        onBack = { router.popBack() },
-        onTabSelected = onTabClick,
-        onQueueClick = { router.navigate(AppRoute.Queue) },
-        onSettingsClick = { router.navigate(AppRoute.Settings) },
-    ) {
-        // One route composed at a time; SaveableStateHolder keeps each tab's scroll/input state.
-        stateHolder.SaveableStateProvider(router.currentRoute.key) {
-            when (router.currentRoute) {
-                AppRoute.Home ->
-                    HomeScreen(
-                        toggleSourceRequested = toggleHomeSource,
-                        onToggleSourceHandled = { toggleHomeSource = false },
-                    )
-                AppRoute.Search ->
-                    SearchScreen(
-                        focusRequested = focusSearch,
-                        onFocusHandled = { focusSearch = false },
-                        toggleSourceRequested = toggleSearchSource,
-                        onToggleSourceHandled = { toggleSearchSource = false },
-                    )
-                AppRoute.Library ->
-                    LibraryScreen(
-                        toggleModeRequested = toggleLibraryMode,
-                        onToggleModeHandled = { toggleLibraryMode = false },
-                    )
-                AppRoute.Playlists ->
-                    PlaylistScreen(
-                        showGridRequested = showPlaylistGrid,
-                        onShowGridHandled = { showPlaylistGrid = false },
-                    )
-                AppRoute.Queue -> QueueScreen()
-                AppRoute.Settings -> SettingsScreen()
-                // Playlist detail is selected inside PlaylistScreen for now; artist/album screens
-                // arrive with the retention work.
-                is AppRoute.PlaylistDetail, is AppRoute.ArtistDetail, is AppRoute.AlbumDetail -> Unit
+    CompositionLocalProvider(LocalAppRouter provides router) {
+        MainLayout(
+            activeTab = router.activeTab,
+            breadcrumb = router.currentRoute.breadcrumb,
+            canGoBack = router.canGoBack,
+            onBack = { router.popBack() },
+            onTabSelected = onTabClick,
+            onQueueClick = { router.navigate(AppRoute.Queue) },
+            onSettingsClick = { router.navigate(AppRoute.Settings) },
+        ) {
+            // One route composed at a time; SaveableStateHolder keeps each tab's scroll/input state.
+            stateHolder.SaveableStateProvider(router.currentRoute.key) {
+                when (val route = router.currentRoute) {
+                    AppRoute.Home ->
+                        HomeScreen(
+                            toggleSourceRequested = toggleHomeSource,
+                            onToggleSourceHandled = { toggleHomeSource = false },
+                        )
+                    AppRoute.Search ->
+                        SearchScreen(
+                            focusRequested = focusSearch,
+                            onFocusHandled = { focusSearch = false },
+                            toggleSourceRequested = toggleSearchSource,
+                            onToggleSourceHandled = { toggleSearchSource = false },
+                        )
+                    AppRoute.Library ->
+                        LibraryScreen(
+                            toggleModeRequested = toggleLibraryMode,
+                            onToggleModeHandled = { toggleLibraryMode = false },
+                        )
+                    AppRoute.Playlists ->
+                        PlaylistScreen(
+                            showGridRequested = showPlaylistGrid,
+                            onShowGridHandled = { showPlaylistGrid = false },
+                        )
+                    AppRoute.Queue -> QueueScreen()
+                    AppRoute.Settings -> SettingsScreen()
+                    is AppRoute.ArtistDetail ->
+                        ArtistDetailScreen(
+                            route = route,
+                            onBack = { router.popBack() },
+                        )
+                    is AppRoute.AlbumDetail ->
+                        AlbumDetailScreen(
+                            route = route,
+                            onBack = { router.popBack() },
+                        )
+                    is AppRoute.PlaylistDetail -> Unit
+                }
             }
         }
     }

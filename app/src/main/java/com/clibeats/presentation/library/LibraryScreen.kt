@@ -47,8 +47,12 @@ import com.clibeats.presentation.component.AddToPlaylistDialog
 import com.clibeats.presentation.component.FavoritesViewModel
 import com.clibeats.presentation.component.SongTableHeader
 import com.clibeats.presentation.component.SongTableRow
+import com.clibeats.presentation.component.TrackActionSheet
 import com.clibeats.presentation.component.TrackArtwork
 import com.clibeats.presentation.component.TuiBlock
+import com.clibeats.presentation.navigation.AppRoute
+import com.clibeats.presentation.navigation.LocalAppRouter
+import com.clibeats.presentation.player.PlayerViewModel
 import com.clibeats.presentation.search.formatDuration
 import com.clibeats.presentation.theme.CliBeatsAccent
 import com.clibeats.presentation.theme.CliBeatsBackground
@@ -75,10 +79,49 @@ fun LibraryScreen(
         }
     }
     val localFolderChosen by viewModel.localFolderChosen.collectAsState()
+    val playerViewModel: PlayerViewModel = hiltViewModel()
+    val router = LocalAppRouter.current
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
     var addToPlaylistTrack by remember { mutableStateOf<Track?>(null) }
+    var actionTrack by remember { mutableStateOf<Track?>(null) }
     addToPlaylistTrack?.let { track ->
         AddToPlaylistDialog(track = track, onDismiss = { addToPlaylistTrack = null })
+    }
+    actionTrack?.let { track ->
+        TrackActionSheet(
+            track = track,
+            onDismiss = { actionTrack = null },
+            onPlayNext = { playerViewModel.playNext(track) },
+            onAddToQueue = { playerViewModel.addToQueue(track) },
+            onAddToPlaylist = { addToPlaylistTrack = track },
+            onToggleLike = { favorites.add(track) },
+            onGoToArtist = {
+                actionTrack = null
+                router.navigate(
+                    AppRoute.ArtistDetail(
+                        artistName = track.artist,
+                        browseId = null,
+                        providerId = track.providerId,
+                    ),
+                )
+            },
+            onGoToAlbum =
+                if (track.album.isNotBlank()) {
+                    {
+                        actionTrack = null
+                        router.navigate(
+                            AppRoute.AlbumDetail(
+                                albumName = track.album,
+                                artistName = track.artist,
+                                browseId = null,
+                                providerId = track.providerId,
+                            ),
+                        )
+                    }
+                } else {
+                    null
+                },
+        )
     }
     val tabs = listOf("Tracks", "Artists", "Albums")
 
@@ -184,7 +227,8 @@ fun LibraryScreen(
                                     },
                                     onSwipeRight = viewModel::onSwipeAddToQueue,
                                     onSwipeLeft = favorites::add,
-                                    onLongPress = { addToPlaylistTrack = it },
+                                    onActionClick = { actionTrack = it },
+                                    onLongPress = { actionTrack = it },
                                 )
                             1 -> ArtistsList(artists = currentState.artists)
                             2 -> AlbumsList(albums = currentState.albums)
@@ -196,18 +240,19 @@ fun LibraryScreen(
     }
 }
 
-@Suppress("FunctionNaming")
+@Suppress("FunctionNaming", "LongParameterList")
 @Composable
 private fun TracksList(
     tracks: List<Track>,
     onTrackClick: (Track, Int) -> Unit,
     onSwipeRight: (Track) -> Unit,
-    onLongPress: (Track) -> Unit,
     onSwipeLeft: (Track) -> Unit,
+    onActionClick: (Track) -> Unit,
+    onLongPress: (Track) -> Unit,
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
-            SongTableHeader()
+            SongTableHeader(showIndex = true)
         }
         itemsIndexed(items = tracks, key = { _, track -> track.id }) { index, track ->
             SongTableRow(
@@ -215,11 +260,12 @@ private fun TracksList(
                 artist = track.artist,
                 duration = formatDuration(track.durationMs),
                 index = index + 1,
-                artworkContent = { TrackArtwork(artworkUrl = track.artworkUrl, size = 32) },
+                artworkContent = { TrackArtwork(artworkUrl = track.artworkUrl, size = 52) },
                 onClick = { onTrackClick(track, index) },
                 onSwipeRight = { onSwipeRight(track) },
-                onLongPress = { onLongPress(track) },
                 onSwipeLeft = { onSwipeLeft(track) },
+                onActionClick = { onActionClick(track) },
+                onLongPress = { onLongPress(track) },
             )
         }
     }

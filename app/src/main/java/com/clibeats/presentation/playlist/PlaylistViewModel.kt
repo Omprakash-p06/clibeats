@@ -4,6 +4,7 @@ package com.clibeats.presentation.playlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.clibeats.data.playlist.PlaylistUrlImporter
 import com.clibeats.data.preferences.AppPreferences
 import com.clibeats.domain.model.Playlist
 import com.clibeats.domain.model.Track
@@ -36,6 +37,7 @@ class PlaylistViewModel
         private val libraryRepository: LibraryRepository? = null,
         private val historyRepository: HistoryRepository? = null,
         private val appPreferences: AppPreferences? = null,
+        private val playlistUrlImporter: PlaylistUrlImporter? = null,
     ) : ViewModel() {
         private val _selectedPlaylistId = MutableStateFlow<String?>(null)
 
@@ -236,6 +238,24 @@ class PlaylistViewModel
         ) {
             viewModelScope.launch {
                 playlistRepository.setPlaylistCoverImage(playlistId, imageUri)
+            }
+        }
+
+        fun importPlaylistFromUrl(
+            url: String,
+            onResult: (Boolean, String?) -> Unit,
+        ) {
+            viewModelScope.launch {
+                if (playlistUrlImporter == null) {
+                    onResult(false, "Importer unavailable")
+                    return@launch
+                }
+                val result = playlistUrlImporter.importPlaylistFromUrl(url)
+                if (result.isSuccess) {
+                    onResult(true, null)
+                } else {
+                    onResult(false, result.exceptionOrNull()?.message ?: "Import failed")
+                }
             }
         }
 

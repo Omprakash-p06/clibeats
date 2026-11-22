@@ -13,6 +13,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+@Suppress("TooManyFunctions")
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
@@ -25,8 +26,11 @@ object DatabaseModule {
             context,
             CliBeatsDatabase::class.java,
             "clibeats.db",
-        ).addMigrations(CliBeatsDatabase.MIGRATION_1_2, CliBeatsDatabase.MIGRATION_2_3)
-            .build()
+        ).addMigrations(
+            CliBeatsDatabase.MIGRATION_1_2,
+            CliBeatsDatabase.MIGRATION_2_3,
+            CliBeatsDatabase.MIGRATION_3_4,
+        ).build()
 
     @Provides
     @Singleton
@@ -59,4 +63,12 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideSavedArtistDao(db: CliBeatsDatabase) = db.savedArtistDao()
+
+    @Provides
+    @Singleton
+    fun provideDownloadedTrackDao(db: CliBeatsDatabase) = db.downloadedTrackDao()
+
+    @Provides
+    @Singleton
+    fun provideLyricsCacheDao(db: CliBeatsDatabase) = db.lyricsCacheDao()
 }

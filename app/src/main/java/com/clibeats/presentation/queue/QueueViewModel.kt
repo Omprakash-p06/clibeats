@@ -1,14 +1,19 @@
+@file:Suppress("ForbiddenImport")
+
 package com.clibeats.presentation.queue
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.clibeats.data.preferences.AppPreferences
 import com.clibeats.domain.model.Track
 import com.clibeats.domain.repository.PlaybackRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,6 +21,7 @@ class QueueViewModel
     @Inject
     constructor(
         private val playbackRepository: PlaybackRepository,
+        private val appPreferences: AppPreferences? = null,
     ) : ViewModel() {
         val uiState: StateFlow<QueueUiState> =
             combine(
@@ -35,6 +41,19 @@ class QueueViewModel
                 started = SharingStarted.WhileSubscribed(5_000L),
                 initialValue = QueueUiState.Empty,
             )
+
+        val autoplayEnabled: StateFlow<Boolean> =
+            appPreferences?.autoplayEnabled?.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000L),
+                initialValue = true,
+            ) ?: MutableStateFlow(true)
+
+        fun toggleAutoplay() {
+            viewModelScope.launch {
+                appPreferences?.setAutoplayEnabled(!autoplayEnabled.value)
+            }
+        }
 
         fun onMove(
             from: Int,

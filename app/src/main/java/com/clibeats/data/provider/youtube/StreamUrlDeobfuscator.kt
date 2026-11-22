@@ -50,8 +50,8 @@ object StreamUrlDeobfuscator {
         val ordered =
             if (highQuality) {
                 audio.sortedWith(
-                    compareByDescending<JsonElement> { it.stringField("mimeType").contains("mp4") }
-                        .thenByDescending { it.bitrateOrZero() },
+                    compareByDescending<JsonElement> { it.bitrateOrZero() }
+                        .thenByDescending { it.stringField("mimeType").contains("mp4") },
                 )
             } else {
                 // Data saver: lowest known bitrate, unknown bitrates last.

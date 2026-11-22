@@ -1,4 +1,4 @@
-@file:Suppress("ForbiddenImport")
+@file:Suppress("ForbiddenImport", "LongParameterList")
 
 package com.clibeats.di
 
@@ -16,6 +16,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import com.clibeats.data.cache.CacheManager
 import com.clibeats.data.cache.MediaCaches
+import com.clibeats.data.local.dao.DownloadedTrackDao
 import com.clibeats.playback.DeferredDataSourceFactory
 import com.clibeats.playback.LocalOrRemoteMediaSourceFactory
 import com.clibeats.playback.StreamResolver
@@ -54,6 +55,7 @@ object PlaybackModule {
         streamResolver: dagger.Lazy<StreamResolver>,
         cacheManager: dagger.Lazy<CacheManager>,
         mediaCaches: dagger.Lazy<MediaCaches>,
+        downloadedTrackDao: dagger.Lazy<DownloadedTrackDao>,
     ): ExoPlayer {
         // Start playback after 0.3s of audio instead of Media3's 2.5s default.
         val loadControl =
@@ -71,7 +73,7 @@ object PlaybackModule {
         val resolvingFactory =
             ResolvingDataSource.Factory(
                 httpFactory,
-                TrackUriResolver(streamResolver, cacheManager),
+                TrackUriResolver(streamResolver, cacheManager, downloadedTrackDao),
             )
         // Remote audio goes through the song cache. The cache key is the stable placeholder/track URI,
         // so a cached song replays without re-resolving (or any network). Local files skip the cache.

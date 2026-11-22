@@ -79,7 +79,7 @@ import com.clibeats.presentation.update.UpdateStatusBar
  *
  * Per UI-SPEC: Active nav item = CliBeatsAccent. No pill/bubble indicator.
  */
-@Suppress("FunctionNaming", "LongMethod")
+@Suppress("FunctionNaming", "LongMethod", "LongParameterList")
 @Composable
 fun MainLayout(
     activeTab: MainTab = MainTab.HOME,

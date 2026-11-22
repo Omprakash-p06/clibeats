@@ -84,6 +84,41 @@ fun BrowseResponse.playlistTracks(): List<Track> {
         .distinctBy { it.id }
 }
 
+/**
+ * Parse InnerTube next (radio) response into a list of Track domain objects.
+ * Looks for playlistPanelVideoRenderer items.
+ */
+fun JsonElement.toRadioTrackList(): List<Track> {
+    return findAll(this, "playlistPanelVideoRenderer").mapNotNull { item ->
+        val videoId = item.nav("videoId")?.safeString() ?: return@mapNotNull null
+        val title =
+            item.nav("title", "runs")?.safeArray()?.firstOrNull()?.nav("text")?.safeString()
+                ?: item.nav("title", "simpleText")?.safeString()
+                ?: return@mapNotNull null
+        val artist =
+            item.nav("shortBylineText", "runs")?.safeArray()?.firstOrNull()?.nav("text")?.safeString()
+                ?: item.nav("longBylineText", "runs")?.safeArray()?.firstOrNull()?.nav("text")?.safeString()
+                ?: "Unknown Artist"
+        val durationText =
+            item.nav("lengthText", "runs")?.safeArray()?.firstOrNull()?.nav("text")?.safeString()
+                ?: item.nav("lengthText", "simpleText")?.safeString()
+                ?: ""
+        val thumbnails = item.nav("thumbnail", "thumbnails")?.safeArray()
+        val artworkUrl = thumbnails?.lastOrNull()?.nav("url")?.safeString()
+
+        Track(
+            id = "$PROVIDER_ID:$videoId",
+            title = title,
+            artist = artist,
+            album = "",
+            durationMs = parseDurationMs(durationText),
+            artworkUrl = artworkUrl,
+            streamUrl = null,
+            providerId = PROVIDER_ID,
+        )
+    }.distinctBy { it.id }
+}
+
 /** Every value stored under [key] anywhere in the tree, in document order. */
 private fun findAll(
     root: JsonElement,

@@ -44,8 +44,12 @@ import com.clibeats.presentation.component.FavoritesViewModel
 import com.clibeats.presentation.component.ProviderSwitcher
 import com.clibeats.presentation.component.SongTableHeader
 import com.clibeats.presentation.component.SongTableRow
+import com.clibeats.presentation.component.TrackActionSheet
 import com.clibeats.presentation.component.TrackArtwork
 import com.clibeats.presentation.component.TuiBlock
+import com.clibeats.presentation.navigation.AppRoute
+import com.clibeats.presentation.navigation.LocalAppRouter
+import com.clibeats.presentation.player.PlayerViewModel
 import com.clibeats.presentation.search.formatDuration
 import com.clibeats.presentation.theme.CliBeatsAccent
 import com.clibeats.presentation.theme.CliBeatsDivider
@@ -79,9 +83,48 @@ fun HomeScreen(
     val activeProviderId by homeViewModel.activeProviderId.collectAsState()
     val recentlyPlayed by homeViewModel.recentlyPlayed.collectAsState()
     val isOnline by homeViewModel.isOnline.collectAsState()
+    val playerViewModel: PlayerViewModel = hiltViewModel()
+    val router = LocalAppRouter.current
     var addToPlaylistTrack by remember { mutableStateOf<Track?>(null) }
+    var actionTrack by remember { mutableStateOf<Track?>(null) }
     addToPlaylistTrack?.let { track ->
         AddToPlaylistDialog(track = track, onDismiss = { addToPlaylistTrack = null })
+    }
+    actionTrack?.let { track ->
+        TrackActionSheet(
+            track = track,
+            onDismiss = { actionTrack = null },
+            onPlayNext = { playerViewModel.playNext(track) },
+            onAddToQueue = { homeViewModel.addToQueue(track) },
+            onAddToPlaylist = { addToPlaylistTrack = track },
+            onToggleLike = { favorites.add(track) },
+            onGoToArtist = {
+                actionTrack = null
+                router.navigate(
+                    AppRoute.ArtistDetail(
+                        artistName = track.artist,
+                        browseId = null,
+                        providerId = track.providerId,
+                    ),
+                )
+            },
+            onGoToAlbum =
+                if (track.album.isNotBlank()) {
+                    {
+                        actionTrack = null
+                        router.navigate(
+                            AppRoute.AlbumDetail(
+                                albumName = track.album,
+                                artistName = track.artist,
+                                browseId = null,
+                                providerId = track.providerId,
+                            ),
+                        )
+                    }
+                } else {
+                    null
+                },
+        )
     }
 
     LazyColumn(
@@ -151,11 +194,12 @@ fun HomeScreen(
                     trackTitle = track.title,
                     artist = track.artist,
                     duration = formatDuration(track.durationMs),
-                    artworkContent = { TrackArtwork(artworkUrl = track.artworkUrl, size = 32) },
+                    artworkContent = { TrackArtwork(artworkUrl = track.artworkUrl, size = 52) },
                     onClick = { homeViewModel.playFromList(recentlyPlayed, index) },
                     onSwipeRight = { homeViewModel.addToQueue(track) },
                     onSwipeLeft = { favorites.add(track) },
-                    onLongPress = { addToPlaylistTrack = track },
+                    onActionClick = { actionTrack = track },
+                    onLongPress = { actionTrack = track },
                 )
             }
             item { Spacer(modifier = Modifier.height(12.dp)) }
@@ -212,11 +256,12 @@ fun HomeScreen(
                             trackTitle = track.title,
                             artist = track.artist,
                             duration = formatDuration(track.durationMs),
-                            artworkContent = { TrackArtwork(artworkUrl = track.artworkUrl, size = 32) },
+                            artworkContent = { TrackArtwork(artworkUrl = track.artworkUrl, size = 52) },
                             onClick = { homeViewModel.playFromList(state.tracks, index) },
                             onSwipeRight = { homeViewModel.addToQueue(track) },
                             onSwipeLeft = { favorites.add(track) },
-                            onLongPress = { addToPlaylistTrack = track },
+                            onActionClick = { actionTrack = track },
+                            onLongPress = { actionTrack = track },
                         )
                     }
                 }

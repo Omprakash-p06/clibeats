@@ -35,6 +35,7 @@ class AppPreferences
             val ACCENT_COLOR_NAME = stringPreferencesKey("accent_color_name")
             val PLAYLIST_VIEW = stringPreferencesKey("playlist_view")
             val AUTO_QUEUE_RELATED = booleanPreferencesKey("auto_queue_related")
+            val AUTOPLAY_ENABLED = booleanPreferencesKey("autoplay_enabled")
             val ARTWORK_CACHE_MB = intPreferencesKey("artwork_cache_mb")
             val ONBOARDING_DONE = booleanPreferencesKey("onboarding_done")
             val LOCAL_MUSIC_TREE_URI = stringPreferencesKey("local_music_tree_uri") // legacy single folder
@@ -224,6 +225,14 @@ class AppPreferences
         /** When true, tapping a song in a list queues the rest of that list after it. Off by default. */
         val autoQueueRelated: Flow<Boolean> =
             dataStore.data.map { prefs -> prefs[Keys.AUTO_QUEUE_RELATED] ?: false }
+
+        /** When true, playing the last tracks in the queue fetches related tracks. On by default. */
+        val autoplayEnabled: Flow<Boolean> =
+            dataStore.data.map { prefs -> prefs[Keys.AUTOPLAY_ENABLED] ?: true }
+
+        suspend fun setAutoplayEnabled(enabled: Boolean) {
+            dataStore.edit { it[Keys.AUTOPLAY_ENABLED] = enabled }
+        }
 
         /** SAF tree URIs of all folders scanned for local music (includes the legacy single folder). */
         val localMusicTreeUris: Flow<List<String>> =

@@ -11,10 +11,12 @@ package com.clibeats.data.provider
 
 import com.clibeats.data.preferences.AppPreferences
 import com.clibeats.data.provider.api.InnerTubeApi
+import com.clibeats.data.provider.dto.NextRequest
 import com.clibeats.data.provider.dto.PlayerRequest
 import com.clibeats.data.provider.dto.SearchRequest
 import com.clibeats.data.provider.mapper.chartPlaylistBrowseId
 import com.clibeats.data.provider.mapper.playlistTracks
+import com.clibeats.data.provider.mapper.toRadioTrackList
 import com.clibeats.data.provider.mapper.toTrackList
 import com.clibeats.data.provider.youtube.ExtractedStreamInfo
 import com.clibeats.data.provider.youtube.NewPipeExtractorResolver
@@ -171,6 +173,7 @@ class YouTubeMusicProvider
         )
 
         /** Tries [clients] in order; returns the first playable audio format and the last error seen. */
+        @Suppress("LongParameterList")
         private suspend fun resolveWithInnerTube(
             rawId: String,
             traceId: String,
@@ -199,7 +202,11 @@ class YouTubeMusicProvider
                         if (playerResp == null) {
                             lastErrorMessage =
                                 requestResult.exceptionOrNull()?.message ?: "HTTP failure"
-                            DiagnosticLogger.logPlayerResponse(traceId, clientConfig.name, "HTTP_ERROR: $lastErrorMessage")
+                            DiagnosticLogger.logPlayerResponse(
+                                traceId,
+                                clientConfig.name,
+                                "HTTP_ERROR: $lastErrorMessage",
+                            )
                             continue
                         }
 
@@ -260,6 +267,26 @@ class YouTubeMusicProvider
         fun invalidateCache(trackId: String) {
             val rawId = ProviderId.rawSourceId(providerId, trackId)
             streamCacheManager.invalidate(providerId, rawId)
+        }
+
+        override suspend fun relatedTracks(
+            trackId: String,
+            limit: Int,
+        ): ProviderResult<List<Track>> {
+            val rawId = ProviderId.rawSourceId(providerId, trackId)
+            return runCatching {
+                val nextJson = api.next(NextRequest.radio(rawId))
+                val tracks =
+                    nextJson.toRadioTrackList()
+                        .filter { ProviderId.rawSourceId(providerId, it.id) != rawId }
+                        .take(limit)
+                ProviderResult.Success(tracks)
+            }.getOrElse { e ->
+                ProviderResult.Error(
+                    message = "Radio failed for $rawId: ${e.message}",
+                    cause = e,
+                )
+            }
         }
 
         override suspend fun playlists(): ProviderResult<List<Playlist>> {

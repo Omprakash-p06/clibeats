@@ -24,10 +24,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.PlaylistAdd
-import androidx.compose.material.icons.automirrored.outlined.QueueMusic
 import androidx.compose.material.icons.outlined.Clear
-import androidx.compose.material.icons.outlined.PlaylistPlay
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -56,9 +53,13 @@ import com.clibeats.presentation.component.FavoritesViewModel
 import com.clibeats.presentation.component.ProviderSwitcher
 import com.clibeats.presentation.component.SongTableHeader
 import com.clibeats.presentation.component.SongTableRow
+import com.clibeats.presentation.component.TrackActionSheet
 import com.clibeats.presentation.component.TrackArtwork
 import com.clibeats.presentation.component.TuiBlock
 import com.clibeats.presentation.component.TuiTextField
+import com.clibeats.presentation.navigation.AppRoute
+import com.clibeats.presentation.navigation.LocalAppRouter
+import com.clibeats.presentation.player.PlayerViewModel
 import com.clibeats.presentation.theme.CliBeatsBackground
 import com.clibeats.presentation.theme.CliBeatsTextSecondary
 import com.clibeats.presentation.theme.LocalAccentColor
@@ -94,6 +95,7 @@ fun SearchScreen(
     val providerName by viewModel.activeProviderName.collectAsState()
     val activeProviderId by viewModel.activeProviderId.collectAsState()
     var playlistPickerTrack by remember { mutableStateOf<Track?>(null) }
+    var actionTrack by remember { mutableStateOf<Track?>(null) }
     val recentSearches by viewModel.recentSearches.collectAsState()
     val focusManager = LocalFocusManager.current
 
@@ -155,10 +157,7 @@ fun SearchScreen(
                             favorites.add(track)
                             viewModel.rememberPick(track)
                         },
-                        onAddToPlaylist = { track ->
-                            playlistPickerTrack = track
-                            viewModel.rememberPick(track)
-                        },
+                        onActionClick = { track -> actionTrack = track },
                     )
                 }
                 return@TuiBlock
@@ -179,19 +178,65 @@ fun SearchScreen(
                                 favorites.add(track)
                                 viewModel.rememberPick(track)
                             },
-                            onPlayNext = viewModel::onPlayNext,
-                            onAddToPlaylist = { track ->
-                                playlistPickerTrack = track
-                                viewModel.rememberPick(track)
-                            },
+                            onActionClick = { track -> actionTrack = track },
                         )
                     }
             }
         }
     }
 
+    val playerViewModel: PlayerViewModel = hiltViewModel()
+    val router = LocalAppRouter.current
+
     playlistPickerTrack?.let { track ->
         AddToPlaylistDialog(track = track, onDismiss = { playlistPickerTrack = null })
+    }
+    actionTrack?.let { track ->
+        TrackActionSheet(
+            track = track,
+            onDismiss = { actionTrack = null },
+            onPlayNext = {
+                playerViewModel.playNext(track)
+                viewModel.rememberPick(track)
+            },
+            onAddToQueue = {
+                viewModel.onAddToQueue(track)
+            },
+            onAddToPlaylist = {
+                playlistPickerTrack = track
+                viewModel.rememberPick(track)
+            },
+            onToggleLike = {
+                favorites.add(track)
+                viewModel.rememberPick(track)
+            },
+            onGoToArtist = {
+                actionTrack = null
+                router.navigate(
+                    AppRoute.ArtistDetail(
+                        artistName = track.artist,
+                        browseId = null,
+                        providerId = track.providerId,
+                    ),
+                )
+            },
+            onGoToAlbum =
+                if (track.album.isNotBlank()) {
+                    {
+                        actionTrack = null
+                        router.navigate(
+                            AppRoute.AlbumDetail(
+                                albumName = track.album,
+                                artistName = track.artist,
+                                browseId = null,
+                                providerId = track.providerId,
+                            ),
+                        )
+                    }
+                } else {
+                    null
+                },
+        )
     }
 }
 
@@ -203,7 +248,7 @@ private fun RecentSearchesList(
     onClear: () -> Unit,
     onAddToQueue: (Track) -> Unit,
     onFavorite: (Track) -> Unit,
-    onAddToPlaylist: (Track) -> Unit,
+    onActionClick: (Track) -> Unit,
 ) {
     val accent = LocalAccentColor.current
     LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -227,11 +272,12 @@ private fun RecentSearchesList(
                 trackTitle = track.title,
                 artist = track.artist,
                 duration = formatDuration(track.durationMs),
-                artworkContent = { TrackArtwork(artworkUrl = track.artworkUrl, size = 32) },
+                artworkContent = { TrackArtwork(artworkUrl = track.artworkUrl, size = 52) },
                 onClick = { onTrackClick(index) },
                 onSwipeRight = { onAddToQueue(track) },
                 onSwipeLeft = { onFavorite(track) },
-                onLongPress = { onAddToPlaylist(track) },
+                onActionClick = { onActionClick(track) },
+                onLongPress = { onActionClick(track) },
             )
         }
     }
@@ -317,12 +363,11 @@ private fun SearchResultsList(
     onTrackClick: (Int) -> Unit,
     onAddToQueue: (Track) -> Unit,
     onFavorite: (Track) -> Unit,
-    onPlayNext: (Track) -> Unit,
-    onAddToPlaylist: (Track) -> Unit,
+    onActionClick: (Track) -> Unit,
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
-            SongTableHeader()
+            SongTableHeader(showIndex = false)
         }
         itemsIndexed(items = tracks, key = { _, track -> track.id }) { index, track ->
             SongTableRow(
@@ -332,49 +377,12 @@ private fun SearchResultsList(
                     if (track.album.isNotBlank()) append(" • ${track.album}")
                 },
                 duration = formatDuration(track.durationMs),
-                index = index + 1,
-                artworkContent = { TrackArtwork(artworkUrl = track.artworkUrl, size = 32) },
+                artworkContent = { TrackArtwork(artworkUrl = track.artworkUrl, size = 52) },
                 onClick = { onTrackClick(index) },
                 onSwipeRight = { onAddToQueue(track) },
                 onSwipeLeft = { onFavorite(track) },
-                onLongPress = { onAddToPlaylist(track) },
-                actions = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        IconButton(
-                            onClick = { onPlayNext(track) },
-                            modifier = Modifier.size(28.dp),
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.PlaylistPlay,
-                                contentDescription = "Play next",
-                                tint = CliBeatsTextSecondary,
-                                modifier = Modifier.size(18.dp),
-                            )
-                        }
-                        IconButton(
-                            onClick = { onAddToPlaylist(track) },
-                            modifier = Modifier.size(28.dp),
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Outlined.PlaylistAdd,
-                                contentDescription = "Add to playlist",
-                                tint = CliBeatsTextSecondary,
-                                modifier = Modifier.size(18.dp),
-                            )
-                        }
-                        IconButton(
-                            onClick = { onAddToQueue(track) },
-                            modifier = Modifier.size(28.dp),
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Outlined.QueueMusic,
-                                contentDescription = "Add to queue",
-                                tint = CliBeatsTextSecondary,
-                                modifier = Modifier.size(18.dp),
-                            )
-                        }
-                    }
-                },
+                onActionClick = { onActionClick(track) },
+                onLongPress = { onActionClick(track) },
             )
         }
     }

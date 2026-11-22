@@ -95,6 +95,7 @@ fun PlaylistScreen(
     val state by viewModel.uiState.collectAsState()
     val viewMode by viewModel.viewMode.collectAsState()
     var showCreateDialog by remember { mutableStateOf(false) }
+    var showImportDialog by remember { mutableStateOf(false) }
     var pendingDelete by remember { mutableStateOf<Playlist?>(null) }
     var addToPlaylistTrack by remember { mutableStateOf<Track?>(null) }
     var coverChangePlaylist by remember { mutableStateOf<Playlist?>(null) }
@@ -222,6 +223,7 @@ fun PlaylistScreen(
                             onFavoritesClick = viewModel::openFavorites,
                             onMostPlayedClick = viewModel::openMostPlayed,
                             onCreateClick = { showCreateDialog = true },
+                            onImportClick = { showImportDialog = true },
                             onPlaylistClick = { viewModel.selectPlaylist(it.id) },
                             onDeleteClick = { pendingDelete = it },
                         )
@@ -236,6 +238,17 @@ fun PlaylistScreen(
             onCreate = { name, desc ->
                 viewModel.createPlaylist(name, desc)
                 showCreateDialog = false
+            },
+        )
+    }
+    if (showImportDialog) {
+        ImportPlaylistDialog(
+            onDismiss = { showImportDialog = false },
+            onImport = { url, onComplete ->
+                viewModel.importPlaylistFromUrl(url) { success, error ->
+                    onComplete(success, error)
+                    if (success) showImportDialog = false
+                }
             },
         )
     }
@@ -406,7 +419,7 @@ private fun PlaylistDetailView(
                     artworkContent = {
                         TrackArtwork(
                             artworkUrl = track.artworkUrl,
-                            size = 32,
+                            size = 52,
                             modifier = Modifier.artworkHandle { onTrackClick(index) },
                         )
                     },
@@ -438,7 +451,7 @@ private fun PlaylistDetailView(
                         artist = track.artist,
                         duration = formatDuration(track.durationMs),
                         index = index + 1,
-                        artworkContent = { TrackArtwork(artworkUrl = track.artworkUrl, size = 32) },
+                        artworkContent = { TrackArtwork(artworkUrl = track.artworkUrl, size = 52) },
                         onClick = { onTrackClick(index) },
                         onSwipeRight = { onSwipeRight(track) },
                         onSwipeLeft = { onSwipeLeft(track) },
@@ -460,6 +473,73 @@ private fun PlaylistDetailView(
             }
         }
     }
+}
+
+@Composable
+private fun ImportPlaylistDialog(
+    onDismiss: () -> Unit,
+    onImport: (String, (Boolean, String?) -> Unit) -> Unit,
+) {
+    var urlText by remember { mutableStateOf("") }
+    var isImporting by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    AlertDialog(
+        onDismissRequest = { if (!isImporting) onDismiss() },
+        title = { Text(text = "> import --url", style = MaterialTheme.typography.titleMedium) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = "Paste a Spotify or YouTube Music playlist link.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = CliBeatsTextSecondary,
+                )
+                OutlinedTextField(
+                    value = urlText,
+                    onValueChange = {
+                        urlText = it
+                        errorMessage = null
+                    },
+                    label = { Text("Playlist URL") },
+                    singleLine = true,
+                    enabled = !isImporting,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                if (errorMessage != null) {
+                    Text(
+                        text = errorMessage!!,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    isImporting = true
+                    errorMessage = null
+                    onImport(urlText) { success, err ->
+                        isImporting = false
+                        if (!success) {
+                            errorMessage = err ?: "Import failed"
+                        }
+                    }
+                },
+                enabled = urlText.isNotBlank() && !isImporting,
+            ) {
+                Text(if (isImporting) "Importing..." else "Import", color = CliBeatsAccent)
+            }
+        },
+        dismissButton = {
+            if (!isImporting) {
+                TextButton(onClick = onDismiss) {
+                    Text("Cancel", color = CliBeatsTextSecondary)
+                }
+            }
+        },
+        containerColor = CliBeatsSurface,
+    )
 }
 
 @Composable

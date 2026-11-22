@@ -4,6 +4,7 @@ package com.clibeats.di
 
 import android.content.Context
 import com.clibeats.BuildConfig
+import com.clibeats.data.lyrics.LrcLibApi
 import com.clibeats.data.network.NetworkMonitor
 import com.clibeats.data.provider.api.AudiusApi
 import com.clibeats.data.provider.api.InnerTubeApi
@@ -31,6 +32,7 @@ private const val INNERTUBE_BASE_URL = "https://music.youtube.com/youtubei/v1/"
 private const val READ_TIMEOUT_SECONDS = 20L
 private const val CONNECT_TIMEOUT_SECONDS = 15L
 
+@Suppress("TooManyFunctions")
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
@@ -101,6 +103,19 @@ object NetworkModule {
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
             .create(JamendoApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideLrcLibApi(
+        okHttpClient: OkHttpClient,
+        json: Json,
+    ): LrcLibApi =
+        Retrofit.Builder()
+            .baseUrl(LrcLibApi.BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .build()
+            .create(LrcLibApi::class.java)
 
     @Provides
     @Singleton

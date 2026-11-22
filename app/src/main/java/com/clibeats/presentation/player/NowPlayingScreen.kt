@@ -113,6 +113,8 @@ fun NowPlayingScreen(
     val hint by viewModel.hint.collectAsState()
     val sleepTimer by viewModel.sleepTimer.collectAsState()
     val isLiked by viewModel.isCurrentLiked.collectAsState()
+    val lyrics by viewModel.currentLyrics.collectAsState()
+    var showLyrics by remember { mutableStateOf(false) }
     val audioOutput = viewModel.audioOutput?.collectAsState()?.value
     // Coming back from the system output switcher: show the device that was picked. The switcher is a
     // system pop-up over this screen (no pause/resume), so also re-check when this window gets focus back.
@@ -229,6 +231,16 @@ fun NowPlayingScreen(
                     Spacer(Modifier.height(8.dp))
                     Box(modifier = Modifier.fillMaxWidth()) {
                         Text(
+                            text = if (showLyrics) "[ ART ]" else "[ LYRICS ]",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = CliBeatsAccent,
+                            modifier =
+                                Modifier
+                                    .align(Alignment.CenterStart)
+                                    .clickable { showLyrics = !showLyrics }
+                                    .padding(horizontal = 4.dp, vertical = 2.dp),
+                        )
+                        Text(
                             text = "> now_playing",
                             style = MaterialTheme.typography.labelMedium,
                             color = CliBeatsAccent,
@@ -265,35 +277,54 @@ fun NowPlayingScreen(
                     remember(artUrl) {
                         ImageRequest.Builder(context).data(artUrl).crossfade(ART_CROSSFADE_MS).build()
                     }
-                Box(
-                    modifier =
-                        Modifier
-                            .weight(1f, fill = false)
-                            .fillMaxWidth()
-                            .aspectRatio(1f)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
-                            .border(1.dp, CliBeatsBorderInactive, RoundedCornerShape(8.dp))
-                            .then(dragToDismiss)
-                            .then(closeAction)
-                            .semantics { contentDescription = artworkDescription },
-                ) {
-                    if (thumbUrl != null) {
-                        AsyncImage(
-                            model = thumbUrl,
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize(),
+                if (showLyrics) {
+                    Box(
+                        modifier =
+                            Modifier
+                                .weight(1f, fill = false)
+                                .fillMaxWidth()
+                                .aspectRatio(1f)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                                .border(1.dp, CliBeatsBorderInactive, RoundedCornerShape(8.dp)),
+                    ) {
+                        LyricsPanel(
+                            lyrics = lyrics,
+                            positionMs = state.positionMs,
+                            onSeekTo = { viewModel.seekTo(it) },
                         )
                     }
-                    if (artUrl != null && artUrl != thumbUrl) {
-                        AsyncImage(
-                            model = hiResRequest,
-                            onError = { if (!artFallback) artFallback = true },
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize(),
-                        )
+                } else {
+                    Box(
+                        modifier =
+                            Modifier
+                                .weight(1f, fill = false)
+                                .fillMaxWidth()
+                                .aspectRatio(1f)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                                .border(1.dp, CliBeatsBorderInactive, RoundedCornerShape(8.dp))
+                                .then(dragToDismiss)
+                                .then(closeAction)
+                                .semantics { contentDescription = artworkDescription },
+                    ) {
+                        if (thumbUrl != null) {
+                            AsyncImage(
+                                model = thumbUrl,
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize(),
+                            )
+                        }
+                        if (artUrl != null && artUrl != thumbUrl) {
+                            AsyncImage(
+                                model = hiResRequest,
+                                onError = { if (!artFallback) artFallback = true },
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize(),
+                            )
+                        }
                     }
                 }
 
