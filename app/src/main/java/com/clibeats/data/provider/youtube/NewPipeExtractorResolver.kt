@@ -60,15 +60,15 @@ class NewPipeExtractorResolver
                                 reqBuilder.post(body)
                             }
 
-                            val response = okHttpClient.newCall(reqBuilder.build()).execute()
-                            val responseBodyStr = response.body?.string() ?: ""
-                            return NPResponse(
-                                response.code,
-                                response.message,
-                                response.headers.toMultimap(),
-                                responseBodyStr,
-                                request.url(),
-                            )
+                            return okHttpClient.newCall(reqBuilder.build()).execute().use { response ->
+                                NPResponse(
+                                    response.code,
+                                    response.message,
+                                    response.headers.toMultimap(),
+                                    response.body?.string() ?: "",
+                                    request.url(),
+                                )
+                            }
                         }
                     },
                 )

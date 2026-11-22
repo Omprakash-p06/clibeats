@@ -47,10 +47,11 @@ class PlaylistUrlImporter
             val playlistId = extractSpotifyPlaylistId(url) ?: error("Invalid Spotify playlist URL")
             val embedUrl = "https://open.spotify.com/embed/playlist/$playlistId"
             val request = Request.Builder().url(embedUrl).build()
-            val response = okHttpClient.newCall(request).execute()
-            if (!response.isSuccessful) error("Failed to load Spotify playlist (HTTP ${response.code})")
-
-            val html = response.body?.string().orEmpty()
+            val html =
+                okHttpClient.newCall(request).execute().use { response ->
+                    if (!response.isSuccessful) error("Failed to load Spotify playlist (HTTP ${response.code})")
+                    response.body?.string().orEmpty()
+                }
             val (title, queryList) = parseSpotifyEmbed(html)
             if (queryList.isEmpty()) error("No tracks found in Spotify playlist")
 

@@ -122,7 +122,10 @@ class InternetArchiveMusicProvider
                         async {
                             gate.acquire()
                             try {
-                                val meta = api.metadata(doc.identifier!!)
+                                val identifier =
+                                    doc.identifier?.takeIf { it.isNotBlank() }
+                                        ?: return@async Score(doc, null, -1)
+                                val meta = api.metadata(identifier)
                                 Score(doc, meta, scoreIaItem(doc, meta, query))
                             } catch (e: CancellationException) {
                                 // Never swallow cancellation: let it propagate to the scope.
