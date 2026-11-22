@@ -6,4 +6,5 @@
      The Keystore-encrypted prefs file of older versions is excluded: it can't be decrypted elsewhere. -->
 <full-backup-content>
     <exclude domain="sharedpref" path="clibeats_secure_prefs.xml" />
+    <exclude domain="file" path="downloads" />
 </full-backup-content>

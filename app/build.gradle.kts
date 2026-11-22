@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -109,10 +110,19 @@ detekt {
 }
 
 tasks.withType<Test>().configureEach {
+    val localProperties = Properties()
+    val localFile = rootProject.file("local.properties")
+    if (localFile.exists()) {
+        localFile.inputStream().use { localProperties.load(it) }
+    }
+    val defaultSdk =
+        File(System.getProperty("user.home"), "Android/Sdk").takeIf { it.exists() }?.absolutePath
+            ?: "C:\\Android\\Sdk"
     val androidHome =
         System.getenv("ANDROID_HOME")
             ?: System.getenv("ANDROID_SDK_ROOT")
-            ?: "C:\\Android\\Sdk"
+            ?: localProperties.getProperty("sdk.dir")
+            ?: defaultSdk
     environment("ANDROID_HOME", androidHome)
     environment("ANDROID_SDK_ROOT", androidHome)
     systemProperty("ANDROID_HOME", androidHome)

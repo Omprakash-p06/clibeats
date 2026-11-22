@@ -9,16 +9,20 @@ import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.clibeats.data.local.dao.CacheIndexDao
+import com.clibeats.data.local.dao.DownloadedTrackDao
 import com.clibeats.data.local.dao.HistoryDao
 import com.clibeats.data.local.dao.LikedSongDao
+import com.clibeats.data.local.dao.LyricsCacheDao
 import com.clibeats.data.local.dao.PlaylistDao
 import com.clibeats.data.local.dao.QueueDao
 import com.clibeats.data.local.dao.SavedAlbumDao
 import com.clibeats.data.local.dao.SavedArtistDao
 import com.clibeats.data.local.dao.SongDao
 import com.clibeats.data.local.entity.CacheIndexEntity
+import com.clibeats.data.local.entity.DownloadedTrackEntity
 import com.clibeats.data.local.entity.HistoryEntity
 import com.clibeats.data.local.entity.LikedSongEntity
+import com.clibeats.data.local.entity.LyricsCacheEntity
 import com.clibeats.data.local.entity.PlaylistEntity
 import com.clibeats.data.local.entity.PlaylistSongCrossRef
 import com.clibeats.data.local.entity.QueueEntity
@@ -37,8 +41,10 @@ import com.clibeats.data.local.entity.SongEntity
         LikedSongEntity::class,
         SavedAlbumEntity::class,
         SavedArtistEntity::class,
+        DownloadedTrackEntity::class,
+        LyricsCacheEntity::class,
     ],
-    version = 3,
+    version = 4,
     exportSchema = true,
 )
 @TypeConverters(CliBeatsTypeConverters::class)
@@ -58,6 +64,10 @@ abstract class CliBeatsDatabase : RoomDatabase() {
     abstract fun savedAlbumDao(): SavedAlbumDao
 
     abstract fun savedArtistDao(): SavedArtistDao
+
+    abstract fun downloadedTrackDao(): DownloadedTrackDao
+
+    abstract fun lyricsCacheDao(): LyricsCacheDao
 
     companion object {
         val MIGRATION_1_2 =
@@ -105,6 +115,39 @@ abstract class CliBeatsDatabase : RoomDatabase() {
                             PRIMARY KEY(`id`)
                         )
                         """.trimIndent(),
+                    )
+                }
+            }
+
+        val MIGRATION_3_4 =
+            object : Migration(3, 4) {
+                override fun migrate(db: SupportSQLiteDatabase) {
+                    db.execSQL(
+                        """
+                        CREATE TABLE IF NOT EXISTS `downloaded_tracks` (
+                            `song_id` TEXT NOT NULL,
+                            `file_path` TEXT NOT NULL,
+                            `size_bytes` INTEGER NOT NULL,
+                            `downloaded_at` INTEGER NOT NULL,
+                            `mime_type` TEXT NOT NULL,
+                            PRIMARY KEY(`song_id`),
+                            FOREIGN KEY(`song_id`) REFERENCES `songs`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE
+                        )
+                        """.trimIndent(),
+                    )
+                    db.execSQL(
+                        """
+                        CREATE TABLE IF NOT EXISTS `lyrics_cache` (
+                            `song_id` TEXT NOT NULL,
+                            `synced_lrc` TEXT,
+                            `plain_lyrics` TEXT,
+                            `fetched_at` INTEGER NOT NULL,
+                            PRIMARY KEY(`song_id`)
+                        )
+                        """.trimIndent(),
+                    )
+                    db.execSQL(
+                        "CREATE INDEX IF NOT EXISTS `index_history_song_id` ON `history` (`song_id`)",
                     )
                 }
             }
