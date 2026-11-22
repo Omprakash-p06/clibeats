@@ -17,12 +17,17 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,9 +42,12 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.clibeats.presentation.theme.CliBeatsAccent
 import com.clibeats.presentation.theme.CliBeatsBackground
 import com.clibeats.presentation.theme.CliBeatsDivider
@@ -47,16 +55,22 @@ import com.clibeats.presentation.theme.CliBeatsSurface
 import com.clibeats.presentation.theme.CliBeatsTextDisabled
 import com.clibeats.presentation.theme.CliBeatsTextPrimary
 import com.clibeats.presentation.theme.CliBeatsTextSecondary
+import com.clibeats.presentation.theme.LocalAccentColor
+
+private val ROW_MIN_HEIGHT = 64.dp
+private val ROW_VERTICAL_PADDING = 8.dp
+private val ROW_HORIZONTAL_PADDING = 12.dp
+private val ARTWORK_LIST_SIZE = 52.dp
+private val ACTION_TOUCH_TARGET = 44.dp
+private val TITLE_FONT_SIZE = 15.sp
+private val SUBTITLE_FONT_SIZE = 12.5.sp
 
 /**
- * Dense 48dp song table row — the primary list item component.
+ * Ergonomic 64dp song table row — the primary list item component.
  *
  * States:
  * - Normal: CliBeatsBackground background
- * - Focused/Hovered: CliBeatsSurfaceVariant background
- * - Now Playing: CliBeatsSurface + 2dp CliBeatsAccent left border
- *
- * Per UI-SPEC: 48dp height, 32x32dp square artwork, start-aligned text.
+ * - Now Playing: CliBeatsSurface + 2dp accent left border
  */
 @Suppress("FunctionNaming", "LongMethod", "LongParameterList", "CyclomaticComplexMethod")
 @OptIn(ExperimentalFoundationApi::class)
@@ -67,6 +81,7 @@ fun SongTableRow(
     duration: String,
     index: Int? = null,
     isNowPlaying: Boolean = false,
+    isDownloaded: Boolean = false,
     artworkContent: (@Composable () -> Unit)? = null,
     actions: (@Composable () -> Unit)? = null,
     onClick: () -> Unit = {},
@@ -74,14 +89,13 @@ fun SongTableRow(
     onSwipeRight: (() -> Unit)? = null,
     onLongPress: (() -> Unit)? = null,
     onSwipeLeft: (() -> Unit)? = null,
+    onActionClick: (() -> Unit)? = null,
 ) {
     val semanticsDescription = "$trackTitle by $artist"
-    val rowBackground = when {
-        isNowPlaying -> CliBeatsSurface
-        else -> CliBeatsBackground
-    }
+    val accent = LocalAccentColor.current
+    val rowBackground = if (isNowPlaying) CliBeatsSurface else CliBeatsBackground
 
-    // Swipe right = add to queue, swipe left = add to favorites (row follows the finger, snaps back).
+    // Swipe right = add to queue, swipe left = add to favorites
     var dragX by remember { mutableFloatStateOf(0f) }
     val swipeModifier =
         if (onSwipeRight == null && onSwipeLeft == null) {
@@ -93,7 +107,6 @@ fun SongTableRow(
                 val maxLeft = if (onSwipeLeft != null) -threshold * SWIPE_MAX_FACTOR else 0f
                 awaitEachGesture {
                     val down = awaitFirstDown(requireUnconsumed = false)
-                    // Only claim a direction this row handles; the other is left to the tab pager.
                     val start =
                         awaitHorizontalTouchSlopOrCancellation(down.id) { change, over ->
                             val handled = if (over > 0f) onSwipeRight != null else onSwipeLeft != null
@@ -122,13 +135,13 @@ fun SongTableRow(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp)
+                    .defaultMinSize(minHeight = ROW_MIN_HEIGHT)
                     .background(rowBackground)
                     .semantics { contentDescription = semanticsDescription }
                     .combinedClickable(
                         onClickLabel = "Play",
-                        onLongClickLabel = if (onLongPress != null) "Add to playlist" else null,
-                        onLongClick = onLongPress,
+                        onLongClickLabel = if (onLongPress != null) "More actions" else null,
+                        onLongClick = onLongPress ?: onActionClick,
                         onClick = onClick,
                     ),
                 verticalAlignment = Alignment.CenterVertically,
@@ -138,69 +151,103 @@ fun SongTableRow(
                     Box(
                         modifier = Modifier
                             .width(2.dp)
-                            .height(48.dp)
-                            .background(CliBeatsAccent),
+                            .height(ROW_MIN_HEIGHT)
+                            .background(accent),
                     )
                 } else {
                     Spacer(modifier = Modifier.width(2.dp))
                 }
 
-                Spacer(modifier = Modifier.width(6.dp))
+                Spacer(modifier = Modifier.width(ROW_HORIZONTAL_PADDING - 2.dp))
 
-                // ── Track index or artwork ─────────────────────────────────────
-                if (artworkContent != null) {
-                    Box(
-                        modifier = Modifier.size(32.dp),
-                    ) {
-                        artworkContent()
-                    }
-                } else {
-                    // Index number fallback when no artwork
+                // ── Optional leading index ────────────────────────────────────
+                if (index != null) {
                     Text(
-                        text = index?.toString() ?: "–",
-                        style = MaterialTheme.typography.labelMedium,
+                        text = index.toString(),
+                        style = MaterialTheme.typography.labelSmall.copy(fontFamily = FontFamily.Monospace),
                         color = CliBeatsTextDisabled,
                         modifier = Modifier.width(24.dp),
                         textAlign = TextAlign.Center,
                     )
+                    Spacer(modifier = Modifier.width(8.dp))
                 }
 
-                Spacer(modifier = Modifier.width(8.dp))
+                // ── Artwork (52dp) ───────────────────────────────────────────
+                if (artworkContent != null) {
+                    Box(
+                        modifier = Modifier.size(ARTWORK_LIST_SIZE),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        artworkContent()
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                }
 
-                // ── Track title + artist (fills remaining space) ──────────────
+                // ── Track title + artist ──────────────────────────────────────
                 Column(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(vertical = ROW_VERTICAL_PADDING),
                 ) {
+                    val displayTitle = if (isNowPlaying) "▸ $trackTitle" else trackTitle
                     Text(
-                        text = trackTitle,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = if (isNowPlaying) CliBeatsAccent else CliBeatsTextPrimary,
+                        text = displayTitle,
+                        fontSize = TITLE_FONT_SIZE,
+                        fontWeight = FontWeight.SemiBold,
+                        color = if (isNowPlaying) accent else CliBeatsTextPrimary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
-                    Text(
-                        text = artist,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = CliBeatsTextSecondary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        if (isDownloaded) {
+                            Text(
+                                text = "[ ↓ ] ",
+                                fontSize = SUBTITLE_FONT_SIZE,
+                                fontWeight = FontWeight.Bold,
+                                color = accent,
+                            )
+                        }
+                        Text(
+                            text = artist,
+                            fontSize = SUBTITLE_FONT_SIZE,
+                            fontWeight = FontWeight.Normal,
+                            color = CliBeatsTextSecondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                // ── Duration (end-aligned, tabular) ───────────────────────────
+                // ── Duration (labelSmall) ────────────────────────────────────
                 Text(
                     text = duration,
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.labelSmall,
                     color = CliBeatsTextSecondary,
-                    modifier = Modifier.padding(end = if (actions == null) 16.dp else 8.dp),
                 )
 
-                actions?.let {
-                    Box(modifier = Modifier.padding(end = 8.dp)) {
-                        it()
+                // ── Trailing Actions / single [ ⋮ ] icon button ──────────────
+                if (actions != null) {
+                    Box(modifier = Modifier.padding(end = 4.dp)) {
+                        actions()
                     }
+                } else if (onActionClick != null || onLongPress != null) {
+                    IconButton(
+                        onClick = { (onActionClick ?: onLongPress)?.invoke() },
+                        modifier = Modifier.size(ACTION_TOUCH_TARGET),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.MoreVert,
+                            contentDescription = "More actions",
+                            tint = CliBeatsTextSecondary,
+                            modifier = Modifier.size(20.dp),
+                        )
+                    }
+                } else {
+                    Spacer(modifier = Modifier.width(ROW_HORIZONTAL_PADDING))
                 }
             }
 
@@ -215,22 +262,27 @@ fun SongTableRow(
 
 @Suppress("FunctionNaming")
 @Composable
-fun SongTableHeader(modifier: Modifier = Modifier) {
+fun SongTableHeader(
+    modifier: Modifier = Modifier,
+    showIndex: Boolean = false,
+) {
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 6.dp),
+                .padding(horizontal = ROW_HORIZONTAL_PADDING, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                text = "#",
-                style = MaterialTheme.typography.labelSmall,
-                color = CliBeatsTextSecondary,
-                modifier = Modifier.width(28.dp),
-                textAlign = TextAlign.Center,
-            )
-            Spacer(modifier = Modifier.width(8.dp))
+            if (showIndex) {
+                Text(
+                    text = "#",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = CliBeatsTextSecondary,
+                    modifier = Modifier.width(28.dp),
+                    textAlign = TextAlign.Center,
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+            }
             Text(
                 text = "TITLE & ARTIST",
                 style = MaterialTheme.typography.labelSmall,
@@ -241,7 +293,7 @@ fun SongTableHeader(modifier: Modifier = Modifier) {
                 text = "TIME",
                 style = MaterialTheme.typography.labelSmall,
                 color = CliBeatsTextSecondary,
-                modifier = Modifier.padding(end = 16.dp),
+                modifier = Modifier.padding(end = ROW_HORIZONTAL_PADDING),
             )
         }
         HorizontalDivider(thickness = 1.dp, color = CliBeatsDivider)

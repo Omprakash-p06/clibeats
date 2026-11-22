@@ -7,6 +7,7 @@
 package com.clibeats.presentation.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.clibeats.presentation.theme.CliBeatsAccent
+import com.clibeats.presentation.theme.CliBeatsDivider
 import com.clibeats.presentation.theme.CliBeatsSurface
 
 /**
@@ -31,20 +33,27 @@ import com.clibeats.presentation.theme.CliBeatsSurface
  * Falls back to a muted green "♫" placeholder if the URL is null / fails to load.
  *
  * @param artworkUrl  The remote artwork URL. Null shows the placeholder immediately.
- * @param size        Square size in dp (default 40).
+ * @param size        Square size in dp (default 52, the list-row size).
  * @param modifier    Optional Modifier.
+ * @param isNowPlaying Draws an accent border instead of the normal divider.
  */
 @Suppress("FunctionNaming")
 @Composable
 fun TrackArtwork(
     artworkUrl: String?,
-    size: Int = 40,
+    size: Int = ARTWORK_LIST_DP,
     modifier: Modifier = Modifier,
+    isNowPlaying: Boolean = false,
 ) {
     val shape = RoundedCornerShape(4.dp)
+    val borderColor = if (isNowPlaying) CliBeatsAccent else CliBeatsDivider
+    val frame = modifier
+        .size(size.dp)
+        .border(1.dp, borderColor, shape)
+        .clip(shape)
 
     if (artworkUrl.isNullOrBlank()) {
-        ArtworkPlaceholder(size = size, modifier = modifier)
+        ArtworkPlaceholder(size = size, modifier = frame)
         return
     }
 
@@ -57,9 +66,7 @@ fun TrackArtwork(
         contentScale = ContentScale.Crop,
         placeholder = placeholder,
         error = placeholder,
-        modifier = modifier
-            .size(size.dp)
-            .clip(shape),
+        modifier = frame,
     )
 }
 
@@ -86,3 +93,4 @@ private fun ArtworkPlaceholder(
 }
 
 private const val THUMB_MAX_DP = 64
+private const val ARTWORK_LIST_DP = 52
