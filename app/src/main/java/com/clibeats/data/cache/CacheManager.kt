@@ -28,9 +28,14 @@ class CacheManager
         var maxCacheSizeBytes: Long = DEFAULT_MAX_CACHE_BYTES
 
         suspend fun getCachedFile(songId: String): File? {
-            val entry = cacheIndexDao.getById(songId) ?: return null
-            val file = File(entry.localPath)
-            return if (file.exists() && file.length() > 0) file else null
+            val entry = cacheIndexDao.getById(songId)
+            val cached = entry?.let { File(it.localPath) }?.takeIf { it.exists() && it.length() > 0 }
+            if (entry != null && cached == null) {
+                // The file was evicted or removed behind the index's back. Drop the row, otherwise its
+                // bytes keep counting towards the size limit and eviction removes the wrong entries.
+                cacheIndexDao.deleteById(songId)
+            }
+            return cached
         }
 
         private fun safeFileName(songId: String): String =

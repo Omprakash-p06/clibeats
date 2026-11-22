@@ -13,6 +13,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -145,13 +147,17 @@ class PlaylistUrlImporter
                     providerRegistry.getProvider(ProviderRegistry.DEFAULT_PROVIDER_ID)
                         ?: return@coroutineScope emptyList()
 
+                // YouTube throttles bursts: searching a whole playlist at once gets tracks dropped.
+                val gate = Semaphore(MAX_CONCURRENT_SEARCHES)
                 val deferreds =
                     queries.take(MAX_IMPORT_TRACKS).map { query ->
                         async(Dispatchers.IO) {
-                            runCatching {
-                                val res = provider.search(query, limit = 1)
-                                (res as? ProviderResult.Success)?.data?.firstOrNull()
-                            }.getOrNull()
+                            gate.withPermit {
+                                runCatching {
+                                    val res = provider.search(query, limit = 1)
+                                    (res as? ProviderResult.Success)?.data?.firstOrNull()
+                                }.getOrNull()
+                            }
                         }
                     }
 
@@ -184,5 +190,6 @@ class PlaylistUrlImporter
 
         private companion object {
             const val MAX_IMPORT_TRACKS = 50
+            const val MAX_CONCURRENT_SEARCHES = 4
         }
     }

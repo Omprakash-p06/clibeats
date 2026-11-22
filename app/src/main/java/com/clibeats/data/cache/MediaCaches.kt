@@ -203,7 +203,11 @@ internal class AdjustableLruEvictor(
         requiredSpace: Long,
     ) {
         while (currentSize + requiredSpace > maxBytes && spans.isNotEmpty()) {
-            cache.removeSpan(spans.first())
+            val oldest = spans.first()
+            cache.removeSpan(oldest)
+            // A span still locked by a reader can't be removed yet (SimpleCache requests the removal
+            // itself once released). Stop instead of spinning forever inside the cache lock.
+            if (spans.contains(oldest)) break
         }
     }
 }

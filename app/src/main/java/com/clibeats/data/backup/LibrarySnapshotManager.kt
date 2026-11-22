@@ -70,7 +70,17 @@ class LibrarySnapshotManager
                     withContext(Dispatchers.IO) {
                         if (latest.isFile) latest.copyTo(previousFile, overwrite = true)
                     }
-                    exchange.exportToFile(latest).getOrThrow()
+                    // Stage the export and swap it in, so an interrupted write can't leave a half
+                    // file that still looks like a restorable backup.
+                    val staged = File(folder, "${latest.name}.tmp")
+                    try {
+                        exchange.exportToFile(staged).getOrThrow()
+                        withContext(Dispatchers.IO) {
+                            if (!staged.renameTo(latest)) staged.copyTo(latest, overwrite = true)
+                        }
+                    } finally {
+                        withContext(Dispatchers.IO) { staged.delete() }
+                    }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         // Best effort: the internal copy is already safe.
                         runCatching { writePublicCopy(latest) }

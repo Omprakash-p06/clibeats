@@ -35,7 +35,7 @@ class InnerTubeHeaderInterceptorTest {
         server.enqueue(MockResponse().setBody("{}"))
 
         val request = Request.Builder().url(server.url("/test")).build()
-        client.newCall(request).execute()
+        client.newCall(request).execute().use { it.body?.string() }
 
         val recordedRequest = server.takeRequest()
         assertThat(recordedRequest.getHeader("User-Agent")).isNotNull()

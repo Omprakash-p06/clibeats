@@ -64,30 +64,35 @@ class ArtworkBitmapLoader(
 
     private fun load(source: String): ListenableFuture<Bitmap> {
         val result = SettableFuture.create<Bitmap>()
-        scope.launch {
-            val full = artworkUrlFor(source, ARTWORK_FULL_PX) ?: source
-            val smaller =
-                listOfNotNull(artworkUrlFor(source, MEDIUM_PX), artworkUrlFor(source, ARTWORK_THUMB_PX))
-                    .distinct()
-                    .filter { it != full }
+        val job =
+            scope.launch {
+                val full = artworkUrlFor(source, ARTWORK_FULL_PX) ?: source
+                val smaller =
+                    listOfNotNull(artworkUrlFor(source, MEDIUM_PX), artworkUrlFor(source, ARTWORK_THUMB_PX))
+                        .distinct()
+                        .filter { it != full }
 
-            val cachedFull = fetch(full, cacheOnly = true)
-            if (cachedFull != null) {
-                result.set(cachedFull)
-                return@launch
-            }
-            val cachedSmaller = smaller.firstNotNullOfOrNull { fetch(it, cacheOnly = true) }
-            if (cachedSmaller != null) {
-                result.set(cachedSmaller)
-                // Swap in the high-res cover once it's downloaded.
-                if (fetch(full, cacheOnly = false) != null) onBetterArtwork()
-                return@launch
-            }
-            val downloaded =
-                withTimeoutOrNull(DOWNLOAD_TIMEOUT_MS) {
-                    fetch(full, cacheOnly = false) ?: smaller.firstNotNullOfOrNull { fetch(it, cacheOnly = false) }
+                val cachedFull = fetch(full, cacheOnly = true)
+                if (cachedFull != null) {
+                    result.set(cachedFull)
+                    return@launch
                 }
-            result.set(downloaded ?: logo)
+                val cachedSmaller = smaller.firstNotNullOfOrNull { fetch(it, cacheOnly = true) }
+                if (cachedSmaller != null) {
+                    result.set(cachedSmaller)
+                    // Swap in the high-res cover once it's downloaded.
+                    if (fetch(full, cacheOnly = false) != null) onBetterArtwork()
+                    return@launch
+                }
+                val downloaded =
+                    withTimeoutOrNull(DOWNLOAD_TIMEOUT_MS) {
+                        fetch(full, cacheOnly = false) ?: smaller.firstNotNullOfOrNull { fetch(it, cacheOnly = false) }
+                    }
+                result.set(downloaded ?: logo)
+            }
+        // A cancelled or crashed load must not leave ExoPlayer waiting on a future nobody completes.
+        job.invokeOnCompletion {
+            if (!result.isDone) runCatching { result.set(logo) }
         }
         return result
     }
