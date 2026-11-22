@@ -19,7 +19,7 @@ Without the server, run `graphicle context "<question>"` in a terminal.
 - **Android SDK**: Configured via `local.properties` (`sdk.dir=/home/omprakash/Android/Sdk`).
 - **Quality Gates** (All must pass with 0 errors before committing or pushing):
   ```bash
-  JAVA_HOME=/home/omprakash/.jdks/jdk-17 ./gradlew ktlintCheck detekt testDebugUnitTest verifyPaparazziDebug
+  JAVA_HOME=/home/omprakash/.jdks/jdk-17 ./gradlew ktlintCheck detekt lintDebug testDebugUnitTest verifyPaparazziDebug
   ```
 - **Automatic formatting**:
   ```bash

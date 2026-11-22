@@ -1,5 +1,6 @@
 package com.clibeats.playback
 
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
 
 /**
@@ -8,6 +9,7 @@ import androidx.media3.datasource.DataSource
  * Used for the song cache: opening it scans the cache directory and its database, which must not
  * happen while Hilt builds the player on the main thread during app start.
  */
+@androidx.annotation.OptIn(UnstableApi::class)
 class DeferredDataSourceFactory(
     private val provider: () -> DataSource.Factory,
 ) : DataSource.Factory {
