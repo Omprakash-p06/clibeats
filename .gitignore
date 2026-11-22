@@ -27,6 +27,4 @@ app/build/
 .gsd/
 .planning/
 .agents/
-AGENTS.md
-CLAUDE.md
 .mcp.json
