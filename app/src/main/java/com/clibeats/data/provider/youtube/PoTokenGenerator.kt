@@ -29,6 +29,11 @@ import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/** YouTube video ids are exactly 11 URL-safe characters; anything else must not reach a URL. */
+private val VIDEO_ID_REGEX = Regex("^[A-Za-z0-9_-]{11}$")
+private const val YOUTUBE_EMBED_PREFIX = "https://www.youtube.com/embed/"
+private const val DEFAULT_EMBED_VIDEO_ID = "NJAv_7lHUIU"
+
 data class PoTokenResult(
     val poToken: String,
     val visitorData: String,
@@ -172,8 +177,9 @@ class PoTokenGenerator
                             }
                         }
 
-                    val targetUrl = "https://www.youtube.com/embed/" + (hint ?: "NJAv_7lHUIU")
-                    wv.loadUrl(targetUrl)
+                    // The hint comes from provider data: only a well-formed video id may be embedded.
+                    val videoId = hint?.takeIf { VIDEO_ID_REGEX.matches(it) } ?: DEFAULT_EMBED_VIDEO_ID
+                    wv.loadUrl(YOUTUBE_EMBED_PREFIX + videoId)
 
                     // Overall timeout fallback
                     handler.postDelayed({

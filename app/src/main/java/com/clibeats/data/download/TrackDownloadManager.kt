@@ -26,6 +26,7 @@ import okhttp3.Request
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.io.OutputStream
 import java.security.MessageDigest
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
@@ -64,19 +65,18 @@ class TrackDownloadManager
         @Suppress("LongMethod", "CyclomaticComplexMethod")
         fun downloadTrack(track: Track) {
             val hash = sha256(track.id)
-            val finalFile = File(downloadsDir, "$hash.m4a")
             val partFile = File(downloadsDir, "$hash.part")
-
-            if (finalFile.exists()) {
-                updateStatus(track.id, DownloadStatus.Completed(finalFile))
-                return
-            }
 
             activeJobs[track.id]?.cancel()
 
             val job =
                 scope.launch {
                     try {
+                        existingDownload(track.id)?.let { existing ->
+                            updateStatus(track.id, DownloadStatus.Completed(existing))
+                            return@launch
+                        }
+
                         updateStatus(track.id, DownloadStatus.Downloading(0))
 
                         val streamUrl =
@@ -89,39 +89,27 @@ class TrackDownloadManager
                         }
 
                         val request = Request.Builder().url(streamUrl).build()
-                        val response = okHttpClient.newCall(request).execute()
-
-                        if (!response.isSuccessful || response.body == null) {
-                            updateStatus(track.id, DownloadStatus.Failed("HTTP ${response.code}"))
-                            return@launch
-                        }
-
-                        val body = response.body!!
-                        val contentLength = body.contentLength()
-                        val inputStream: InputStream = body.byteStream()
-                        val outputStream = FileOutputStream(partFile)
-
-                        outputStream.use { out ->
-                            val buffer = ByteArray(BUFFER_SIZE)
-                            var bytesRead: Int
-                            var totalBytesRead = 0L
-                            var lastProgress = 0
-
-                            while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                                out.write(buffer, 0, bytesRead)
-                                totalBytesRead += bytesRead
-
-                                if (contentLength > 0) {
-                                    val progress = ((totalBytesRead * 100) / contentLength).toInt()
-                                    if (progress != lastProgress) {
-                                        lastProgress = progress
-                                        updateStatus(track.id, DownloadStatus.Downloading(progress))
-                                    }
-                                }
+                        // Close the response on every path: an abandoned body keeps its socket out of the pool.
+                        okHttpClient.newCall(request).execute().use { response ->
+                            val body = response.body
+                            if (!response.isSuccessful || body == null) {
+                                updateStatus(track.id, DownloadStatus.Failed("HTTP ${response.code}"))
+                                return@use
                             }
-                        }
 
-                        if (partFile.renameTo(finalFile)) {
+                            writeBody(track.id, body.byteStream(), body.contentLength(), partFile)
+
+                            // Name the file after the container the provider actually served.
+                            val format = DownloadFormat.from(response.header("Content-Type"), streamUrl)
+                            val finalFile = File(downloadsDir, "$hash.${format.extension}")
+                            if (finalFile.exists()) finalFile.delete()
+
+                            if (!partFile.renameTo(finalFile)) {
+                                partFile.delete()
+                                updateStatus(track.id, DownloadStatus.Failed("Failed to finalize download file"))
+                                return@use
+                            }
+
                             songDao.upsert(track.toEntity())
                             downloadedTrackDao.insert(
                                 DownloadedTrackEntity(
@@ -129,13 +117,10 @@ class TrackDownloadManager
                                     filePath = finalFile.absolutePath,
                                     sizeBytes = finalFile.length(),
                                     downloadedAt = System.currentTimeMillis(),
-                                    mimeType = "audio/mp4",
+                                    mimeType = format.mimeType,
                                 ),
                             )
                             updateStatus(track.id, DownloadStatus.Completed(finalFile))
-                        } else {
-                            partFile.delete()
-                            updateStatus(track.id, DownloadStatus.Failed("Failed to finalize download file"))
                         }
                     } catch (e: CancellationException) {
                         if (partFile.exists()) partFile.delete()
@@ -150,6 +135,104 @@ class TrackDownloadManager
                 }
 
             activeJobs[track.id] = job
+        }
+
+        /** An earlier download whose file is still on disk; a record pointing at a missing file is cleared. */
+        private suspend fun existingDownload(songId: String): File? {
+            val record = downloadedTrackDao.getById(songId)
+            val file = record?.let { File(it.filePath) }
+            return if (file?.exists() == true) {
+                file
+            } else {
+                if (record != null) downloadedTrackDao.deleteById(songId)
+                null
+            }
+        }
+
+        /** Streams [input] into [target] and publishes progress once per whole percent. */
+        private fun writeBody(
+            songId: String,
+            input: InputStream,
+            contentLength: Long,
+            target: File,
+        ) {
+            input.use { inputStream ->
+                FileOutputStream(target).use { outputStream ->
+                    copyWithProgress(songId, inputStream, outputStream, contentLength)
+                }
+            }
+        }
+
+        private fun copyWithProgress(
+            songId: String,
+            inputStream: InputStream,
+            outputStream: OutputStream,
+            contentLength: Long,
+        ) {
+            val buffer = ByteArray(BUFFER_SIZE)
+            var totalBytesRead = 0L
+            var lastProgress = -1
+
+            while (true) {
+                val bytesRead = inputStream.read(buffer)
+                if (bytesRead == -1) break
+                outputStream.write(buffer, 0, bytesRead)
+                totalBytesRead += bytesRead
+
+                if (contentLength > 0) {
+                    val progress = ((totalBytesRead * PERCENT) / contentLength).toInt()
+                    if (progress != lastProgress) {
+                        lastProgress = progress
+                        updateStatus(songId, DownloadStatus.Downloading(progress))
+                    }
+                }
+            }
+        }
+
+        /**
+         * Maps what the server actually sends to a file extension and MIME type, so an Opus/WebM or MP3
+         * stream isn't stored as `.m4a` (which misleads other apps and the system media scanner).
+         */
+        private data class DownloadFormat(
+            val extension: String,
+            val mimeType: String,
+        ) {
+            companion object {
+                private val MIME_FORMATS =
+                    mapOf(
+                        "audio/mp4" to DownloadFormat("m4a", "audio/mp4"),
+                        "audio/m4a" to DownloadFormat("m4a", "audio/mp4"),
+                        "audio/x-m4a" to DownloadFormat("m4a", "audio/mp4"),
+                        "audio/aac" to DownloadFormat("m4a", "audio/mp4"),
+                        "audio/webm" to DownloadFormat("webm", "audio/webm"),
+                        "audio/ogg" to DownloadFormat("ogg", "audio/ogg"),
+                        "application/ogg" to DownloadFormat("ogg", "audio/ogg"),
+                        "audio/opus" to DownloadFormat("opus", "audio/opus"),
+                        "audio/mpeg" to DownloadFormat("mp3", "audio/mpeg"),
+                        "audio/mp3" to DownloadFormat("mp3", "audio/mpeg"),
+                        "audio/flac" to DownloadFormat("flac", "audio/flac"),
+                        "audio/x-flac" to DownloadFormat("flac", "audio/flac"),
+                        "audio/wav" to DownloadFormat("wav", "audio/wav"),
+                        "audio/x-wav" to DownloadFormat("wav", "audio/wav"),
+                        "audio/wave" to DownloadFormat("wav", "audio/wav"),
+                    )
+
+                private val EXTENSION_FORMATS =
+                    MIME_FORMATS.values.associateBy { it.extension } +
+                        mapOf("mp4" to DownloadFormat("m4a", "audio/mp4"))
+
+                private val DEFAULT = DownloadFormat("m4a", "audio/mp4")
+
+                fun from(
+                    contentType: String?,
+                    url: String,
+                ): DownloadFormat {
+                    val mime = contentType?.substringBefore(';')?.trim()?.lowercase().orEmpty()
+                    MIME_FORMATS[mime]?.let { return it }
+                    val extension = url.substringBefore('?').substringAfterLast('.', "").lowercase()
+                    return EXTENSION_FORMATS[extension] ?: DEFAULT
+                }
+            }
         }
 
         fun cancelDownload(trackId: String) {
@@ -187,5 +270,6 @@ class TrackDownloadManager
 
         private companion object {
             const val BUFFER_SIZE = 8192
+            const val PERCENT = 100
         }
     }

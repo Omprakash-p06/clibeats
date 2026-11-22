@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Every provider, lyrics and update endpoint is HTTPS, so cleartext is blocked app-wide.
+    Local playback uses content:// and file:// URIs, which this setting does not affect.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+</network-security-config>
