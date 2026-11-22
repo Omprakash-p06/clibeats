@@ -10,6 +10,7 @@ import com.clibeats.domain.provider.MusicProvider
 import com.clibeats.domain.provider.ProviderRegistry
 import com.clibeats.domain.provider.ProviderResult
 import com.clibeats.domain.repository.PlaybackRepository
+import com.clibeats.playback.StreamResolver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -28,6 +29,7 @@ import javax.inject.Inject
 
 private const val DEBOUNCE_MS = 300L
 private const val MIN_QUERY_LENGTH = 2
+private const val WARM_COUNT = 3
 private const val LOCAL_ID = "local"
 
 @HiltViewModel
@@ -37,6 +39,7 @@ class SearchViewModel
         private val providerRegistry: ProviderRegistry,
         private val appPreferences: AppPreferences,
         private val playbackRepository: PlaybackRepository,
+        private val streamResolver: StreamResolver,
     ) : ViewModel() {
         private val _query = MutableStateFlow("")
         val query: StateFlow<String> = _query.asStateFlow()
@@ -105,13 +108,15 @@ class SearchViewModel
                             val provider = providerRegistry.getProvider(id) ?: providerRegistry.defaultProvider()
                             flow<SearchUiState> {
                                 emit(SearchUiState.Loading)
-                                emit(
-                                    when (val result = provider.search(q)) {
-                                        is ProviderResult.Success -> SearchUiState.Success(result.data)
-                                        is ProviderResult.Error -> SearchUiState.Error(result.message)
-                                        is ProviderResult.Loading -> SearchUiState.Loading
-                                    },
-                                )
+                                when (val result = provider.search(q)) {
+                                    is ProviderResult.Success -> {
+                                        emit(SearchUiState.Success(result.data))
+                                        // Warm the first visible results so a tap starts immediately.
+                                        streamResolver.warmTracks(result.data, WARM_COUNT)
+                                    }
+                                    is ProviderResult.Error -> emit(SearchUiState.Error(result.message))
+                                    is ProviderResult.Loading -> emit(SearchUiState.Loading)
+                                }
                             }
                         }
                     }

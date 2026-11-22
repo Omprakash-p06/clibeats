@@ -8,6 +8,7 @@ import com.clibeats.domain.model.Track
 import com.clibeats.domain.provider.MusicProvider
 import com.clibeats.domain.provider.ProviderRegistry
 import com.clibeats.domain.provider.ProviderResult
+import com.clibeats.playback.StreamResolver
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,6 +38,7 @@ class HomeViewModelTest {
     private lateinit var musicProvider: MusicProvider
     private lateinit var providerRegistry: ProviderRegistry
     private lateinit var appPreferences: AppPreferences
+    private lateinit var streamResolver: StreamResolver
     private lateinit var viewModel: HomeViewModel
 
     @Before
@@ -45,6 +47,7 @@ class HomeViewModelTest {
         musicProvider = mock()
         providerRegistry = mock()
         appPreferences = mock()
+        streamResolver = mock()
 
         whenever(providerRegistry.getProvider(any())).thenReturn(musicProvider)
         whenever(providerRegistry.defaultProvider()).thenReturn(musicProvider)
@@ -56,7 +59,7 @@ class HomeViewModelTest {
         val networkMonitor: NetworkMonitor = mock()
         whenever(networkMonitor.isOnline).thenReturn(MutableStateFlow(true))
 
-        viewModel = HomeViewModel(providerRegistry, appPreferences, networkMonitor)
+        viewModel = HomeViewModel(providerRegistry, appPreferences, networkMonitor, streamResolver)
     }
 
     @After

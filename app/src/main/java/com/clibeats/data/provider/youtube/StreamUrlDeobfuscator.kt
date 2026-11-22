@@ -33,6 +33,7 @@ object StreamUrlDeobfuscator {
     fun extractAudioStream(
         streamingData: JsonElement,
         traceId: String,
+        highQuality: Boolean = true,
     ): ExtractedStreamInfo? {
         val obj = runCatching { streamingData.jsonObject }.getOrNull() ?: return null
         val formats =
@@ -47,10 +48,18 @@ object StreamUrlDeobfuscator {
             return null
         }
         val ordered =
-            audio.sortedWith(
-                compareByDescending<JsonElement> { it.stringField("bitrate").toIntOrNull() ?: 0 }
-                    .thenByDescending { it.stringField("mimeType").contains("mp4") },
-            )
+            if (highQuality) {
+                audio.sortedWith(
+                    compareByDescending<JsonElement> { it.stringField("mimeType").contains("mp4") }
+                        .thenByDescending { it.bitrateOrZero() },
+                )
+            } else {
+                // Data saver: lowest known bitrate, unknown bitrates last.
+                audio.sortedWith(
+                    compareBy<JsonElement> { if (it.bitrateOrZero() <= 0) 1 else 0 }
+                        .thenBy { it.bitrateOrZero() },
+                )
+            }
         ordered.forEach { format ->
             deobfuscateStreamUrl(format, traceId)?.let { return it }
         }
@@ -103,6 +112,8 @@ object StreamUrlDeobfuscator {
 
     private fun JsonElement.stringField(name: String): String =
         runCatching { jsonObject[name]?.jsonPrimitive?.contentOrNull }.getOrNull().orEmpty()
+
+    private fun JsonElement.bitrateOrZero(): Int = stringField("bitrate").toIntOrNull() ?: 0
 
     private fun extractQueryParam(
         url: String,

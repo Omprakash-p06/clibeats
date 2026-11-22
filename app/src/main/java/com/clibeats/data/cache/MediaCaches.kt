@@ -52,8 +52,10 @@ class MediaCaches
         private val evictor =
             AdjustableLruEvictor(DEFAULT_SONG_CACHE_MB * BYTES_IN_MB)
 
-        val songCache: SimpleCache =
+        // Opening the cache scans its directory and database: defer that off the startup path.
+        val songCache: SimpleCache by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
             SimpleCache(File(context.cacheDir, "song_cache"), evictor, StandaloneDatabaseProvider(context))
+        }
 
         private val _usage = MutableStateFlow(CacheUsage())
         val usage: StateFlow<CacheUsage> = _usage.asStateFlow()

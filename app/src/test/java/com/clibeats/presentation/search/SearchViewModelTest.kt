@@ -8,6 +8,7 @@ import com.clibeats.domain.provider.MusicProvider
 import com.clibeats.domain.provider.ProviderRegistry
 import com.clibeats.domain.provider.ProviderResult
 import com.clibeats.domain.repository.PlaybackRepository
+import com.clibeats.playback.StreamResolver
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,6 +37,7 @@ class SearchViewModelTest {
     private lateinit var providerRegistry: ProviderRegistry
     private lateinit var appPreferences: AppPreferences
     private lateinit var playbackRepository: PlaybackRepository
+    private lateinit var streamResolver: StreamResolver
     private lateinit var viewModel: SearchViewModel
 
     @Before
@@ -45,13 +47,14 @@ class SearchViewModelTest {
         providerRegistry = mock()
         appPreferences = mock()
         playbackRepository = mock()
+        streamResolver = mock()
 
         whenever(providerRegistry.getProvider(any())).thenReturn(musicProvider)
         whenever(providerRegistry.defaultProvider()).thenReturn(musicProvider)
         whenever(providerRegistry.providers).thenReturn(listOf(musicProvider))
         whenever(appPreferences.activeProviderId).thenReturn(flowOf("audius"))
 
-        viewModel = SearchViewModel(providerRegistry, appPreferences, playbackRepository)
+        viewModel = SearchViewModel(providerRegistry, appPreferences, playbackRepository, streamResolver)
     }
 
     @After

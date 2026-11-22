@@ -21,6 +21,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import java.util.concurrent.atomic.AtomicReference
@@ -40,6 +42,9 @@ class PoTokenGenerator
         @ApplicationContext private val context: Context,
     ) {
         private val cachedToken = AtomicReference<PoTokenResult?>(null)
+
+        // One WebView at a time: parallel stream resolutions must not race on the same bridge.
+        private val generationMutex = Mutex()
         private val tokenTimeoutMs = 10_000L
         private val tokenTtlMs = 12 * 60 * 60 * 1000L // 12 hours
 
@@ -56,8 +61,10 @@ class PoTokenGenerator
             DiagnosticLogger.logPoTokenStarted(traceId)
 
             val result =
-                withTimeoutOrNull(tokenTimeoutMs) {
-                    generatePoTokenInWebView(traceId, videoOrVisitorHint)
+                generationMutex.withLock {
+                    withTimeoutOrNull(tokenTimeoutMs) {
+                        generatePoTokenInWebView(traceId, videoOrVisitorHint)
+                    }
                 }
 
             if (result != null && result.poToken.isNotBlank()) {
