@@ -23,6 +23,13 @@ interface MusicProvider {
         limit: Int = 15,
     ): ProviderResult<List<Track>> = ProviderResult.Success(emptyList())
 
+    /**
+     * Tracks of a provider playlist, in playlist order. Providers without playlist access keep
+     * this default so a URL import fails loudly instead of substituting unrelated results.
+     */
+    suspend fun playlistTracks(playlistId: String): ProviderResult<List<Track>> =
+        ProviderResult.Error("Playlist import is not supported by $displayName")
+
     suspend fun playlists(): ProviderResult<List<Playlist>>
 
     suspend fun queue(): ProviderResult<List<Track>>

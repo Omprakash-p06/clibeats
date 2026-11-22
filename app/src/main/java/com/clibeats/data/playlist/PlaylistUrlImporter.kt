@@ -72,9 +72,15 @@ class PlaylistUrlImporter
                 providerRegistry.getProvider(ProviderRegistry.DEFAULT_PROVIDER_ID)
                     ?: error("Default music provider unavailable")
 
-            val searchResult = provider.search("playlist $listId", limit = 25)
-            val tracks = (searchResult as? ProviderResult.Success)?.data.orEmpty()
-            if (tracks.isEmpty()) error("Could not load tracks for YouTube playlist")
+            val result = provider.playlistTracks(listId)
+            val tracks =
+                (result as? ProviderResult.Success)?.data.orEmpty()
+                    .distinctBy { it.id }
+                    .take(MAX_IMPORT_TRACKS)
+            if (tracks.isEmpty()) {
+                val reason = (result as? ProviderResult.Error)?.message ?: "no tracks returned"
+                error("Could not load YouTube playlist $listId: $reason")
+            }
 
             songDao.upsertAll(tracks.map { it.toEntity() })
             val songIds = tracks.map { it.id }

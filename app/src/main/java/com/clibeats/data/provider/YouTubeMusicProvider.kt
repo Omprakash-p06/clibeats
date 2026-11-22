@@ -11,6 +11,7 @@ package com.clibeats.data.provider
 
 import com.clibeats.data.preferences.AppPreferences
 import com.clibeats.data.provider.api.InnerTubeApi
+import com.clibeats.data.provider.dto.BrowseRequest
 import com.clibeats.data.provider.dto.NextRequest
 import com.clibeats.data.provider.dto.PlayerRequest
 import com.clibeats.data.provider.dto.SearchRequest
@@ -284,6 +285,24 @@ class YouTubeMusicProvider
             }.getOrElse { e ->
                 ProviderResult.Error(
                     message = "Radio failed for $rawId: ${e.message}",
+                    cause = e,
+                )
+            }
+        }
+
+        /**
+         * Real tracks of a YouTube playlist page, in playlist order. The page is browsed as
+         * `VL<browseId>`, the same route the charts use; a `VL` prefix is accepted as-is.
+         */
+        override suspend fun playlistTracks(playlistId: String): ProviderResult<List<Track>> {
+            val browseId = "VL" + playlistId.removePrefix("VL")
+            return runCatching {
+                val tracks = api.browse(BrowseRequest.page(browseId)).playlistTracks()
+                if (tracks.isEmpty()) error("No tracks found in playlist $playlistId")
+                ProviderResult.Success(tracks)
+            }.getOrElse { e ->
+                ProviderResult.Error(
+                    message = "Playlist $playlistId failed: ${e.message}",
                     cause = e,
                 )
             }
