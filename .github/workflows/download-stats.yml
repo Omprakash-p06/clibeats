@@ -36,7 +36,8 @@ jobs:
             git worktree add --orphan -b stats stats-out
           fi
 
-      -        uses: actions/setup-node@v7
+      - name: Set up Node
+        uses: actions/setup-node@v7
         with:
           node-version: 20
 
