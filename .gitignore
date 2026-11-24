@@ -30,3 +30,8 @@ app/build/
 .mcp.json
 .graphicle/
 platform-tools/
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+CODEX.md
+OPENCODE.md
