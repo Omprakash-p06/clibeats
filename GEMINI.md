@@ -6,26 +6,39 @@ Without the server, run `graphicle context "<question>"` in a terminal.
 
 # GEMINI.md - Instructions for Google Gemini / Antigravity Agents
 
-## Codebase Exploration & Discipline
-1. **Graphicle First & Node Inspection**:
-   - ALWAYS run `graphicle sync` first before exploring or changing code.
-   - Inspect nodes and callers: use `graphicle graph explain "<symbol>"` or MCP `get_node`, and `graphicle graph affected "<symbol>"` or MCP `get_neighbors` to verify upstream/downstream impact across modules.
-   - Query project context using `graphicle context "<question>"` or MCP `query_graph` / `recall_project`.
-2. **Environment Requirements**:
-   - MUST use JDK 17: `JAVA_HOME=/home/omprakash/.jdks/jdk-17`.
-   - Android SDK is at `/home/omprakash/Android/Sdk` (via `local.properties`).
-3. **Mandatory Quality Gates**:
-   Before proposing or committing changes, verify:
-   ```bash
-   JAVA_HOME=/home/omprakash/.jdks/jdk-17 ./gradlew ktlintCheck detekt testDebugUnitTest verifyPaparazziDebug
-   ```
-   Autoformat command:
-   ```bash
-   JAVA_HOME=/home/omprakash/.jdks/jdk-17 ./gradlew ktlintFormat
-   ```
-4. **Architecture & Standards**:
-   - Clean Architecture: `domain` pure Kotlin logic; `data` handles APIs, ExoPlayer, Room; `presentation` Compose UI and ViewModels.
-   - Detekt: Suppress `ForbiddenImport` with `@file:Suppress("ForbiddenImport")` when justified in ViewModels/data.
-   - Mocking: `org.mockito.kotlin.*` only.
-   - Room Migrations: Export schemas to `app/schemas/.../<ver>.json` and never allow destructive migrations.
-   - UI Theme: Strict TUI aesthetic. Use `CliBeatsColors` and `JetBrainsMonoFamily`. No hardcoded hex colors.
+Canonical repository rules are defined in [AGENTS.md](AGENTS.md). This file outlines Gemini and Antigravity specific workflows, MCP integrations, and constraints.
+
+## 1. Codebase Exploration First (Graphicle)
+- ALWAYS run `graphicle sync` first to ensure the code graph is up-to-date with working files.
+- Inspect symbols and caller impact before editing:
+  - Query graph: `graphicle context "<question>"` or MCP `query_graph` / `recall_project`.
+  - Node inspection: `graphicle graph explain "<symbol>"` or MCP `get_node`.
+  - Reverse blast radius: `graphicle graph affected "<symbol>"` or MCP `get_neighbors`.
+
+## 2. Build & Verification Environment
+- **JDK 17**: MUST use `JAVA_HOME=/home/omprakash/.jdks/jdk-17` for all Gradle commands.
+- **Android SDK**: Read from `local.properties` (`/home/omprakash/Android/Sdk`).
+- **Quality Gates** (All must pass with 0 errors):
+  ```bash
+  JAVA_HOME=/home/omprakash/.jdks/jdk-17 ./gradlew ktlintCheck detekt testDebugUnitTest verifyPaparazziDebug
+  ```
+- **Automatic formatting**:
+  ```bash
+  JAVA_HOME=/home/omprakash/.jdks/jdk-17 ./gradlew ktlintFormat
+  ```
+
+## 3. Architecture & Standards
+- Clean Architecture: `domain` (pure Kotlin logic) <- `data` (Room, ExoPlayer, OkHttp, Retrofit) <- `presentation` (Jetpack Compose, ViewModels).
+- Detekt: Suppress `ForbiddenImport` with `@file:Suppress("ForbiddenImport")` when justified in ViewModels/data.
+- Mocking: `org.mockito.kotlin.*` only (never MockK).
+- Room Migrations: Export schemas to `app/schemas/.../<ver>.json`, zero destructive migrations.
+- UI Theme: Strict TUI aesthetic. Use `CliBeatsColors` and `JetBrainsMonoFamily`. No hardcoded hex colors.
+
+## 4. Device Smoke Testing via ADB
+- Binary: `./platform-tools/adb`.
+- If a device is attached, install and launch the debug build to ensure no crash on startup. If no device is attached, skip without error.
+
+## 5. Storage Preservation & Cleanup
+- Stop daemons after execution: `./gradlew --stop`
+- Clean build cache: `./gradlew clean`
+- Preserve `.planning/`, `platform-tools/`, and agent instruction markdown files across branch switches.
