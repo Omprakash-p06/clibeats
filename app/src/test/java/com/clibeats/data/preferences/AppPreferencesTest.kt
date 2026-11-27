@@ -45,6 +45,14 @@ class AppPreferencesTest {
         }
 
     @Test
+    fun accentColor_defaultsToTheClassicSilverWhite() =
+        runTest {
+            // v2.8.5 made Classic's silver-white accent the default; a fresh install has no stored accent.
+            assertEquals(AppPreferences.DEFAULT_ACCENT_NAME, appPreferences.accentColorName.first())
+            assertEquals("WHITE", appPreferences.accentColorName.first())
+        }
+
+    @Test
     fun setCacheMaxMb_roundTripsThroughDataStore() =
         runTest {
             appPreferences.setCacheMaxMb(2560)

@@ -109,7 +109,7 @@ fun OnboardingScreen(
 
         when (step) {
             0 ->
-                TuiBlock(title = "Choose a Theme", isActive = true) {
+                TuiBlock(title = "Choose a Colour Scheme", isActive = true) {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         CliBeatsThemeMode.entries.forEach { mode ->
                             Choice(
@@ -119,7 +119,7 @@ fun OnboardingScreen(
                             )
                         }
                         Text(
-                            "Preview updates live. Change it anytime in Settings.",
+                            "Preview updates live. Themes and accents live in Settings.",
                             style = MaterialTheme.typography.labelSmall,
                             color = CliBeatsTextSecondary,
                         )

@@ -366,10 +366,23 @@ private fun previewColors(
 ): PreviewColors =
     when (mode) {
         CliBeatsThemeMode.LIGHT ->
-            PreviewColors(palette.lightBackground, palette.lightSurfaceVariant, Color(0x22000000))
+            PreviewColors(
+                palette.lightBackground,
+                palette.lightSurfaceVariant,
+                lerp(palette.lightSurfaceVariant, Color.Black, 0.18f),
+            )
         CliBeatsThemeMode.AMOLED ->
-            PreviewColors(Color.Black, lerp(palette.darkSurface, Color.Black, 0.4f), Color(0x22FFFFFF))
-        else -> PreviewColors(palette.darkBackground, palette.darkSurfaceVariant, Color(0x22FFFFFF))
+            PreviewColors(
+                Color.Black,
+                lerp(palette.darkSurface, Color.Black, 0.4f),
+                lerp(palette.darkSurfaceVariant, Color.White, 0.2f),
+            )
+        else ->
+            PreviewColors(
+                palette.darkBackground,
+                palette.darkSurfaceVariant,
+                lerp(palette.darkSurfaceVariant, Color.White, 0.2f),
+            )
     }
 
 @Composable
@@ -466,7 +479,7 @@ private fun Orb(
                 .padding(4.dp)
                 .clip(CircleShape)
                 .background(brush)
-                .border(1.dp, Color(0x33FFFFFF), CircleShape)
+                .border(1.dp, Color.White.copy(alpha = 0.2f), CircleShape)
                 .clickable(role = Role.RadioButton, onClickLabel = label, onClick = onClick),
     )
 }

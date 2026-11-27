@@ -24,6 +24,12 @@ class AppPreferences
         private val dataStore: DataStore<Preferences>,
     ) {
         companion object {
+            /**
+             * v2.8.5's Classic theme brings a silver-white accent, so that is the default for a new install.
+             * Anyone who already picked an accent keeps it: their choice is stored under [Keys.ACCENT_COLOR_NAME].
+             */
+            const val DEFAULT_ACCENT_NAME = "WHITE"
+
             /** Settings → Storage and Cache: artwork sizes (MB); the first is the default. */
             val ARTWORK_CACHE_OPTIONS_MB = listOf(128, 256, 512, 1024, 2048)
 
@@ -370,7 +376,7 @@ class AppPreferences
 
         val accentColorName: Flow<String> =
             dataStore.data.map { prefs ->
-                prefs[Keys.ACCENT_COLOR_NAME] ?: "GREEN"
+                prefs[Keys.ACCENT_COLOR_NAME] ?: DEFAULT_ACCENT_NAME
             }
 
         suspend fun setActiveProviderId(providerId: String) {

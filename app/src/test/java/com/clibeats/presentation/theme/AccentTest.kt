@@ -31,10 +31,11 @@ class AccentTest {
     }
 
     @Test
-    fun `missing or broken values fall back to green`() {
+    fun `missing or broken values fall back to the default accent`() {
         assertThat(Accent.fromStored(null)).isEqualTo(Accent.DEFAULT)
         assertThat(Accent.fromStored("#XYZ")).isEqualTo(Accent.DEFAULT)
         assertThat(Accent.fromStored("NOPE")).isEqualTo(Accent.DEFAULT)
         assertThat(Accent.parseHex("1db954")).isEqualTo(Color(0xFF1DB954))
+        assertThat(Accent.DEFAULT.storedName).isEqualTo("WHITE")
     }
 }
